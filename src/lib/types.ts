@@ -73,3 +73,12 @@ export interface MiniGameRound {
   answer: string;
   hint?: string;
 }
+
+export interface SystemPart {
+  id: string;
+  name: string;
+  description: string;
+  installation: string;
+  // Position on the main image, in percentages
+  position: { top: string; left: string; width: string; height: string; };
+}

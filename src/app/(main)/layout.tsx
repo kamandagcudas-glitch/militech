@@ -24,6 +24,7 @@ import {
   Puzzle,
   BookCopy,
   Loader2,
+  Cpu,
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -61,6 +62,7 @@ export default function MainAppLayout({
 
   const navItems = [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
+    { href: "/system-viewer", icon: <Cpu />, label: "System Viewer" },
     { href: "/coc/coc1", icon: <BookCopy />, label: "COC 1" },
     { href: "/coc/coc2", icon: <BookCopy />, label: "COC 2" },
     { href: "/coc/coc3", icon: <BookCopy />, label: "COC 3" },

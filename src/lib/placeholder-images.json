@@ -97,6 +97,12 @@
       "imageHint": "virus scan"
     },
     {
+      "id": "system-unit-main",
+      "description": "An open computer case with all components visible",
+      "imageUrl": "https://images.unsplash.com/photo-1593640408182-01c74c7d62dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxvYmplY3QlMjBjb21wdXRlciUyMGNhc2V8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "open computer"
+    },
+    {
       "id": "minigame1-pic1",
       "description": "A computer mouse",
       "imageUrl": "https://images.unsplash.com/photo-1551515300-2d3b7bb80920?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb21wdXRlciUyMG1vdXNlfGVufDB8fHx8MTc3MDEwNDQ1MHww&ixlib=rb-4.1.0&q=80&w=1080",

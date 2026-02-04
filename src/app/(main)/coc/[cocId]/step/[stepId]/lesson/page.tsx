@@ -7,7 +7,7 @@ import { cocData } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, BookOpen } from 'lucide-react';
+import { ArrowRight, BookOpen, Cpu } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -31,6 +31,7 @@ export default function LessonPage() {
   }
   
   const image = PlaceHolderImages.find(img => img.id === step.lesson.imageId);
+  const isCoc1Step1 = cocId === 'coc1' && stepId === 'step1';
 
   return (
     <div>
@@ -79,7 +80,14 @@ export default function LessonPage() {
               </div>
             )}
           </div>
-          <div className="mt-8 text-center">
+          <div className="mt-8 flex justify-center items-center gap-4">
+            {isCoc1Step1 && (
+               <Link href="/system-viewer">
+                <Button size="lg" variant="secondary">
+                  <Cpu className="mr-2" /> Explore System Unit
+                </Button>
+              </Link>
+            )}
             <Link href={`/coc/${cocId}/step/${stepId}/quiz`}>
               <Button size="lg" className="text-lg">
                 I'm Ready, Start Quiz! <ArrowRight className="ml-2" />
