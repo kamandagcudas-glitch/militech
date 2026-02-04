@@ -20,7 +20,7 @@ import {
   LayoutGrid,
   User,
   LogOut,
-  Swords,
+  Users,
   Puzzle,
   BookCopy,
   Loader2,
@@ -66,6 +66,7 @@ export default function MainAppLayout({
     { href: "/coc/coc3", icon: <BookCopy />, label: "COC 3" },
     { href: "/coc/coc4", icon: <BookCopy />, label: "COC 4" },
     { href: "/minigame", icon: <Puzzle />, label: "Mini-Game" },
+    { href: "/users", icon: <Users />, label: "Users" },
     { href: "/profile", icon: <User />, label: "Profile" },
   ];
 

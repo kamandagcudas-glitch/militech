@@ -11,12 +11,15 @@ const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
 
 export interface GameContextType {
   currentUser: UserAccount | null;
+  accounts: UserAccount[];
   register: (username: string, password: string) => Promise<{ success: boolean; message: string; }>;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   completeQuiz: (cocId: string, stepId: string, score: number) => 'pass' | 'retry' | 'reset';
   addAchievement: (achievementId: string) => void;
   updateAvatar: (avatarDataUrl: string) => void;
+  addFriend: (username: string) => void;
+  removeFriend: (username: string) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -77,6 +80,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       activeTitleId: isCreator ? 'creator' : null,
       unlockedTitleIds: isCreator ? ['creator'] : [],
       badgeIds: isCreator ? ['creator-badge'] : [],
+      friendUsernames: [],
       isCreator,
     };
     const newStats: PlayerStats = {
@@ -185,6 +189,41 @@ export function GameProvider({ children }: { children: ReactNode }) {
         })
     }
   };
+  
+  /**
+   * Friend Management Logic:
+   * The user's friend list is an array of usernames stored in `player.friendUsernames`.
+   * These functions add or remove a username from that list and update the user's account.
+   */
+  const addFriend = (username: string) => {
+    if (!currentUser || currentUser.player.friendUsernames.includes(username)) {
+      return;
+    }
+    const newPlayerState = {
+      ...currentUser.player,
+      friendUsernames: [...currentUser.player.friendUsernames, username],
+    };
+    updateCurrentUser({ player: newPlayerState });
+    toast({
+      title: 'Friend Added!',
+      description: `${username} is now on your friends list.`,
+    });
+  };
+
+  const removeFriend = (username: string) => {
+    if (!currentUser) return;
+    const newPlayerState = {
+      ...currentUser.player,
+      friendUsernames: currentUser.player.friendUsernames.filter(
+        (friend) => friend !== username
+      ),
+    };
+    updateCurrentUser({ player: newPlayerState });
+    toast({
+      title: 'Friend Removed',
+      description: `${username} has been removed from your friends list.`,
+    });
+  };
 
   const completeQuiz = (cocId: string, stepId: string, score: number): 'pass' | 'retry' | 'reset' => {
       if (!currentUser) return 'retry';
@@ -224,7 +263,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, register, login, logout, completeQuiz, addAchievement, updateAvatar }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, addFriend, removeFriend }}>
       {children}
     </GameContext.Provider>
   );

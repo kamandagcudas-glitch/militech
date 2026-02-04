@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useMemo } from 'react';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -9,10 +9,12 @@ import { achievementsData, cocData } from '@/lib/data';
 import { CreatorBadgeIcon } from '@/components/icons';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Pencil } from 'lucide-react';
+import { Pencil, UserX, Users } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { UserAccount } from '@/lib/types';
+import Link from 'next/link';
 
 
 export default function ProfilePage() {
@@ -23,14 +25,34 @@ export default function ProfilePage() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-    if (!game.currentUser) {
+    if (!game.currentUser || !game.accounts) {
         return null;
     }
 
-    const { player, stats, achievements } = game.currentUser;
+    const { currentUser, accounts, removeFriend, updateAvatar } = game;
+    const { player, stats, achievements } = currentUser;
     
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
     const unlockedBadges = achievements.filter(a => a.type === 'badge');
+
+    // Friend list logic: Find full user accounts for each friend username.
+    const friends = useMemo(() => {
+        /**
+         * Friend Relationship Storage:
+         * The `friendUsernames` array on the `Player` object stores a list of usernames.
+         * This logic maps those usernames to the full UserAccount objects from the global `accounts` list
+         * to display their details (avatar, title, etc.).
+         */
+        return player.friendUsernames
+            .map(username => accounts.find(acc => acc.player.username === username))
+            .filter((acc): acc is UserAccount => !!acc);
+    }, [player.friendUsernames, accounts]);
+    
+    // Helper to get the active title object from an achievement ID.
+    const getActiveTitle = (user: UserAccount) => {
+        if (!user.player.activeTitleId) return null;
+        return achievementsData.find(a => a.id === user.player.activeTitleId);
+    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -53,8 +75,8 @@ export default function ProfilePage() {
     };
 
     const handleSaveAvatar = () => {
-        if (previewUrl && game.updateAvatar) {
-            game.updateAvatar(previewUrl);
+        if (previewUrl && updateAvatar) {
+            updateAvatar(previewUrl);
             setIsUploadDialogOpen(false);
             setPreviewUrl(null);
             setSelectedFile(null);
@@ -115,6 +137,46 @@ export default function ProfilePage() {
 
                 <div className="lg:col-span-2 space-y-8">
                      <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Users /> Friends</CardTitle>
+                            <CardDescription>Your connected agents.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {friends.length > 0 ? (
+                                <div className="space-y-4">
+                                    {friends.map(friend => {
+                                        const friendTitle = getActiveTitle(friend);
+                                        return (
+                                            <div key={friend.player.username} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border border-white/10">
+                                                <div className="flex items-center gap-3">
+                                                    <Avatar>
+                                                        <AvatarImage src={friend.player.avatar} alt={friend.player.username} />
+                                                        <AvatarFallback>{friend.player.username.charAt(0)}</AvatarFallback>
+                                                    </Avatar>
+                                                    <div>
+                                                        <p className="font-semibold">{friend.player.username}</p>
+                                                        {friendTitle && <p className="text-xs text-muted-foreground">{friendTitle.name}</p>}
+                                                    </div>
+                                                </div>
+                                                <Button variant="ghost" size="icon" onClick={() => removeFriend(friend.player.username)} aria-label={`Remove ${friend.player.username} from friends`}>
+                                                    <UserX className="h-5 w-5 text-destructive/80 hover:text-destructive" />
+                                                </Button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="text-center text-muted-foreground py-4">
+                                    <p>You haven't added any friends yet.</p>
+                                    <Link href="/users" passHref>
+                                       <Button variant="link" className="mt-2">Find Friends</Button>
+                                    </Link>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    <Card>
                         <CardHeader>
                             <CardTitle>Statistics</CardTitle>
                         </CardHeader>
