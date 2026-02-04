@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,14 +37,19 @@ export default function MainAppLayout({
   const game = useContext(GameContext) as GameContextType;
   const router = useRouter();
   const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    if (!game.player) {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient && !game.player) {
       router.replace("/");
     }
-  }, [game.player, router]);
+  }, [game.player, router, isClient]);
 
-  if (!game.player || !game.stats || !game.progress) {
+  if (!isClient || !game.player || !game.stats || !game.progress) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
