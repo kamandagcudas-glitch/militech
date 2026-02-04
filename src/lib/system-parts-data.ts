@@ -19,14 +19,14 @@ export const systemPartsData: SystemPart[] = [
     name: 'CPU Cooler',
     description: 'A device that draws heat away from the CPU. It is essential for preventing the processor from overheating, which can cause damage or system instability.',
     installation: 'Mounted directly on top of the CPU with a layer of thermal paste in between to ensure efficient heat transfer. It is then secured to the motherboard.',
-    position: { top: '30%', left: '42%', width: '18%', height: '22%' },
+    position: { top: '20%', left: '40%', width: '20%', height: '20%' },
   },
   {
     id: 'cpu',
     name: 'CPU (Processor)',
     description: 'The Central Processing Unit, or the "brain" of the computer. It performs most of the processing inside a computer, carrying out the instructions of a computer program.',
     installation: 'Located underneath the large CPU cooler. It is carefully placed into the CPU socket on the motherboard, and a retention arm is lowered to secure it.',
-    position: { top: '40%', left: '48%', width: '5%', height: '5%' },
+    position: { top: '28%', left: '48%', width: '5%', height: '5%' },
   },
   {
     id: 'ram',
