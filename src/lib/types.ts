@@ -1,6 +1,8 @@
 export interface Player {
   username: string;
   avatar: string;
+  email?: string;
+  emailVerified: boolean;
   activeTitleId: string | null;
   unlockedTitleIds: string[];
   badgeIds: string[];
@@ -29,7 +31,7 @@ export interface Achievement {
   name: string;
   description: string;
   type: 'title' | 'badge';
-  timestamp: string;
+  timestamp?: string;
 }
 
 // This is the main data structure for a user account, stored in local storage.

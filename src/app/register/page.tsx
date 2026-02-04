@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function RegisterPage() {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -35,8 +36,13 @@ export default function RegisterPage() {
             setError('Passwords do not match.');
             return;
         }
+        // Optional Email Validation: Only validate if the user has typed something.
+        if (email && !/^[^\s@]+@gmail\.com$/i.test(email)) {
+            setError('Please enter a valid Gmail address or leave it blank.');
+            return;
+        }
 
-        const result = await game.register(username, password);
+        const result = await game.register(username, password, email);
 
         if (result.success) {
             toast({
@@ -51,7 +57,7 @@ export default function RegisterPage() {
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-4">
-            <Card className="w-full max-w-sm shadow-2xl bg-card/80 backdrop-blur-sm border border-primary/20">
+            <Card className="w-full max-w-md shadow-2xl bg-card/80 backdrop-blur-sm border border-primary/20">
                 <CardHeader className="text-center">
                     <CardTitle className="font-headline text-4xl font-bold text-primary">Create Account</CardTitle>
                     <CardDescription>Register your Agent ID to begin training.</CardDescription>
@@ -68,28 +74,40 @@ export default function RegisterPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="email">Email (Optional, Gmail only)</Label>
                             <Input
-                                id="password"
-                                type="password"
-                                placeholder="Minimum 6 characters"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                id="email"
+                                type="email"
+                                placeholder="For optional account verification"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="confirmPassword">Confirm Password</Label>
-                            <Input
-                                id="confirmPassword"
-                                type="password"
-                                placeholder="Re-enter your password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleRegister()}
-                            />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Password</Label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    placeholder="Minimum 6 characters"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                <Input
+                                    id="confirmPassword"
+                                    type="password"
+                                    placeholder="Re-enter your password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleRegister()}
+                                />
+                            </div>
                         </div>
 
-                        {error && <p className="text-sm text-destructive font-medium">{error}</p>}
+                        {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
 
                         <Button onClick={handleRegister} className="w-full h-12 text-lg font-bold">
                             Register

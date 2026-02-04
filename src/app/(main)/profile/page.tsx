@@ -9,7 +9,7 @@ import { achievementsData, cocData } from '@/lib/data';
 import { CreatorBadgeIcon } from '@/components/icons';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { Pencil, UserX, Users } from 'lucide-react';
+import { Pencil, UserX, Users, Mail, Send, CheckCircle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -29,7 +29,7 @@ export default function ProfilePage() {
         return null;
     }
 
-    const { currentUser, accounts, removeFriend, updateAvatar } = game;
+    const { currentUser, accounts, removeFriend, updateAvatar, sendVerificationEmail, verifyEmail } = game;
     const { player, stats, achievements } = currentUser;
     
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
@@ -124,6 +124,41 @@ export default function ProfilePage() {
 
                     <Card>
                         <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Mail /> Verification Status</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {player.email ? (
+                                <div>
+                                    <p className="text-sm text-muted-foreground">Email: {player.email}</p>
+                                    {player.emailVerified ? (
+                                        <div className="mt-4 flex items-center gap-2 text-green-500 font-semibold">
+                                            <CheckCircle className="h-5 w-5" />
+                                            <span>Verified</span>
+                                        </div>
+                                    ) : (
+                                        <div className="mt-4">
+                                            <p className="text-yellow-500 font-semibold mb-2">Not Verified</p>
+                                            <div className="flex flex-col gap-2">
+                                                <Button onClick={() => verifyEmail()} size="sm">Verify Now (Sim)</Button>
+                                                <Button onClick={() => sendVerificationEmail()} variant="outline" size="sm">
+                                                    <Send className="mr-2 h-4 w-4"/>
+                                                    Resend Email
+                                                </Button>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground mt-2">
+                                                This is a simulation. No real emails are sent.
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <p className="text-muted-foreground">No email address has been provided for this account.</p>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
                             <CardTitle>Badges</CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -209,13 +244,13 @@ export default function ProfilePage() {
                         <CardContent>
                             {achievements.length > 0 ? (
                                 <ul className="space-y-4">
-                                    {[...achievements].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).map(ach => (
+                                    {[...achievements].sort((a,b) => new Date(b.timestamp!).getTime() - new Date(a.timestamp!).getTime()).map(ach => (
                                         <li key={ach.id} className="flex items-start gap-4">
                                             <div className="mt-1 text-2xl">{ach.type === 'badge' ? '🎖️' : '🏆'}</div>
                                             <div>
                                                 <p className="font-semibold">{ach.type === 'badge' ? 'Badge earned:' : 'Title unlocked:'} {ach.name}</p>
                                                 <p className="text-sm text-muted-foreground">{ach.description}</p>
-                                                <time className="text-xs text-muted-foreground">{format(new Date(ach.timestamp), "PPP p")}</time>
+                                                {ach.timestamp && <time className="text-xs text-muted-foreground">{format(new Date(ach.timestamp), "PPP p")}</time>}
                                             </div>
                                         </li>
                                     ))}

@@ -14,7 +14,7 @@ const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
 export interface GameContextType {
   currentUser: UserAccount | null;
   accounts: UserAccount[];
-  register: (username: string, password: string) => Promise<{ success: boolean; message: string; }>;
+  register: (username: string, password: string, email?: string) => Promise<{ success: boolean; message: string; }>;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   completeQuiz: (cocId: string, stepId: string, score: number) => 'pass' | 'retry' | 'reset';
@@ -22,6 +22,8 @@ export interface GameContextType {
   updateAvatar: (avatarDataUrl: string) => void;
   addFriend: (username: string) => void;
   removeFriend: (username: string) => void;
+  sendVerificationEmail: () => void;
+  verifyEmail: () => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -57,16 +59,31 @@ export function GameProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Data Migration & User Loading Effect:
     // This effect handles migrating older account structures to prevent crashes after updates.
-    // It checks for the absence of `friendUsernames` or `scores` and patches the accounts array.
-    const needsPatch = accounts.some(acc => !acc.player.friendUsernames || !acc.progress.coc1.scores);
+    const needsPatch = accounts.some(acc => 
+      !acc.player.friendUsernames || 
+      !acc.progress.coc1.scores ||
+      acc.player.emailVerified === undefined
+    );
 
     if (needsPatch) {
       const patchedAccounts = accounts.map(account => {
-        const newAcc = { ...account, player: {...account.player}, progress: {...account.progress} };
+        // Use a deep copy to safely modify nested objects without side effects.
+        const newAcc = JSON.parse(JSON.stringify(account));
+        
+        // Patch missing friendUsernames array from older data structures.
         if (!newAcc.player.friendUsernames) {
           newAcc.player.friendUsernames = [];
         }
+
+        // Patch missing email verification fields.
+        if (newAcc.player.emailVerified === undefined) {
+            newAcc.player.emailVerified = false;
+        }
+        if (!('email' in newAcc.player)) {
+            newAcc.player.email = undefined;
+        }
         
+        // Patch missing scores objects for each COC.
         cocData.forEach(coc => {
           if (!newAcc.progress[coc.id]) {
              newAcc.progress[coc.id] = { completedSteps: [], scores: {} };
@@ -96,7 +113,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [loggedInUser, accounts, setAccounts, setLoggedInUser]);
 
 
-  const register = async (username: string, password: string): Promise<{ success: boolean; message: string; }> => {
+  const register = async (username: string, password: string, email?: string): Promise<{ success: boolean; message: string; }> => {
     // Registration & Validation Logic:
     // Checks if the username already exists in the stored accounts array.
     if (accounts.some(acc => acc.player.username.toLowerCase() === username.toLowerCase())) {
@@ -112,6 +129,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     let initialAchievements: Achievement[] = [];
     let badgeIds: string[] = [];
 
+    // Easter Egg Logic: Assign special titles for specific usernames.
     if (isCreator) {
         activeTitleId = 'creator';
         unlockedTitleIds = ['creator'];
@@ -125,11 +143,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
     }
 
-
     // Create the initial Player object, including any easter egg properties.
     const newPlayer: Player = {
       username,
       avatar: `https://api.dicebear.com/8.x/bottts/svg?seed=${username}`,
+      email: email || undefined, // Store email if provided
+      emailVerified: false, // Default to not verified
       activeTitleId,
       unlockedTitleIds,
       badgeIds,
@@ -200,7 +219,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const updateCurrentUser = (updatedData: Partial<UserAccount>) => {
     if (!currentUser) return;
     
-    const updatedAccount = { ...currentUser, ...updatedData };
+    // Merge the updates with the current user data.
+    const updatedAccount = { 
+      ...currentUser, 
+      ...updatedData,
+      player: { ...currentUser.player, ...updatedData.player },
+      stats: { ...currentUser.stats, ...updatedData.stats },
+      progress: { ...currentUser.progress, ...updatedData.progress },
+    };
     
     // Update the state for the current session
     setCurrentUser(updatedAccount);
@@ -245,12 +271,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
    * These functions add or remove a username from that list and update the user's account.
    */
   const addFriend = (username: string) => {
-    if (!currentUser || currentUser.player.friendUsernames.includes(username)) {
+    if (!currentUser || (currentUser.player.friendUsernames && currentUser.player.friendUsernames.includes(username))) {
       return;
     }
     const newPlayerState = {
       ...currentUser.player,
-      friendUsernames: [...currentUser.player.friendUsernames, username],
+      friendUsernames: [...(currentUser.player.friendUsernames || []), username],
     };
     updateCurrentUser({ player: newPlayerState });
     toast({
@@ -260,7 +286,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const removeFriend = (username: string) => {
-    if (!currentUser) return;
+    if (!currentUser || !currentUser.player.friendUsernames) return;
     const newPlayerState = {
       ...currentUser.player,
       friendUsernames: currentUser.player.friendUsernames.filter(
@@ -274,6 +300,38 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  // --- Simulated Email Verification ---
+  // The following functions simulate an email verification flow.
+  // In a real application, these would involve a backend service to send emails.
+
+  /**
+   * Simulates sending a verification email to the user.
+   * In a real app, this would trigger a backend API call.
+   */
+  const sendVerificationEmail = () => {
+    if (!currentUser?.player.email) return;
+    toast({
+      title: 'Verification Email Sent (Simulation)',
+      description: `An email has been "sent" to ${currentUser.player.email}. Click "Verify" to simulate completion.`,
+    });
+  };
+
+  /**
+   * Simulates the user clicking a verification link.
+   * This marks the user's email as verified in the local state.
+   */
+  const verifyEmail = () => {
+    if (!currentUser || currentUser.player.emailVerified) return;
+    const newPlayerState = { ...currentUser.player, emailVerified: true };
+    updateCurrentUser({ player: newPlayerState });
+    addAchievement('verified-account');
+    toast({
+      title: 'Email Verified!',
+      description: 'Your account has been successfully verified.',
+    });
+  };
+
+
   const completeQuiz = (cocId: string, stepId: string, score: number): 'pass' | 'retry' | 'reset' => {
       if (!currentUser) return 'retry';
       
@@ -281,7 +339,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const newStats = { ...currentUser.stats };
       (newStats as any)[cocId].attempts += 1;
 
-      let newProgress = { ...currentUser.progress };
+      let newProgress = JSON.parse(JSON.stringify(currentUser.progress));
 
       if (score >= 18) {
           outcome = 'pass';
@@ -318,7 +376,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, addFriend, removeFriend }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, addFriend, removeFriend, sendVerificationEmail, verifyEmail }}>
       {children}
     </GameContext.Provider>
   );
