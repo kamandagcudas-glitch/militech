@@ -39,25 +39,25 @@
     --sidebar-ring: 190 95% 55%;
   }
   .dark {
-    --background: 222 84% 5%;
+    --background: 220 25% 4%;
     --foreground: 210 40% 98%;
-    --card: 222 84% 7%;
+    --card: 220 25% 8%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 84% 7%;
+    --popover: 220 25% 8%;
     --popover-foreground: 210 40% 98%;
-    --primary: 173 95% 55%;
+    --primary: 190 95% 50%;
     --primary-foreground: 210 40% 98%;
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
-    --accent: 250 90% 65%;
+    --accent: 270 90% 60%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
+    --border: 217 33% 20%;
     --input: 217 33% 17%;
-    --ring: 173 95% 55%;
+    --ring: 190 95% 50%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -84,11 +84,10 @@
   .dark {
     background-color: hsl(var(--background));
     background-image: 
-      linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px),
-      radial-gradient(at 20% 20%, hsl(var(--accent) / 0.2) 0px, transparent 50%),
-      radial-gradient(at 80% 20%, hsl(var(--primary) / 0.2) 0px, transparent 50%),
-      radial-gradient(at 50% 80%, hsl(var(--accent) / 0.1) 0px, transparent 50%);
-    background-size: 3rem 3rem, 3rem 3rem, 100% 100%, 100% 100%, 100% 100%;
+      linear-gradient(hsl(var(--primary) / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.07) 1px, transparent 1px),
+      radial-gradient(at 25% 25%, hsl(var(--accent) / 0.1) 0px, transparent 50%),
+      radial-gradient(at 75% 75%, hsl(var(--primary) / 0.1) 0px, transparent 50%);
+    background-size: 2.5rem 2.5rem, 2.5rem 2.5rem, 100% 100%, 100% 100%;
   }
 }
