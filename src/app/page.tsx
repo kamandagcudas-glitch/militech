@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { Button } from "@/components/ui/button";
-import { GamepadIcon } from "@/components/icons";
 import { Loader2, ArrowRight } from "lucide-react";
+import { AnimatedIntro } from "@/components/animated-intro";
+import { cn } from "@/lib/utils";
 
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [introFinished, setIntroFinished] = useState(false);
   const router = useRouter();
   const game = useContext(GameContext) as GameContextType;
 
@@ -31,18 +33,15 @@ export default function LandingPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center text-center p-4">
-      <div className="flex items-center gap-4 mb-4">
-        <GamepadIcon className="size-16 text-primary" />
-        <h1 className="font-headline text-7xl font-bold text-primary">IT MAZING</h1>
+      <AnimatedIntro onFinished={() => setIntroFinished(true)} />
+      
+      <div className={cn("transition-opacity duration-1000", introFinished ? "opacity-100" : "opacity-0")}>
+        <Link href="/login">
+            <Button size="lg" className="text-xl h-14 px-10">
+            Enter Simulation <ArrowRight className="ml-2" />
+            </Button>
+        </Link>
       </div>
-      <p className="max-w-2xl text-xl text-muted-foreground mb-8">
-        An immersive, gamified learning experience designed to forge the next generation of IT professionals. Enter the simulation, complete missions, and prove your mastery.
-      </p>
-      <Link href="/login">
-        <Button size="lg" className="text-xl h-14 px-10">
-          Enter Simulation <ArrowRight className="ml-2" />
-        </Button>
-      </Link>
     </main>
   );
 }
