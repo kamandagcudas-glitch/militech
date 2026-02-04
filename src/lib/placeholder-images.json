@@ -1,3 +1,220 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "coc1-step1",
+      "description": "PC components spread out",
+      "imageUrl": "https://images.unsplash.com/photo-1587134160474-cd3c9a60a34a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb21wdXRlciUyMHBhcnRzfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer parts"
+    },
+    {
+      "id": "coc1-step2",
+      "description": "BIOS setup screen",
+      "imageUrl": "https://images.unsplash.com/photo-1632854556003-299bf500b876?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxiaW9zJTIwc2V0dXB8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bios setup"
+    },
+    {
+      "id": "coc1-step3",
+      "description": "Rufus software interface",
+      "imageUrl": "https://picsum.photos/seed/103/600/400",
+      "imageHint": "rufus software"
+    },
+    {
+      "id": "coc1-step4",
+      "description": "Operating system installation progress",
+      "imageUrl": "https://images.unsplash.com/photo-1758780691544-d11ce61aae47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvcyUyMGluc3RhbGx8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "os install"
+    },
+    {
+      "id": "coc1-step5",
+      "description": "Device manager showing drivers",
+      "imageUrl": "https://images.unsplash.com/photo-1770149683150-8fa77530c5c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "device manager"
+    },
+    {
+      "id": "coc2-step1",
+      "description": "Different types of network cables",
+      "imageUrl": "https://images.unsplash.com/photo-1629836149344-3c51a772fe35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MDE2NDY2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network cables"
+    },
+    {
+      "id": "coc2-step2",
+      "description": "Crimping an ethernet cable",
+      "imageUrl": "https://images.unsplash.com/photo-1544564085-8135ff08833a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYWJsZSUyMGNyaW1waW5nfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cable crimping"
+    },
+    {
+      "id": "coc2-step3",
+      "description": "Network configuration window",
+      "imageUrl": "https://images.unsplash.com/photo-1760574759053-97fec631c27f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxuZXR3b3JrJTIwc2V0dGluZ3N8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network settings"
+    },
+    {
+      "id": "coc2-step4",
+      "description": "Router with WiFi signal",
+      "imageUrl": "https://images.unsplash.com/photo-1606904825846-647eb07f5be2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wifi router"
+    },
+    {
+      "id": "coc2-step5",
+      "description": "Network testing tool",
+      "imageUrl": "https://images.unsplash.com/photo-1664526936810-ec0856d31b92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxuZXR3b3JrJTIwdGVzdHxlbnwwfHx8fDE3NzAxOTA1NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network test"
+    },
+    {
+      "id": "coc3-step1",
+      "description": "Client-server network diagram",
+      "imageUrl": "https://images.unsplash.com/photo-1619243142206-381c5aeda31c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZXJ2ZXIlMjBjbGllbnR8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server client"
+    },
+    {
+      "id": "coc3-step2",
+      "description": "Remote desktop connection screen",
+      "imageUrl": "https://images.unsplash.com/photo-1717996563514-e3519f9ef9f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyZW1vdGUlMjBkZXNrdG9wfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "remote desktop"
+    },
+    {
+      "id": "coc4-step1",
+      "description": "Backup process indicator",
+      "imageUrl": "https://images.unsplash.com/photo-1551169562-ce654c28043c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkYXRhJTIwYmFja3VwfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data backup"
+    },
+    {
+      "id": "coc4-step2",
+      "description": "System restore point creation",
+      "imageUrl": "https://picsum.photos/seed/402/600/400",
+      "imageHint": "system restore"
+    },
+    {
+      "id": "coc4-step3",
+      "description": "Disk defragmentation tool",
+      "imageUrl": "https://images.unsplash.com/photo-1581725645170-9a619a339553?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkaXNrJTIwZGVmcmFnfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "disk defrag"
+    },
+    {
+      "id": "coc4-step4",
+      "description": "Antivirus scanning interface",
+      "imageUrl": "https://images.unsplash.com/photo-1607325713992-79d8e5dda77f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx2aXJ1cyUyMHNjYW58ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "virus scan"
+    },
+    {
+      "id": "minigame1-pic1",
+      "description": "A computer mouse",
+      "imageUrl": "https://images.unsplash.com/photo-1551515300-2d3b7bb80920?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb21wdXRlciUyMG1vdXNlfGVufDB8fHx8MTc3MDEwNDQ1MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer mouse"
+    },
+    {
+      "id": "minigame1-pic2",
+      "description": "A keyboard",
+      "imageUrl": "https://images.unsplash.com/photo-1601445638532-3c6f6c3aa1d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjb21wdXRlciUyMGtleWJvYXJkfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer keyboard"
+    },
+    {
+      "id": "minigame1-pic3",
+      "description": "A computer monitor",
+      "imageUrl": "https://images.unsplash.com/photo-1560131914-2e469a0e8607?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb21wdXRlciUyMG1vbml0b3J8ZW58MHx8fHwxNzcwMTI1MzAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer monitor"
+    },
+    {
+      "id": "minigame1-pic4",
+      "description": "A computer tower",
+      "imageUrl": "https://images.unsplash.com/photo-1543680272-d12c4e516805?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb21wdXRlciUyMHRvd2VyfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer tower"
+    },
+    {
+      "id": "minigame2-pic1",
+      "description": "Ethernet cable",
+      "imageUrl": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxldGhlcm5ldCUyMGNhYmxlfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ethernet cable"
+    },
+    {
+      "id": "minigame2-pic2",
+      "description": "Wi-Fi symbol",
+      "imageUrl": "https://images.unsplash.com/photo-1580391550743-4e3f17ef6f0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3aWZpJTIwc3ltYm9sfGVufDB8fHx8MTc3MDE5MDU2MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wifi symbol"
+    },
+    {
+      "id": "minigame2-pic3",
+      "description": "Router device",
+      "imageUrl": "https://images.unsplash.com/photo-1745847768408-b7b83796cae6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxuZXR3b3JrJTIwcm91dGVyfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network router"
+    },
+    {
+      "id": "minigame2-pic4",
+      "description": "Connected devices icon",
+      "imageUrl": "https://images.unsplash.com/photo-1632277232577-09bcf876d6fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxuZXR3b3JrJTIwZGV2aWNlc3xlbnwwfHx8fDE3NzAxOTA1NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network devices"
+    },
+    {
+      "id": "minigame3-pic1",
+      "description": "A server rack",
+      "imageUrl": "https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzZXJ2ZXIlMjByYWNrfGVufDB8fHx8MTc3MDEyNDg2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server rack"
+    },
+    {
+      "id": "minigame3-pic2",
+      "description": "DHCP configuration screen",
+      "imageUrl": "https://picsum.photos/seed/mg32/200/200",
+      "imageHint": "dhcp settings"
+    },
+    {
+      "id": "minigame3-pic3",
+      "description": "DNS resolution diagram",
+      "imageUrl": "https://images.unsplash.com/photo-1622904625511-5d85ab1b642b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkbnMlMjBmbG93fGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dns flow"
+    },
+    {
+      "id": "minigame3-pic4",
+      "description": "File server icon",
+      "imageUrl": "https://images.unsplash.com/photo-1542744989-2a681859d344?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmlsZSUyMHNlcnZlcnxlbnwwfHx8fDE3NzAxOTA1NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "file server"
+    },
+    {
+      "id": "minigame4-pic1",
+      "description": "Hard drive with backup arrow",
+      "imageUrl": "https://images.unsplash.com/photo-1739742473103-701ef348ff7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkcml2ZSUyMGJhY2t1cHxlbnwwfHx8fDE3NzAxOTA1NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "drive backup"
+    },
+    {
+      "id": "minigame4-pic2",
+      "description": "Virus icon",
+      "imageUrl": "https://images.unsplash.com/photo-1477039181047-efb4357d01bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29tcHV0ZXIlMjB2aXJ1c3xlbnwwfHx8fDE3NzAxOTA1NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer virus"
+    },
+    {
+      "id": "minigame4-pic3",
+      "description": "Broom sweeping a disk",
+      "imageUrl": "https://images.unsplash.com/photo-1647524147652-b7c337455ef6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkaXNrJTIwY2xlYW51cHxlbnwwfHx8fDE3NzAxOTA1NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "disk cleanup"
+    },
+    {
+      "id": "minigame4-pic4",
+      "description": "Calendar with a restore point",
+      "imageUrl": "https://images.unsplash.com/photo-1758912869882-17f4092dacd3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyZXN0b3JlJTIwcG9pbnR8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "restore point"
+    },
+    {
+      "id": "minigame5-pic1",
+      "description": "RAM stick",
+      "imageUrl": "https://images.unsplash.com/photo-1730305946364-2f8c0182da5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyYW0lMjBzdGlja3xlbnwwfHx8fDE3NzAxOTA1NjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ram stick"
+    },
+    {
+      "id": "minigame5-pic2",
+      "description": "CPU chip",
+      "imageUrl": "https://images.unsplash.com/photo-1592664474483-a62364f738d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjcHUlMjBwcm9jZXNzb3J8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cpu processor"
+    },
+    {
+      "id": "minigame5-pic3",
+      "description": "Motherboard circuit",
+      "imageUrl": "https://images.unsplash.com/photo-1662553670836-cfb159e1d54f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtb3RoZXJib2FyZCUyMGNpcmN1aXR8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "motherboard circuit"
+    },
+    {
+      "id": "minigame5-pic4",
+      "description": "Hard drive disk",
+      "imageUrl": "https://images.unsplash.com/photo-1704265586128-7fc54dcc774f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxoYXJkJTIwZHJpdmV8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hard drive"
+    }
+  ]
 }
