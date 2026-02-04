@@ -52,6 +52,37 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { toast } = useToast();
 
+  /**
+   * Data Migration Effect:
+   * This effect ensures that older user accounts loaded from local storage, which might be
+   * missing the `friendUsernames` property, are updated. This prevents crashes when
+   * accessing this property on legacy account structures.
+   */
+  useEffect(() => {
+    // Check if any account in the loaded data is missing the `friendUsernames` array.
+    const needsPatch = accounts.some(acc => !acc.player.friendUsernames);
+
+    if (needsPatch) {
+      const patchedAccounts = accounts.map(acc => {
+        // If friendUsernames is missing (i.e., it's an older account structure), add it.
+        if (!acc.player.friendUsernames) {
+          return {
+            ...acc,
+            player: {
+              ...acc.player,
+              friendUsernames: [], // Initialize as an empty array.
+            },
+          };
+        }
+        return acc;
+      });
+      // Update the accounts in local storage. This will trigger a re-render,
+      // but the `if (needsPatch)` condition will prevent an infinite loop.
+      setAccounts(patchedAccounts);
+    }
+  }, [accounts, setAccounts]);
+
+
   // On initial load, check if there was a previously logged-in user.
   // If so, load their full account data into the context state.
   useEffect(() => {
