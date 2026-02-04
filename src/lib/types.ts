@@ -20,6 +20,7 @@ export interface PlayerStats {
 export interface PlayerProgress {
   [cocId: string]: {
     completedSteps: string[];
+    scores: { [stepId: string]: number };
   };
 }
 

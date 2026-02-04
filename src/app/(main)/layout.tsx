@@ -25,6 +25,7 @@ import {
   BookCopy,
   Loader2,
   Cpu,
+  Trophy,
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -68,6 +69,7 @@ export default function MainAppLayout({
     { href: "/coc/coc3", icon: <BookCopy />, label: "COC 3" },
     { href: "/coc/coc4", icon: <BookCopy />, label: "COC 4" },
     { href: "/minigame", icon: <Puzzle />, label: "Mini-Game" },
+    { href: "/leaderboard", icon: <Trophy />, label: "Leaderboard" },
     { href: "/users", icon: <Users />, label: "Users" },
     { href: "/profile", icon: <User />, label: "Profile" },
   ];

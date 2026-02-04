@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { achievementsData } from '@/lib/data';
+import { achievementsData, cocData } from '@/lib/data';
 
 const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
 // This is a humorous easter egg feature
@@ -56,26 +56,26 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Data Migration & User Loading Effect:
-    // This combined effect handles two critical startup tasks:
-    // 1. It migrates older account structures by ensuring `friendUsernames` exists.
-    // 2. It loads the logged-in user's data.
-    // Combining them prevents a race condition where the app might try to load a user
-    // with an outdated data structure before the migration can run.
-
-    const needsPatch = accounts.some(acc => !acc.player.friendUsernames);
+    // This effect handles migrating older account structures to prevent crashes after updates.
+    // It checks for the absence of `friendUsernames` or `scores` and patches the accounts array.
+    const needsPatch = accounts.some(acc => !acc.player.friendUsernames || !acc.progress.coc1.scores);
 
     if (needsPatch) {
-      // If any account is outdated, patch the entire list and save it.
-      // This will trigger a re-render, and this effect will run again.
-      // On the next run, `needsPatch` will be false, and the `else` block will execute.
-      const patchedAccounts = accounts.map(acc => {
-        if (!acc.player.friendUsernames) {
-          return {
-            ...acc,
-            player: { ...acc.player, friendUsernames: [] },
-          };
+      const patchedAccounts = accounts.map(account => {
+        const newAcc = { ...account, player: {...account.player}, progress: {...account.progress} };
+        if (!newAcc.player.friendUsernames) {
+          newAcc.player.friendUsernames = [];
         }
-        return acc;
+        
+        cocData.forEach(coc => {
+          if (!newAcc.progress[coc.id]) {
+             newAcc.progress[coc.id] = { completedSteps: [], scores: {} };
+          } else if (!newAcc.progress[coc.id].scores) {
+            newAcc.progress[coc.id].scores = {};
+          }
+        });
+
+        return newAcc;
       });
       setAccounts(patchedAccounts);
     } else {
@@ -144,10 +144,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
       totalResets: 0,
     };
     const newProgress: PlayerProgress = {
-      coc1: { completedSteps: [] },
-      coc2: { completedSteps: [] },
-      coc3: { completedSteps: [] },
-      coc4: { completedSteps: [] },
+      coc1: { completedSteps: [], scores: {} },
+      coc2: { completedSteps: [], scores: {} },
+      coc3: { completedSteps: [], scores: {} },
+      coc4: { completedSteps: [], scores: {} },
     };
 
     const newUserAccount: UserAccount = {
@@ -291,11 +291,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
           if(score === 20) {
             addAchievement('perfect-score');
           }
+          // Store the highest score achieved for this step
+          const existingScore = newProgress[cocId].scores[stepId] || 0;
+          if (score > existingScore) {
+            newProgress[cocId].scores[stepId] = score;
+          }
       } else if (score >= 16) {
           outcome = 'retry';
       } else {
           outcome = 'reset';
           newProgress[cocId].completedSteps = [];
+          newProgress[cocId].scores = {}; // Reset scores for the COC on failure
           (newStats as any)[cocId].resets += 1;
           newStats.totalResets += 1;
       }
