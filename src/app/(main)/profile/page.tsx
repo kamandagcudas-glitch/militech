@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -8,9 +8,21 @@ import { Badge } from '@/components/ui/badge';
 import { achievementsData, cocData } from '@/lib/data';
 import { CreatorBadgeIcon } from '@/components/icons';
 import { format } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import { Pencil } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+
 
 export default function ProfilePage() {
     const game = useContext(GameContext) as GameContextType;
+    const { toast } = useToast();
+
+    // State for managing the avatar upload dialog
+    const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     if (!game.player || !game.stats) {
         return null;
@@ -21,6 +33,50 @@ export default function ProfilePage() {
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
     const unlockedBadges = achievements.filter(a => a.type === 'badge');
 
+    /**
+     * Handles the file input change event.
+     * It validates the file type and creates a base64 preview URL.
+     * @param e - The change event from the file input.
+     */
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+            setSelectedFile(file);
+            const reader = new FileReader();
+            // The FileReader reads the file and its result (a base64 data URL) is used for the preview.
+            reader.onloadend = () => {
+                setPreviewUrl(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Invalid File Type",
+                description: "Please select a JPG or PNG image.",
+            });
+            setSelectedFile(null);
+            setPreviewUrl(null);
+        }
+    };
+
+    /**
+     * Handles saving the new avatar.
+     * It calls the context function to update the player's avatar in local storage.
+     */
+    const handleSaveAvatar = () => {
+        if (previewUrl && game.updateAvatar) {
+            // The avatar is saved as a base64 data URL string in local storage via the game context.
+            game.updateAvatar(previewUrl);
+            setIsUploadDialogOpen(false);
+            setPreviewUrl(null);
+            setSelectedFile(null);
+            toast({
+                title: "Avatar Updated!",
+                description: "Your new profile picture has been saved.",
+            });
+        }
+    };
+
     return (
         <div className="container mx-auto">
             <h1 className="font-headline text-4xl font-bold mb-8">Player Profile</h1>
@@ -28,10 +84,21 @@ export default function ProfilePage() {
                 <div className="lg:col-span-1 space-y-8">
                     <Card>
                         <CardHeader className="items-center text-center">
-                            <Avatar className="w-32 h-32 mb-4 border-4 border-primary">
-                                <AvatarImage src={player.avatar} alt={player.username} />
-                                <AvatarFallback className="text-4xl">{player.username.charAt(0)}</AvatarFallback>
-                            </Avatar>
+                            <div className="relative group">
+                                <Avatar className="w-32 h-32 mb-4 border-4 border-primary/50 shadow-lg shadow-primary/20">
+                                    <AvatarImage src={player.avatar} alt={player.username} />
+                                    <AvatarFallback className="text-4xl">{player.username.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <Button
+                                    onClick={() => setIsUploadDialogOpen(true)}
+                                    variant="outline"
+                                    size="icon"
+                                    className="absolute bottom-4 -right-1 rounded-full h-10 w-10 bg-card/80 backdrop-blur-sm border-primary/50 hover:bg-primary/20"
+                                    aria-label="Upload profile picture"
+                                >
+                                    <Pencil className="h-5 w-5" />
+                                </Button>
+                            </div>
                             <CardTitle className="font-headline text-3xl flex items-center gap-2">
                                 {player.username}
                                 {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
@@ -65,13 +132,13 @@ export default function ProfilePage() {
                         </CardHeader>
                         <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                             {cocData.map(coc => (
-                                <div key={coc.id} className="p-4 bg-background rounded-lg border">
+                                <div key={coc.id} className="p-4 bg-background/50 rounded-lg border border-white/10">
                                     <p className="text-sm text-muted-foreground">{coc.id.toUpperCase()} Attempts</p>
                                     <p className="text-3xl font-bold">{(stats as any)[coc.id].attempts}</p>
                                 </div>
                             ))}
                             {cocData.map(coc => (
-                                <div key={coc.id} className="p-4 bg-background rounded-lg border">
+                                <div key={coc.id} className="p-4 bg-background/50 rounded-lg border border-white/10">
                                     <p className="text-sm text-muted-foreground">{coc.id.toUpperCase()} Resets</p>
                                     <p className="text-3xl font-bold text-destructive">{(stats as any)[coc.id].resets}</p>
                                 </div>
@@ -105,6 +172,36 @@ export default function ProfilePage() {
                     </Card>
                 </div>
             </div>
+
+            <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Upload Profile Picture</DialogTitle>
+                        <DialogDescription>Select a JPG or PNG image. The image will be saved locally in your browser.</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        {previewUrl && (
+                            <div className="flex justify-center">
+                                <Avatar className="w-40 h-40 border-4 border-primary/50">
+                                    <AvatarImage src={previewUrl} alt="New avatar preview" />
+                                    <AvatarFallback>P</AvatarFallback>
+                                </Avatar>
+                            </div>
+                        )}
+                        <Input
+                            id="avatar-upload"
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            onChange={handleFileChange}
+                            className="file:text-primary file:font-semibold"
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>Cancel</Button>
+                        <Button onClick={handleSaveAvatar} disabled={!selectedFile}>Save</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

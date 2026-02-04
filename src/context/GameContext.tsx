@@ -17,6 +17,7 @@ export interface GameContextType {
   logout: () => void;
   completeQuiz: (cocId: string, stepId: string, score: number) => 'pass' | 'retry' | 'reset';
   addAchievement: (achievementId: string) => void;
+  updateAvatar: (avatarDataUrl: string) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -33,6 +34,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const isCreator = username === CREATOR_USERNAME;
     const newPlayer: Player = {
       username,
+      // Default avatar is generated from an external service.
+      // This can be overridden by the user with a local base64 image.
       avatar: `https://api.dicebear.com/8.x/bottts/svg?seed=${username}`,
       activeTitleId: isCreator ? 'creator' : null,
       unlockedTitleIds: isCreator ? ['creator'] : [],
@@ -73,6 +76,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setStats(null);
     setProgress(null);
     setAchievements([]);
+  };
+
+  /**
+   * Updates the player's avatar.
+   * The avatar is stored as a base64 data URL in local storage.
+   * @param avatarDataUrl - The base64 data URL of the new avatar image.
+   */
+  const updateAvatar = (avatarDataUrl: string) => {
+    setPlayer(prevPlayer => {
+      if (!prevPlayer) return null;
+      // The new avatar string (base64) replaces the old one (either default URL or previous base64)
+      return { ...prevPlayer, avatar: avatarDataUrl };
+    });
   };
 
   const addAchievement = (achievementId: string) => {
@@ -146,7 +162,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
 
   return (
-    <GameContext.Provider value={{ player, stats, progress, achievements, login, logout, completeQuiz, addAchievement }}>
+    <GameContext.Provider value={{ player, stats, progress, achievements, login, logout, completeQuiz, addAchievement, updateAvatar }}>
       {children}
     </GameContext.Provider>
   );
