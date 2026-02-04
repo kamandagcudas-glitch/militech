@@ -30,6 +30,16 @@ export interface Achievement {
   timestamp: string;
 }
 
+// This is the main data structure for a user account, stored in local storage.
+// It combines all user-related data into a single object.
+export interface UserAccount {
+  player: Player;
+  stats: PlayerStats;
+  progress: PlayerProgress;
+  achievements: Achievement[];
+  hashedPassword: string;
+}
+
 export interface QuizQuestion {
   question: string;
   options: string[];

@@ -44,12 +44,12 @@ export default function MainAppLayout({
   }, []);
 
   useEffect(() => {
-    if (isClient && !game.player) {
-      router.replace("/");
+    if (isClient && !game.currentUser) {
+      router.replace("/login");
     }
-  }, [game.player, router, isClient]);
+  }, [game.currentUser, router, isClient]);
 
-  if (!isClient || !game.player || !game.stats || !game.progress) {
+  if (!isClient || !game.currentUser) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -57,6 +57,8 @@ export default function MainAppLayout({
     );
   }
   
+  const { player } = game.currentUser;
+
   const navItems = [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
     { href: "/coc/coc1", icon: <BookCopy />, label: "COC 1" },
@@ -109,12 +111,12 @@ export default function MainAppLayout({
           <SidebarTrigger />
           <div className="flex items-center gap-3">
              <div className="flex items-center gap-1 text-sm font-medium">
-              <span>{game.player.username}</span>
-              {game.player.isCreator && <CreatorBadgeIcon className="text-yellow-400" title="Creator" />}
+              <span>{player.username}</span>
+              {player.isCreator && <CreatorBadgeIcon className="text-yellow-400" title="Creator" />}
             </div>
             <Avatar className="h-8 w-8">
-              <AvatarImage src={game.player.avatar} alt={game.player.username} />
-              <AvatarFallback>{game.player.username.charAt(0)}</AvatarFallback>
+              <AvatarImage src={player.avatar} alt={player.username} />
+              <AvatarFallback>{player.username.charAt(0)}</AvatarFallback>
             </Avatar>
           </div>
         </header>

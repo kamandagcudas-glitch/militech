@@ -19,31 +19,24 @@ export default function ProfilePage() {
     const game = useContext(GameContext) as GameContextType;
     const { toast } = useToast();
 
-    // State for managing the avatar upload dialog
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-    if (!game.player || !game.stats) {
+    if (!game.currentUser) {
         return null;
     }
 
-    const { player, stats, achievements } = game;
+    const { player, stats, achievements } = game.currentUser;
     
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
     const unlockedBadges = achievements.filter(a => a.type === 'badge');
 
-    /**
-     * Handles the file input change event.
-     * It validates the file type and creates a base64 preview URL.
-     * @param e - The change event from the file input.
-     */
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
             setSelectedFile(file);
             const reader = new FileReader();
-            // The FileReader reads the file and its result (a base64 data URL) is used for the preview.
             reader.onloadend = () => {
                 setPreviewUrl(reader.result as string);
             };
@@ -59,13 +52,8 @@ export default function ProfilePage() {
         }
     };
 
-    /**
-     * Handles saving the new avatar.
-     * It calls the context function to update the player's avatar in local storage.
-     */
     const handleSaveAvatar = () => {
         if (previewUrl && game.updateAvatar) {
-            // The avatar is saved as a base64 data URL string in local storage via the game context.
             game.updateAvatar(previewUrl);
             setIsUploadDialogOpen(false);
             setPreviewUrl(null);

@@ -14,16 +14,16 @@ export default function LandingPage() {
   const game = useContext(GameContext) as GameContextType;
 
   useEffect(() => {
-    if (game.player) {
+    if (game.currentUser) {
       router.replace("/dashboard");
     } else {
       setIsLoading(false);
     }
-  }, [game.player, router]);
+  }, [game.currentUser, router]);
 
-  if (isLoading || game.player) {
+  if (isLoading || game.currentUser) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
       </div>
     );

@@ -29,9 +29,9 @@ export default function CocPage() {
   if (!coc) {
     return <div>COC not found.</div>;
   }
-  if (!game.progress) return null;
+  if (!game.currentUser?.progress) return null;
 
-  const completedSteps = game.progress[cocId]?.completedSteps || [];
+  const completedSteps = game.currentUser.progress[cocId]?.completedSteps || [];
   const currentStepIndex = coc.steps.findIndex(step => !completedSteps.includes(step.id));
   const isCocCompleted = completedSteps.length === coc.steps.length;
 

@@ -12,21 +12,23 @@ import { CreatorBadgeIcon } from '@/components/icons';
 
 export default function DashboardPage() {
     const game = useContext(GameContext) as GameContextType;
-    if (!game.player || !game.progress) return null;
+    if (!game.currentUser) return null;
+
+    const { player, progress } = game.currentUser;
 
     return (
         <div className="container mx-auto">
             <div className="mb-8">
                 <h1 className="font-headline text-4xl font-bold flex items-center gap-2">
-                    Welcome, {game.player.username}! 
-                    {game.player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8" title="Creator"/>}
+                    Welcome, {player.username}! 
+                    {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8" title="Creator"/>}
                 </h1>
                 <p className="text-muted-foreground">Ready to level up your IT skills? Choose a module to begin.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {cocData.map(coc => {
-                    const completedSteps = game.progress![coc.id]?.completedSteps.length || 0;
+                    const completedSteps = progress![coc.id]?.completedSteps.length || 0;
                     const totalSteps = coc.steps.length;
                     const progressPercentage = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
 
