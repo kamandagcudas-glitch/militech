@@ -2,10 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { GamepadIcon } from '@/components/icons';
 
+// Define the characters used for the glitch effect
 const GLITCH_CHARS = '█▓▒░>_#';
 
+/**
+ * GlitchTitle Component
+ * Animates a title with a glitch effect, revealing it character by character.
+ * It uses multiple text layers with different colors and blend modes to create a CRT/hologram look.
+ */
 const GlitchTitle = ({ text, onComplete }: { text: string; onComplete: () => void }) => {
     const [displayText, setDisplayText] = useState('');
 
@@ -13,21 +18,24 @@ const GlitchTitle = ({ text, onComplete }: { text: string; onComplete: () => voi
         let currentIndex = 0;
         let interval: NodeJS.Timeout;
 
+        // Animation logic to reveal the text with a glitchy, stuttering effect
         const animate = () => {
             interval = setInterval(() => {
                 if (currentIndex >= text.length) {
                     clearInterval(interval);
                     setDisplayText(text);
-                    setTimeout(onComplete, 200);
+                    setTimeout(onComplete, 200); // Signal completion after a short delay
                     return;
                 }
 
+                // Build the string with the revealed part and a glitched trail
                 let glitchedText = text.substring(0, currentIndex + 1);
                 for (let i = currentIndex + 1; i < text.length; i++) {
                     glitchedText += GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
                 }
                 setDisplayText(glitchedText);
                 
+                // Randomly stutter the character reveal for a more organic feel
                 if (Math.random() > 0.8) {
                      currentIndex++;
                 }
@@ -36,8 +44,10 @@ const GlitchTitle = ({ text, onComplete }: { text: string; onComplete: () => voi
             }, 80);
         };
         
+        // Start animation after a brief delay
         const timeout = setTimeout(animate, 500);
 
+        // Cleanup function to clear intervals and timeouts on unmount
         return () => {
             clearInterval(interval);
             clearTimeout(timeout);
@@ -45,53 +55,59 @@ const GlitchTitle = ({ text, onComplete }: { text: string; onComplete: () => voi
     }, [text, onComplete]);
     
     return (
+        // The title uses a relative container with multiple absolute-positioned spans for the glitch effect
         <h1 className="font-headline text-7xl font-bold text-primary tracking-widest uppercase relative" style={{ textShadow: '0 0 8px hsl(var(--primary) / 0.7)'}}>
+            {/* Cyan glitch layer */}
             <span className="absolute -inset-1 animate-text-glitch text-cyan-400/50 mix-blend-screen" aria-hidden="true">{displayText}</span>
+            {/* Main text layer */}
             {displayText}
+            {/* Red glitch layer, slightly skewed */}
             <span className="absolute -inset-1 animate-text-glitch text-red-500/50 mix-blend-screen -skew-x-12" aria-hidden="true">{displayText}</span>
         </h1>
     );
 };
 
-
-const TypewriterText = ({ text, onComplete }: { text: string; onComplete: () => void }) => {
-    const [displayText, setDisplayText] = useState('');
-
-    useEffect(() => {
-        let currentIndex = -1;
-        const interval = setInterval(() => {
-            if (currentIndex >= text.length -1) {
-                clearInterval(interval);
-                setTimeout(onComplete, 200);
-                return;
-            }
-            currentIndex++;
-            setDisplayText(prev => prev + text[currentIndex]);
-        }, 30);
-
-        return () => clearInterval(interval);
-    }, [text, onComplete]);
-
+/**
+ * Subtitle Component
+ * A simple component to display the subtitle text with a fade-in animation.
+ */
+const Subtitle = ({ text, visible }: { text: string; visible: boolean }) => {
     return (
-        <p className="max-w-2xl text-xl text-muted-foreground mb-8 font-code">
-            {displayText}
-            <span className="inline-block w-3 h-6 bg-accent animate-caret-blink" />
+        <p className={cn(
+            "max-w-2xl text-xl text-accent mb-8 font-code transition-opacity duration-1000",
+            visible ? "opacity-100" : "opacity-0" // Control visibility via opacity
+        )}>
+            {text}
         </p>
     );
-};
+}
 
-
+/**
+ * AnimatedIntro Component
+ * Orchestrates the entire intro sequence, from the title animation to the subtitle reveal,
+ * and finally triggers the transition to the next screen.
+ */
 export const AnimatedIntro = ({ onFinished }: { onFinished: () => void }) => {
     const [step, setStep] = useState(0);
 
+    // This effect controls the final transition after the animation sequence completes.
+    useEffect(() => {
+        // When the title animation is complete, step becomes 1.
+        if (step === 1) {
+            // Wait for the subtitle to fade in and remain visible for a moment before transitioning.
+            const timer = setTimeout(onFinished, 2500);
+            return () => clearTimeout(timer);
+        }
+    }, [step, onFinished]);
+
     return (
         <div className="flex flex-col items-center justify-center text-center p-4 min-h-[400px]">
-             <div className={cn("flex items-center gap-4 mb-4 transition-opacity duration-500", step >= 0 ? 'opacity-100' : 'opacity-0')}>
-                <GamepadIcon className="size-16 text-primary" style={{ filter: 'drop-shadow(0 0 8px hsl(var(--primary)))' }} />
-                {<GlitchTitle text="IT MAZING" onComplete={() => setStep(1)} />}
-            </div>
-            <div className="h-24">
-                {step >= 1 && <TypewriterText text="An immersive, gamified learning experience designed to forge the next generation of IT professionals. Enter the simulation, complete missions, and prove your mastery." onComplete={() => onFinished()} />}
+            {/* Step 0: Render the main title. onComplete will advance the sequence to step 1. */}
+            <GlitchTitle text="MI-LITECH" onComplete={() => setStep(1)} />
+            
+            <div className="h-24 mt-4">
+                {/* Step 1: Once the title is done, render the subtitle, which will start its fade-in animation. */}
+                <Subtitle text="Do you have what it takes?" visible={step >= 1} />
             </div>
         </div>
     );
