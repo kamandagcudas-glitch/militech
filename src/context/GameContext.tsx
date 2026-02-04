@@ -52,47 +52,47 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { toast } = useToast();
 
-  /**
-   * Data Migration Effect:
-   * This effect ensures that older user accounts loaded from local storage, which might be
-   * missing the `friendUsernames` property, are updated. This prevents crashes when
-   * accessing this property on legacy account structures.
-   */
   useEffect(() => {
-    // Check if any account in the loaded data is missing the `friendUsernames` array.
+    // Data Migration & User Loading Effect:
+    // This combined effect handles two critical startup tasks:
+    // 1. It migrates older account structures by ensuring `friendUsernames` exists.
+    // 2. It loads the logged-in user's data.
+    // Combining them prevents a race condition where the app might try to load a user
+    // with an outdated data structure before the migration can run.
+
     const needsPatch = accounts.some(acc => !acc.player.friendUsernames);
 
     if (needsPatch) {
+      // If any account is outdated, patch the entire list and save it.
+      // This will trigger a re-render, and this effect will run again.
+      // On the next run, `needsPatch` will be false, and the `else` block will execute.
       const patchedAccounts = accounts.map(acc => {
-        // If friendUsernames is missing (i.e., it's an older account structure), add it.
         if (!acc.player.friendUsernames) {
           return {
             ...acc,
-            player: {
-              ...acc.player,
-              friendUsernames: [], // Initialize as an empty array.
-            },
+            player: { ...acc.player, friendUsernames: [] },
           };
         }
         return acc;
       });
-      // Update the accounts in local storage. This will trigger a re-render,
-      // but the `if (needsPatch)` condition will prevent an infinite loop.
       setAccounts(patchedAccounts);
-    }
-  }, [accounts, setAccounts]);
-
-
-  // On initial load, check if there was a previously logged-in user.
-  // If so, load their full account data into the context state.
-  useEffect(() => {
-    if (loggedInUser) {
-      const user = accounts.find(acc => acc.player.username === loggedInUser);
-      if (user) {
-        setCurrentUser(user);
+    } else {
+      // Once all accounts are confirmed to be up-to-date, load the current user.
+      if (loggedInUser) {
+        const user = accounts.find(acc => acc.player.username === loggedInUser);
+        if (user) {
+          setCurrentUser(user);
+        } else {
+          // If the logged-in user in storage doesn't exist in accounts, log them out.
+          setLoggedInUser(null);
+          setCurrentUser(null);
+        }
+      } else {
+        setCurrentUser(null);
       }
     }
-  }, [loggedInUser, accounts]);
+  }, [loggedInUser, accounts, setAccounts, setLoggedInUser]);
+
 
   const register = async (username: string, password: string): Promise<{ success: boolean; message: string; }> => {
     // Registration & Validation Logic:

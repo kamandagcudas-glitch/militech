@@ -42,7 +42,12 @@ export default function ProfilePage() {
          * The `friendUsernames` array on the `Player` object stores a list of usernames.
          * This logic maps those usernames to the full UserAccount objects from the global `accounts` list
          * to display their details (avatar, title, etc.).
+         * It includes a defensive check for `player.friendUsernames` to prevent crashes during
+         * data migration or brief inconsistencies.
          */
+        if (!player.friendUsernames) {
+            return [];
+        }
         return player.friendUsernames
             .map(username => accounts.find(acc => acc.player.username === username))
             .filter((acc): acc is UserAccount => !!acc);
