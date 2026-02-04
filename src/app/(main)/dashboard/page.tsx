@@ -31,7 +31,7 @@ export default function DashboardPage() {
                     const progressPercentage = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
 
                     return (
-                        <Card key={coc.id} className="hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 flex flex-col">
+                        <Card key={coc.id} className="hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 flex flex-col bg-card/80 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle className="font-headline">{coc.title}</CardTitle>
                                 <CardDescription>{coc.description}</CardDescription>
@@ -50,7 +50,7 @@ export default function DashboardPage() {
                         </Card>
                     );
                 })}
-                 <Card className="hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 flex flex-col">
+                 <Card className="hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 flex flex-col bg-card/80 backdrop-blur-sm">
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2"><Puzzle/> 4 Pics 1 Word</CardTitle>
                         <CardDescription>Test your knowledge with a fun mini-game.</CardDescription>
@@ -63,7 +63,7 @@ export default function DashboardPage() {
                         </Link>
                     </CardContent>
                 </Card>
-                <Card className="hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 flex flex-col">
+                <Card className="hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 flex flex-col bg-card/80 backdrop-blur-sm">
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2"><User /> Player Profile</CardTitle>
                         <CardDescription>View your achievements, badges, and stats.</CardDescription>
