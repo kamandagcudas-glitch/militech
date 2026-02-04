@@ -8,6 +8,8 @@ import { useToast } from '@/hooks/use-toast';
 import { achievementsData } from '@/lib/data';
 
 const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
+// This is a humorous easter egg feature
+const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
 
 export interface GameContextType {
   currentUser: UserAccount | null;
@@ -103,14 +105,34 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     const hashedPassword = await hashPassword(password);
     const isCreator = username === CREATOR_USERNAME;
+    const isCabbageThief = username === CABBAGE_THIEF_USERNAME;
 
-    // Create the initial Player object, including the creator easter egg check.
+    let activeTitleId: string | null = null;
+    let unlockedTitleIds: string[] = [];
+    let initialAchievements: Achievement[] = [];
+    let badgeIds: string[] = [];
+
+    if (isCreator) {
+        activeTitleId = 'creator';
+        unlockedTitleIds = ['creator'];
+        badgeIds = ['creator-badge']; // This badge doesn't exist, but we preserve the original logic.
+        const achievement = achievementsData.find(a => a.id === 'creator');
+        if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+    } else if (isCabbageThief) {
+        activeTitleId = 'bk-foot-lettuce';
+        unlockedTitleIds = ['bk-foot-lettuce'];
+        const achievement = achievementsData.find(a => a.id === 'bk-foot-lettuce');
+        if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+    }
+
+
+    // Create the initial Player object, including any easter egg properties.
     const newPlayer: Player = {
       username,
       avatar: `https://api.dicebear.com/8.x/bottts/svg?seed=${username}`,
-      activeTitleId: isCreator ? 'creator' : null,
-      unlockedTitleIds: isCreator ? ['creator'] : [],
-      badgeIds: isCreator ? ['creator-badge'] : [],
+      activeTitleId,
+      unlockedTitleIds,
+      badgeIds,
       friendUsernames: [],
       isCreator,
     };
@@ -127,10 +149,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       coc3: { completedSteps: [] },
       coc4: { completedSteps: [] },
     };
-    const initialAchievements: Achievement[] = isCreator ? [{
-        ...achievementsData.find(a => a.id === 'creator')!,
-        timestamp: new Date().toISOString()
-    }] : [];
 
     const newUserAccount: UserAccount = {
       player: newPlayer,

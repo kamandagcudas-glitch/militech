@@ -595,6 +595,8 @@ export const achievementsData: Achievement[] = [
     { id: 'coc4-complete', name: 'COC 4 Maintainer', description: 'Completed all steps in COC 4.', type: 'badge' },
     { id: 'minigame-complete', name: 'Word Wizard', description: 'Completed the 4 Pics 1 Word mini-game.', type: 'badge' },
     { id: 'creator', name: 'CREATOR', description: 'The mind behind the machine.', type: 'title' },
+    // This is a humorous easter egg title
+    { id: 'bk-foot-lettuce', name: 'Burger King Foot Lettuce 🥬', description: 'Number 15...', type: 'title' },
     { id: 'greatest-reset', name: 'The Greatest Reset', description: 'You have failed... magnificently. Awarded for 10 total resets.', type: 'title' },
     { id: 'perfect-score', name: 'Perfectionist', description: 'Achieved a perfect score on a quiz.', type: 'badge' },
 ];
