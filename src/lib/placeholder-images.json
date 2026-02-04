@@ -14,9 +14,9 @@
     },
     {
       "id": "coc1-step3",
-      "description": "Rufus software interface",
-      "imageUrl": "https://picsum.photos/seed/103/600/400",
-      "imageHint": "rufus software"
+      "description": "Software interface for creating a bootable drive",
+      "imageUrl": "https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=1080",
+      "imageHint": "software code"
     },
     {
       "id": "coc1-step4",
@@ -81,8 +81,8 @@
     {
       "id": "coc4-step2",
       "description": "System restore point creation",
-      "imageUrl": "https://picsum.photos/seed/402/600/400",
-      "imageHint": "system restore"
+      "imageUrl": "https://images.unsplash.com/photo-1506784983877-45594efa4c88?q=80&w=1080",
+      "imageHint": "calendar point"
     },
     {
       "id": "coc4-step3",
@@ -99,7 +99,7 @@
     {
       "id": "system-unit-main",
       "description": "An open computer case with all components visible",
-      "imageUrl": "https://images.unsplash.com/photo-1579362243176-b746a02bc030?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxvcGVuJTIwY29tcHV0ZXJ8ZW58MHx8fHwxNzcwMTk1MzY1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=1080",
       "imageHint": "open computer"
     },
     {
@@ -159,8 +159,8 @@
     {
       "id": "minigame3-pic2",
       "description": "DHCP configuration screen",
-      "imageUrl": "https://picsum.photos/seed/mg32/200/200",
-      "imageHint": "dhcp settings"
+      "imageUrl": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=1080",
+      "imageHint": "network config"
     },
     {
       "id": "minigame3-pic3",
