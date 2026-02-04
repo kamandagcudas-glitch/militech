@@ -38,38 +38,41 @@
     --sidebar-border: 220 15% 25%;
     --sidebar-ring: 190 95% 55%;
   }
+
   .dark {
-    --background: 222 84% 3%;
+    --background: 240 10% 4%;
     --foreground: 210 40% 98%;
-    --card: 220 25% 8%;
+    --card: 240 10% 8%;
     --card-foreground: 210 40% 98%;
-    --popover: 220 25% 8%;
+    --popover: 240 10% 8%;
     --popover-foreground: 210 40% 98%;
-    --primary: 190 95% 55%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217 33% 17%;
+    --primary: 173 95% 55%;
+    --primary-foreground: 240 10% 4%;
+    --secondary: 240 5% 15%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
+    --muted: 240 5% 15%;
     --muted-foreground: 215 20% 65%;
-    --accent: 270 90% 60%;
+    --accent: 290 85% 60%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 20%;
-    --input: 217 33% 17%;
-    --ring: 190 95% 50%;
+    --border: 173 95% 30%;
+    --input: 240 5% 15%;
+    --ring: 173 95% 55%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 222 84% 3%;
+    
+    /* Sidebar specific dark theme */
+    --sidebar-background: 240 10% 4%;
     --sidebar-foreground: 210 40% 95%;
     --sidebar-primary: 173 95% 55%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 217 33% 13%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 240 5% 15%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 13%;
+    --sidebar-border: 240 5% 15%;
     --sidebar-ring: 173 95% 55%;
   }
 }
@@ -83,11 +86,10 @@
   }
   .dark {
     background-color: hsl(var(--background));
+    /* Futuristic grid background */
     background-image: 
-      linear-gradient(hsl(var(--primary) / 0.07) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--primary) / 0.07) 1px, transparent 1px),
-      radial-gradient(at 25% 25%, hsl(var(--accent) / 0.1) 0px, transparent 50%),
-      radial-gradient(at 75% 75%, hsl(var(--primary) / 0.1) 0px, transparent 50%);
-    background-size: 2.5rem 2.5rem, 2.5rem 2.5rem, 100% 100%, 100% 100%;
+      linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px);
+    background-size: 2.5rem 2.5rem;
   }
 }
