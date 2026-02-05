@@ -225,25 +225,25 @@
     {
       "id": "profile-bg-cyberpunk-red",
       "description": "A futuristic city skyline with red neon lights.",
-      "imageUrl": "https://images.unsplash.com/photo-1707999464758-0ad86b14290f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y3liZXJwdW5rJTIwY2l0eXxlbnwwfHx8fDE3NzAyMjAxNDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1514439827219-9137a0b99245?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjeWJlcnB1bmslMjBjaXR5fGVufDB8fHx8MTc3MDIyMDE0N3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cyberpunk city"
     },
     {
       "id": "profile-bg-neon-grid",
       "description": "A classic 80s style neon grid receding into the distance.",
-      "imageUrl": "https://images.unsplash.com/photo-1768527858332-6cbb5f26a00f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxuZW9uJTIwZ3JpZHxlbnwwfHx8fDE3NzAyNTU3MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1768330187168-8acee7753983?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxuZW9uJTIwZ3JpZHxlbnwwfHx8fDE3NzAyNTU3MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "neon grid"
     },
     {
       "id": "profile-bg-dark-tech",
       "description": "A dark background with faint, glowing blue circuit board patterns.",
-      "imageUrl": "https://images.unsplash.com/photo-1685378338540-30a5d312282f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx0ZWNoJTIwcGF0dGVybnxlbnwwfHx8fDE3NzAyNTU3MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1606162555134-6b625614d5c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0ZWNoJTIwcGF0dGVybnxlbnwwfHx8fDE3NzAyNTU3MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "tech pattern"
     },
     {
       "id": "profile-bg-glitch-red",
       "description": "An abstract digital art piece with red and black glitch effects.",
-      "imageUrl": "https://images.unsplash.com/photo-1660165088018-5a47b88ffcf8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnbGl0Y2glMjBhcnR8ZW58MHx8fHwxNzcwMTUxNzEwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1614192373549-638971bfb138?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnbGl0Y2glMjBhcnR8ZW58MHx8fHwxNzcwMTUxNzEwfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "glitch art"
     }
   ]
