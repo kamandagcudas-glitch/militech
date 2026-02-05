@@ -91,3 +91,19 @@ export interface SystemPart {
   // Position on the main image, in percentages
   position: { top: string; left: string; width: string; height: string; };
 }
+
+export interface PcPart {
+  name: string;
+  description: string;
+  imageId: string;
+  price: number;
+}
+
+export type PcPartCategory = 'CPU' | 'GPU' | 'RAM' | 'Storage' | 'Motherboard' | 'Power Supply' | 'Case';
+
+export interface PcBuild {
+  id: 'gaming' | 'working' | 'coding';
+  name: string;
+  description: string;
+  parts: Record<PcPartCategory, PcPart>;
+}
