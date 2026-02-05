@@ -66,7 +66,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       !acc.progress.coc1.scores ||
       acc.player.emailVerified === undefined ||
       !acc.player.profileBackgroundId ||
-      !('specialBackground' in acc.player)
+      !('specialBackground' in acc.player) ||
+      (acc.player.username && acc.player.username.trim() !== acc.player.username)
     );
 
     if (needsPatch) {
@@ -74,6 +75,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
         // Use a deep copy to safely modify nested objects without side effects.
         const newAcc = JSON.parse(JSON.stringify(account));
         
+        // Trim username to fix any past data entry issues and ensure accurate matching.
+        if (newAcc.player.username) {
+            newAcc.player.username = newAcc.player.username.trim();
+        }
+
         // Patch missing friendUsernames array from older data structures.
         if (!newAcc.player.friendUsernames) {
           newAcc.player.friendUsernames = [];
@@ -102,6 +108,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           }
         });
 
+        // Patch the specialBackground field for existing users.
         if (!('specialBackground' in newAcc.player)) {
           if (newAcc.player.username === CREATOR_USERNAME) {
             newAcc.player.specialBackground = 'angelic';
@@ -135,20 +142,21 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const register = async (username: string, password: string, email?: string): Promise<{ success: boolean; message: string; }> => {
     // Registration & Validation Logic:
+    const trimmedUsername = username.trim();
     // Checks if the username already exists in the stored accounts array.
-    if (accounts.some(acc => acc.player.username.toLowerCase() === username.toLowerCase())) {
+    if (accounts.some(acc => acc.player.username.toLowerCase() === trimmedUsername.toLowerCase())) {
       return { success: false, message: 'Username already exists.' };
     }
 
     const hashedPassword = await hashPassword(password);
-    const isCreator = username === CREATOR_USERNAME;
-    const isCabbageThief = username === CABBAGE_THIEF_USERNAME;
+    const isCreator = trimmedUsername === CREATOR_USERNAME;
+    const isCabbageThief = trimmedUsername === CABBAGE_THIEF_USERNAME;
 
     let activeTitleId: string | null = null;
     let unlockedTitleIds: string[] = [];
-    let initialAchievements: Achievement[] = [];
     let badgeIds: string[] = [];
     let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
+    let initialAchievements: Achievement[] = [];
 
     // Easter Egg Logic: Assign special titles and backgrounds for specific usernames.
     if (isCreator) {
@@ -168,8 +176,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     // Create the initial Player object, including any easter egg properties.
     const newPlayer: Player = {
-      username,
-      avatar: `https://api.dicebear.com/8.x/bottts/svg?seed=${username}`,
+      username: trimmedUsername,
+      avatar: `https://api.dicebear.com/8.x/bottts/svg?seed=${trimmedUsername}`,
       email: email || undefined, // Store email if provided
       emailVerified: false, // Default to not verified
       activeTitleId,

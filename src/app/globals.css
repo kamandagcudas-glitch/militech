@@ -100,11 +100,11 @@
   }
 
   .angelic-bg {
-    @apply bg-gradient-to-br from-yellow-50 via-amber-100 to-white;
+    @apply bg-gradient-to-br from-gray-900 via-indigo-950 to-blue-950;
   }
 
   .angelic-bg .light-ray {
-    @apply absolute bg-gradient-to-t from-transparent to-yellow-200/50 w-1/4 h-full;
+    @apply absolute bg-gradient-to-t from-transparent to-yellow-300/60 w-1/4 h-full;
     animation: ray-anim 15s linear infinite;
   }
 
