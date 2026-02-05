@@ -1,6 +1,8 @@
+
 "use client";
 
 import { useMemo, useContext } from 'react';
+import Link from 'next/link';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { UserAccount } from '@/lib/types';
 import { cocData } from '@/lib/data';
@@ -111,16 +113,16 @@ export default function LeaderboardPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex items-center gap-4">
+                                            <Link href={`/users/${user.player.username}`} className="flex items-center gap-4 group hover:cursor-pointer">
                                                 <Avatar>
                                                     <AvatarImage src={user.player.avatar} alt={user.player.username} />
                                                     <AvatarFallback>{user.player.username.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <p className="font-semibold text-base">{user.player.username}</p>
+                                                    <p className="font-semibold text-base group-hover:underline group-hover:text-primary">{user.player.username}</p>
                                                      {activeTitle && <Badge variant="destructive" className="mt-1">{activeTitle.name}</Badge>}
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </TableCell>
                                         <TableCell className="text-right font-mono text-lg">{user.totalScore.toLocaleString()}</TableCell>
                                         <TableCell className="text-right font-mono text-lg">{user.completionPercentage.toFixed(1)}%</TableCell>
