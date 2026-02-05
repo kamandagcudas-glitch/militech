@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from 'next/image';
@@ -40,6 +39,18 @@ export default function PublicProfilePage() {
         const decodedUsername = decodeURIComponent(username);
         return accounts.find(acc => acc.player.username.toLowerCase() === decodedUsername.toLowerCase());
     }, [accounts, username]);
+    
+    const isCurrentUser = useMemo(() => {
+        if (!currentUser || !userAccount) return false;
+        return currentUser.player.username === userAccount.player.username;
+    }, [currentUser, userAccount]);
+    
+    useEffect(() => {
+        // If the user is viewing their own public profile, redirect them to their editable profile page.
+        if (isCurrentUser) {
+            router.replace('/profile');
+        }
+    }, [isCurrentUser, router]);
 
     useEffect(() => {
         if (userAccount?.player.specialBackground) {
@@ -66,6 +77,10 @@ export default function PublicProfilePage() {
         return predefined ? predefined.imageUrl : (predefinedBackgrounds[0]?.imageUrl || '');
     }, [userAccount]);
 
+    if (isCurrentUser) {
+        return null; // Return null while redirecting
+    }
+
     if (!userAccount) {
         return (
             <div className="text-center">
@@ -86,14 +101,7 @@ export default function PublicProfilePage() {
     const isFriend = currentUser?.player.friendUsernames.includes(player.username);
     const requestSent = player.friendRequests?.includes(currentUser?.player.username || '');
     const requestReceived = currentUser?.player.friendRequests.includes(player.username);
-    const isCurrentUser = currentUser?.player.username === player.username;
 
-    // If the user is viewing their own public profile, redirect them to their editable profile page.
-    if (isCurrentUser) {
-        router.replace('/profile');
-        return null;
-    }
-    
     /**
      * Achievement Rendering Logic:
      * This component displays a list of all possible achievements from `achievementsData`.
