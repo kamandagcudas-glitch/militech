@@ -18,24 +18,28 @@ export default function DashboardPage() {
 
     return (
         <div className="container mx-auto">
-            <div className="mb-8">
+            <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h1 className="font-headline text-4xl font-bold flex items-center gap-2">
                     Welcome, {player.displayName}! 
-                    {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8" title="Creator"/>}
-                    {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-8 w-8" title="Angelic Power Rune"/>}
+                    {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-12" title="Creator"/>}
+                    {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-[-12deg]" title="Angelic Power Rune"/>}
                 </h1>
                 <p className="text-muted-foreground">@{player.username}</p>
                 <p className="text-muted-foreground mt-2">Ready to level up your IT skills? Choose a module to begin.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {cocData.map(coc => {
+                {cocData.map((coc, index) => {
                     const completedSteps = progress![coc.id]?.completedSteps.length || 0;
                     const totalSteps = coc.steps.length;
                     const progressPercentage = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
 
                     return (
-                        <Card key={coc.id} className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1">
+                        <Card 
+                            key={coc.id} 
+                            className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                            style={{ animationDelay: `${150 * index}ms`, animationFillMode: 'backwards' }}
+                        >
                             <CardHeader>
                                 <CardTitle className="font-headline">{coc.title}</CardTitle>
                                 <CardDescription>{coc.description}</CardDescription>
@@ -54,7 +58,10 @@ export default function DashboardPage() {
                         </Card>
                     );
                 })}
-                 <Card className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1">
+                 <Card 
+                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                    style={{ animationDelay: `${150 * cocData.length}ms`, animationFillMode: 'backwards' }}
+                >
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2"><Puzzle/> 4 Pics 1 Word</CardTitle>
                         <CardDescription>Test your knowledge with a fun mini-game.</CardDescription>
@@ -67,7 +74,10 @@ export default function DashboardPage() {
                         </Link>
                     </CardContent>
                 </Card>
-                <Card className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1">
+                <Card 
+                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                    style={{ animationDelay: `${150 * (cocData.length + 1)}ms`, animationFillMode: 'backwards' }}
+                >
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2"><User /> Player Profile</CardTitle>
                         <CardDescription>View your achievements, badges, and stats.</CardDescription>
