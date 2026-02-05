@@ -1,3 +1,4 @@
+
 import type { COC, MiniGameRound, Achievement, WordCompletionGameRound } from './types';
 
 export const cocData: COC[] = [
@@ -636,6 +637,7 @@ export const achievementsData: Achievement[] = [
     { id: 'perfect-score', name: 'Perfectionist', description: 'Achieved a perfect score on a quiz.', type: 'badge' },
     { id: 'verified-account', name: 'Verified Agent', description: 'Verified your email address.', type: 'badge' },
     { id: 'angelic-power-rune', name: 'Angelic Power Rune', description: 'A symbol of divine power, granted to the angelic.', type: 'badge' },
+    { id: 'rapid-click', name: 'Rapid Clicker', description: 'Whoa there, take it easy on that mouse.', type: 'badge' },
 ];
 
 export const miniGameData: MiniGameRound[] = [

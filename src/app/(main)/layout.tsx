@@ -43,10 +43,30 @@ export default function MainAppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { currentUser, isAdmin, logout } = useContext(GameContext) as GameContextType;
+  const { currentUser, isAdmin, logout, addAchievement } = useContext(GameContext) as GameContextType;
   const router = useRouter();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
+  const [profileClickTimestamps, setProfileClickTimestamps] = useState<number[]>([]);
+
+  // Easter Egg: Award an achievement for rapid clicking on the profile link.
+  const handleProfileClick = () => {
+    if (!addAchievement) return;
+
+    const now = Date.now();
+    // Clicks within the last 5 seconds
+    const fiveSecondsAgo = now - 5000;
+    const recentClicks = [...profileClickTimestamps.filter(ts => ts > fiveSecondsAgo), now];
+    
+    if (recentClicks.length >= 10) {
+      // Award achievement and reset the counter
+      addAchievement('rapid-click');
+      setProfileClickTimestamps([]);
+    } else {
+      setProfileClickTimestamps(recentClicks);
+    }
+  };
+
 
   useEffect(() => {
     setIsClient(true);
@@ -97,20 +117,27 @@ export default function MainAppLayout({
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
-            {navItems.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <Link href={item.href} className="w-full">
-                  <SidebarMenuButton
-                    isActive={pathname.startsWith(item.href)}
-                    tooltip={item.label}
+            {navItems.map((item) => {
+              const isProfile = item.href === '/profile';
+              return (
+                <SidebarMenuItem key={item.href}>
+                  <Link 
+                    href={item.href} 
+                    className="w-full"
+                    onClick={isProfile ? handleProfileClick : undefined}
                   >
-                    {item.icon}
-                    <span>{item.label}</span>
-                     {item.badgeCount && item.badgeCount > 0 && <SidebarMenuBadge>{item.badgeCount}</SidebarMenuBadge>}
-                  </SidebarMenuButton>
-                </Link>
-              </SidebarMenuItem>
-            ))}
+                    <SidebarMenuButton
+                      isActive={pathname.startsWith(item.href)}
+                      tooltip={item.label}
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                      {item.badgeCount && item.badgeCount > 0 && <SidebarMenuBadge>{item.badgeCount}</SidebarMenuBadge>}
+                    </SidebarMenuButton>
+                  </Link>
+                </SidebarMenuItem>
+              );
+            })}
             {isAdmin && (
               <SidebarMenuItem>
                 <Link href="/admin" className="w-full">
