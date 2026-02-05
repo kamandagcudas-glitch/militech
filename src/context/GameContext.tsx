@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, ReactNode, useEffect, useState } from 'react';
@@ -756,11 +757,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!currentUser) return;
     
     // Warning for localStorage limitations
-    if (file.size > 2 * 1024 * 1024) { // 2MB limit warning
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit warning
       toast({
         variant: "destructive",
         title: "File is too large",
-        description: "This offline version has limited storage. Please upload files smaller than 2MB.",
+        description: "This offline version has limited storage. Please upload files smaller than 5MB.",
       });
       return;
     }
