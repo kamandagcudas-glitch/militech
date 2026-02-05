@@ -600,6 +600,7 @@ export const achievementsData: Achievement[] = [
     { id: 'greatest-reset', name: 'The Greatest Reset', description: 'You have failed... magnificently. Awarded for 10 total resets.', type: 'title' },
     { id: 'perfect-score', name: 'Perfectionist', description: 'Achieved a perfect score on a quiz.', type: 'badge' },
     { id: 'verified-account', name: 'Verified Agent', description: 'Verified your email address.', type: 'badge' },
+    { id: 'angelic-power-rune', name: 'Angelic Power Rune', description: 'A symbol of divine power, granted to the angelic.', type: 'badge' },
 ];
 
 export const miniGameData: MiniGameRound[] = [

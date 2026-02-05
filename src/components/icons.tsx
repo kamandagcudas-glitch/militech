@@ -43,3 +43,20 @@ export function GamepadIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+/* This is the Angelic Power Rune easter egg badge */
+export function AngelicPowerRuneIcon(props: SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 512 512"
+            fill="currentColor"
+            {...props}
+        >
+            <path d="M256,512C114.62,512,0,397.38,0,256S114.62,0,256,0,512,114.62,512,256,397.38,512,256,512Zm0-448C141.31,64,64,141.31,64,256s77.31,192,192,192,192-77.31,192-192S370.69,64,256,64Z"/>
+            <path d="M384,224c0-35.35-85.45-64-128-64s-128,28.65-128,64,38.33,80,128,80S384,259.35,384,224Z"/>
+        </svg>
+    );
+}

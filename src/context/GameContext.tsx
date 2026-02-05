@@ -143,6 +143,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
           }
         }
 
+        // Retroactively grant the Angelic Power Rune badge to the creator.
+        if (newAcc.player.username === CREATOR_USERNAME) {
+            const hasAngelicRune = newAcc.achievements.some((a: Achievement) => a.id === 'angelic-power-rune');
+            if (!hasAngelicRune) {
+                const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
+                if (runeBadge) {
+                    newAcc.achievements.push({ ...runeBadge, timestamp: new Date().toISOString() });
+                }
+            }
+        }
+
+
         return newAcc;
       });
       setAccounts(patchedAccounts);
@@ -190,10 +202,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (isCreator) {
         activeTitleId = 'creator';
         unlockedTitleIds = ['creator'];
-        badgeIds = ['creator-badge']; // This badge doesn't exist, but we preserve the original logic.
+        badgeIds = ['creator-badge', 'angelic-power-rune']; // Preserving original logic and adding new badge.
         specialBackground = 'angelic';
+        
+        // Add creator title achievement.
         const achievement = achievementsData.find(a => a.id === 'creator');
         if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+
+        // Add Angelic Power Rune badge achievement.
+        const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
+        if(runeBadge) initialAchievements.push({ ...runeBadge, timestamp: new Date().toISOString() });
     } else if (isCabbageThief) {
         activeTitleId = 'bk-foot-lettuce';
         unlockedTitleIds = ['bk-foot-lettuce'];

@@ -11,7 +11,7 @@ import { predefinedBackgrounds } from '@/lib/backgrounds-data';
 import { cn } from '@/lib/utils';
 import { SpecialBackground } from '@/components/special-background';
 
-import { CreatorBadgeIcon } from '@/components/icons';
+import { CreatorBadgeIcon, AngelicPowerRuneIcon } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -145,6 +145,7 @@ export default function PublicProfilePage() {
                                 <CardTitle className="font-headline text-3xl flex items-center gap-2">
                                     {player.displayName}
                                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
+                                    {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-6 w-6" title="Angelic Power Rune"/>}
                                 </CardTitle>
                                 <CardDescription>@{player.username}</CardDescription>
                                 {activeTitle && <Badge variant="destructive" className="text-lg mt-1">{activeTitle.name}</Badge>}

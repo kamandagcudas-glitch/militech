@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Puzzle, User } from 'lucide-react';
-import { CreatorBadgeIcon } from '@/components/icons';
+import { CreatorBadgeIcon, AngelicPowerRuneIcon } from '@/components/icons';
 
 export default function DashboardPage() {
     const game = useContext(GameContext) as GameContextType;
@@ -22,6 +22,7 @@ export default function DashboardPage() {
                 <h1 className="font-headline text-4xl font-bold flex items-center gap-2">
                     Welcome, {player.displayName}! 
                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8" title="Creator"/>}
+                    {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-8 w-8" title="Angelic Power Rune"/>}
                 </h1>
                 <p className="text-muted-foreground">@{player.username}</p>
                 <p className="text-muted-foreground mt-2">Ready to level up your IT skills? Choose a module to begin.</p>

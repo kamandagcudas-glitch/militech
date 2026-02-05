@@ -10,7 +10,7 @@ import { achievementsData, cocData } from '@/lib/data';
 import { predefinedBackgrounds } from '@/lib/backgrounds-data';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { CreatorBadgeIcon } from '@/components/icons';
+import { CreatorBadgeIcon, AngelicPowerRuneIcon } from '@/components/icons';
 import { SpecialBackground } from '@/components/special-background';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -272,6 +272,7 @@ export default function ProfilePage() {
                                     <CardTitle className="font-headline text-3xl flex items-center gap-2">
                                         {player.displayName}
                                         {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
+                                        {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-6 w-6" title="Angelic Power Rune" />}
                                     </CardTitle>
                                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setNewDisplayName(player.displayName); setIsDisplayNameDialogOpen(true); setDisplayNameError(null);}}>
                                         <Pencil className="h-4 w-4" />
