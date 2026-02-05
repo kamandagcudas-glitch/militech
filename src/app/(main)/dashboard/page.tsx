@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Puzzle, User } from 'lucide-react';
 import { CreatorBadgeIcon, AngelicPowerRuneIcon } from '@/components/icons';
+import AnimatedGlitchText from '@/components/animated-glitch-text';
 
 export default function DashboardPage() {
     const game = useContext(GameContext) as GameContextType;
@@ -20,7 +21,7 @@ export default function DashboardPage() {
         <div className="container mx-auto">
             <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h1 className="font-headline text-4xl font-bold flex items-center gap-2">
-                    Welcome, {player.displayName}! 
+                    <AnimatedGlitchText text={`Welcome, ${player.displayName}!`} />
                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-12" title="Creator"/>}
                     {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-[-12deg]" title="Angelic Power Rune"/>}
                 </h1>
