@@ -30,7 +30,7 @@ export default function FeedbackPage() {
                 style={{ backgroundImage: `url(${feedbackPageBackgroundUrl})` }}
                 data-ai-hint="cyberpunk city"
             />
-            <div className="absolute inset-0 w-full h-full bg-black/70 backdrop-blur-sm" />
+            <div className="absolute inset-0 w-full h-full bg-black/80 backdrop-blur-md" />
             <div className="absolute inset-0 w-full h-full feedback-bg-scanlines" />
 
             {/* Content Layer */}
