@@ -7,7 +7,7 @@ import { cocData } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Puzzle, User, Files, MessageSquare } from 'lucide-react';
+import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck } from 'lucide-react';
 import { CreatorBadgeIcon, AngelicPowerRuneIcon } from '@/components/icons';
 import AnimatedGlitchText from '@/components/animated-glitch-text';
 
@@ -75,9 +75,25 @@ export default function DashboardPage() {
                         </Link>
                     </CardContent>
                 </Card>
-                <Card 
+                 <Card 
                     className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
                     style={{ animationDelay: `${150 * (cocData.length + 1)}ms`, animationFillMode: 'backwards' }}
+                >
+                    <CardHeader>
+                        <CardTitle className="font-headline flex items-center gap-2"><SpellCheck /> Word Completion</CardTitle>
+                        <CardDescription>Guess the word by filling in the blanks.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow flex items-end">
+                        <Link href="/word-completion" passHref>
+                            <Button className="w-full mt-2" variant="secondary">
+                                Play Now <ArrowRight className="ml-2" />
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
+                <Card 
+                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                    style={{ animationDelay: `${150 * (cocData.length + 2)}ms`, animationFillMode: 'backwards' }}
                 >
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2"><User /> Player Profile</CardTitle>
@@ -93,7 +109,7 @@ export default function DashboardPage() {
                 </Card>
                  <Card 
                     className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                    style={{ animationDelay: `${150 * (cocData.length + 2)}ms`, animationFillMode: 'backwards' }}
+                    style={{ animationDelay: `${150 * (cocData.length + 3)}ms`, animationFillMode: 'backwards' }}
                 >
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2"><Files /> File Storage</CardTitle>
@@ -109,7 +125,7 @@ export default function DashboardPage() {
                 </Card>
                 <Card 
                     className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                    style={{ animationDelay: `${150 * (cocData.length + 3)}ms`, animationFillMode: 'backwards' }}
+                    style={{ animationDelay: `${150 * (cocData.length + 4)}ms`, animationFillMode: 'backwards' }}
                 >
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2"><MessageSquare /> Board of Feedback</CardTitle>

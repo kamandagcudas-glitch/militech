@@ -105,6 +105,12 @@ export interface MiniGameRound {
   hint?: string;
 }
 
+export interface WordCompletionGameRound {
+  id: string;
+  answer: string;
+  hint: string;
+}
+
 export interface SystemPart {
   id: string;
   name: string;

@@ -1,4 +1,4 @@
-import type { COC, MiniGameRound, Achievement } from './types';
+import type { COC, MiniGameRound, Achievement, WordCompletionGameRound } from './types';
 
 export const cocData: COC[] = [
   {
@@ -644,4 +644,22 @@ export const miniGameData: MiniGameRound[] = [
     { id: 'mg3', imageIds: ['minigame3-pic1', 'minigame3-pic2', 'minigame3-pic3', 'minigame3-pic4'], answer: 'SERVER', hint: 'Provides services to other computers.' },
     { id: 'mg4', imageIds: ['minigame4-pic1', 'minigame4-pic2', 'minigame4-pic3', 'minigame4-pic4'], answer: 'MAINTENANCE', hint: 'Keeping a system in good condition.' },
     { id: 'mg5', imageIds: ['minigame5-pic1', 'minigame5-pic2', 'minigame5-pic3', 'minigame5-pic4'], answer: 'HARDWARE', hint: 'The physical parts of a computer.' },
+];
+
+export const wordCompletionGameData: WordCompletionGameRound[] = [
+  { id: 'wc1', answer: 'MOTHERBOARD', hint: 'The main circuit board of the computer.' },
+  { id: 'wc2', answer: 'PROCESSOR', hint: 'The brain of the computer.' },
+  { id: 'wc3', answer: 'NETWORK', hint: 'A collection of connected devices.' },
+  { id: 'wc4', answer: 'SERVER', hint: 'Provides services to other computers.' },
+  { id: 'wc5', answer: 'MAINTENANCE', hint: 'Keeping a system in good condition.' },
+  { id: 'wc6', answer: 'PERIPHERAL', hint: 'An ancillary device used to put information into and get information out of the computer.' },
+  { id: 'wc7', answer: 'FIREWALL', hint: 'A network security system that monitors and controls incoming and outgoing network traffic.' },
+  { id: 'wc8', answer: 'ROUTER', hint: 'A device that forwards data packets between computer networks.' },
+  { id: 'wc9', answer: 'KEYBOARD', hint: 'A primary input device.' },
+  { id: 'wc10', answer: 'ENCRYPTION', hint: 'The process of converting information or data into a code.' },
+  { id: 'wc11', answer: 'SOFTWARE', hint: 'The programs and other operating information used by a computer.' },
+  { id: 'wc12', answer: 'HARDWARE', hint: 'The physical parts of a computer.' },
+  { id: 'wc13', answer: 'ALGORITHM', hint: 'A process or set of rules to be followed in calculations.' },
+  { id: 'wc14', answer: 'DATABASE', hint: 'An organized collection of structured information, or data.' },
+  { id: 'wc15', answer: 'DEFRAGMENT', hint: 'Reorganizing files on a disk to occupy contiguous storage locations.' },
 ];
