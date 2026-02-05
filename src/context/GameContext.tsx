@@ -4,7 +4,7 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useLocalStorage from '@/hooks/use-local-storage';
-import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount, UserFile } from '@/lib/types';
+import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount, UserFile, FeedbackPost } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { achievementsData, cocData } from '@/lib/data';
 import { defaultBackground } from '@/lib/backgrounds-data';
@@ -36,6 +36,8 @@ export interface GameContextType {
   uploadFile: (file: File) => void;
   deleteFile: (fileId: string) => void;
   shareFile: (fileId: string, friendUsername: string) => void;
+  feedbackPosts: FeedbackPost[];
+  postFeedback: (message: string) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -61,6 +63,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // This allows for multiple users on the same browser, each with their own progress.
   const [accounts, setAccounts] = useLocalStorage<UserAccount[]>('game_accounts', []);
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+  const [feedbackPosts, setFeedbackPosts] = useLocalStorage<FeedbackPost[]>('game_feedback', []);
   
   // To keep the user logged in across page refreshes, we store the username of the logged-in user.
   const [loggedInUser, setLoggedInUser] = useLocalStorage<string | null>('game_loggedInUser', null);
@@ -870,6 +873,42 @@ export function GameProvider({ children }: { children: ReactNode }) {
       });
     }
   };
+  
+    const postFeedback = (message: string) => {
+    if (!currentUser) {
+      toast({
+        variant: "destructive",
+        title: "Not Logged In",
+        description: "You must be logged in to post feedback.",
+      });
+      return;
+    }
+    
+    if (!message.trim()) {
+        toast({
+            variant: "destructive",
+            title: "Empty Message",
+            description: "Feedback cannot be empty.",
+        });
+        return;
+    }
+
+    const newFeedback: FeedbackPost = {
+      id: crypto.randomUUID(),
+      username: currentUser.player.username,
+      displayName: currentUser.player.displayName,
+      avatar: currentUser.player.avatar,
+      message: message,
+      timestamp: new Date().toISOString(),
+    };
+
+    setFeedbackPosts(prev => [newFeedback, ...prev]);
+
+    toast({
+      title: "Feedback Submitted!",
+      description: "Thank you for your contribution to the system.",
+    });
+  };
 
   useEffect(() => {
     if (currentUser?.stats && currentUser.stats.totalResets >= 10) {
@@ -878,7 +917,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, feedbackPosts, postFeedback }}>
       {children}
     </GameContext.Provider>
   );

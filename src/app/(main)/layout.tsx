@@ -29,6 +29,7 @@ import {
   Trophy,
   Wrench,
   Files,
+  MessageSquare,
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -78,6 +79,7 @@ export default function MainAppLayout({
     { href: "/leaderboard", icon: <Trophy />, label: "Leaderboard" },
     { href: "/users", icon: <Users />, label: "Users" },
     { href: "/profile", icon: <User />, label: "Profile", badgeCount: friendRequestCount },
+    { href: "/feedback", icon: <MessageSquare />, label: "Feedback" },
   ];
 
   return (

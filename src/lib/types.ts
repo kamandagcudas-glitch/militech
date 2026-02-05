@@ -52,6 +52,15 @@ export interface UserFile {
   uploadDate: string;
 }
 
+export interface FeedbackPost {
+  id: string;
+  username: string;
+  displayName: string;
+  avatar: string;
+  message: string;
+  timestamp: string;
+}
+
 // This is the main data structure for a user account, stored in local storage.
 // It combines all user-related data into a single object.
 export interface UserAccount {
