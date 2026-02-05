@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { cocData } from '@/lib/data';
@@ -12,6 +12,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export default function QuizPage() {
   const params = useParams();
@@ -24,6 +25,9 @@ export default function QuizPage() {
 
   const coc = cocData.find(c => c.id === cocId);
   const step = coc?.steps.find(s => s.id === stepId);
+  
+  // This ref is attached to the main quiz container.
+  const quizContainerRef = useRef<HTMLDivElement>(null);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{[key: number]: string}>({});
@@ -47,6 +51,35 @@ export default function QuizPage() {
         });
     }
   }, [outcome, score, toast]);
+
+  // Anti-Cheat Logic: This effect adds event listeners to the quiz container
+  // to disable right-clicking, copying, and dragging. It also shows a warning toast.
+  useEffect(() => {
+    const container = quizContainerRef.current;
+    if (!container) return;
+
+    const preventAction = (e: Event) => {
+      e.preventDefault();
+      toast({
+        variant: "destructive",
+        title: "Action Disabled",
+        description: "Copying and right-clicking are disabled during the quiz.",
+        duration: 2000,
+      });
+    };
+    
+    // Attaching event listeners to prevent cheating.
+    container.addEventListener('contextmenu', preventAction);
+    container.addEventListener('copy', preventAction);
+    container.addEventListener('dragstart', preventAction);
+
+    // Cleanup function to remove event listeners when the component unmounts.
+    return () => {
+      container.removeEventListener('contextmenu', preventAction);
+      container.removeEventListener('copy', preventAction);
+      container.removeEventListener('dragstart', preventAction);
+    };
+  }, [toast]);
 
   if (!coc || !step) {
     return <div>Quiz not found.</div>;
@@ -103,7 +136,11 @@ export default function QuizPage() {
   
   return (
     <>
-      <Card className="w-full max-w-4xl mx-auto">
+      <Card 
+        ref={quizContainerRef}
+        id="quiz-container"
+        className={cn("w-full max-w-4xl mx-auto", "quiz-anti-cheat")}
+      >
         <CardHeader>
           <Progress value={progressPercentage} className="mb-4" />
           <CardTitle className="font-headline text-2xl">{step.title} - Quiz</CardTitle>
