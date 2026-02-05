@@ -214,21 +214,39 @@ export default function QuizPage() {
       <Dialog open={showResult} onOpenChange={handleDialogClose}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-center font-headline text-3xl">
-                {focusLost && 'Focus Lost - Quiz Failed'}
-                {!focusLost && outcome === 'pass' && '🎉 Step Passed! 🎉'}
-                {!focusLost && outcome === 'retry' && '💪 Keep Going! 💪'}
-                {!focusLost && outcome === 'reset' && '😢 Oh no... 😢'}
-            </DialogTitle>
-            <DialogDescription className="text-center text-lg">
-              You scored {score} / {totalQuestions}.
-            </DialogDescription>
+             {focusLost ? (
+                <div className="flex flex-col items-center text-center gap-4">
+                    <div className="text-7xl animate-shake-head">😠</div>
+                    <DialogTitle className="font-headline text-4xl text-destructive animate-pulse">
+                        Nuh uh!
+                    </DialogTitle>
+                    <DialogDescription className="text-lg">
+                        You navigated away from the quiz window.
+                    </DialogDescription>
+                </div>
+            ) : (
+                <>
+                    <DialogTitle className="text-center font-headline text-3xl">
+                        {outcome === 'pass' && '🎉 Step Passed! 🎉'}
+                        {outcome === 'retry' && '💪 Keep Going! 💪'}
+                        {outcome === 'reset' && '😢 Oh no... 😢'}
+                    </DialogTitle>
+                    <DialogDescription className="text-center text-lg">
+                      You scored {score} / {totalQuestions}.
+                    </DialogDescription>
+                </>
+            )}
           </DialogHeader>
           <div className="text-center my-4">
-              {focusLost && <p>You navigated away from the quiz window, so your attempt has been marked as failed.</p>}
-              {!focusLost && outcome === 'pass' && <p>Excellent work! You're ready for the next step.</p>}
-              {!focusLost && outcome === 'retry' && <p>You're close! Review the lesson and try again.</p>}
-              {!focusLost && outcome === 'reset' && <p>Back to basics. Let's build a stronger foundation.</p>}
+              {focusLost ? (
+                <p>Your attempt has been marked as failed. Focus is key, agent.</p>
+              ) : (
+                <>
+                  {outcome === 'pass' && <p>Excellent work! You're ready for the next step.</p>}
+                  {outcome === 'retry' && <p>You're close! Review the lesson and try again.</p>}
+                  {outcome === 'reset' && <p>Back to basics. Let's build a stronger foundation.</p>}
+                </>
+              )}
           </div>
           <DialogFooter>
             <Button onClick={handleDialogClose} className="w-full">Continue</Button>

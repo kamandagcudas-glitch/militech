@@ -161,3 +161,16 @@
     transform: translateY(-5vh) translateX(var(--x-end, 0vw)) rotate(720deg);
   }
 }
+
+@keyframes shake-head {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  10% { transform: translateX(-5px) rotate(-5deg); }
+  20% { transform: translateX(5px) rotate(5deg); }
+  30% { transform: translateX(-5px) rotate(-5deg); }
+  40% { transform: translateX(5px) rotate(5deg); }
+  50% { transform: translateX(0) rotate(0); }
+}
+
+.animate-shake-head {
+  animation: shake-head 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
