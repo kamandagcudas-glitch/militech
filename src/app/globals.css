@@ -103,8 +103,9 @@
     @apply bg-gradient-to-br from-gray-900 via-indigo-950 to-blue-950;
   }
 
+  /* Increase ray visibility */
   .angelic-bg .light-ray {
-    @apply absolute bg-gradient-to-t from-transparent to-yellow-300/60 w-1/4 h-full;
+    @apply absolute bg-gradient-to-t from-transparent to-yellow-300/70 w-1/4 h-full;
     animation: ray-anim 15s linear infinite;
   }
 
@@ -113,13 +114,14 @@
   .angelic-bg .ray-3 { top: -50%; left: 60%; animation-delay: -10s;}
   .angelic-bg .ray-4 { top: -50%; left: 80%; }
 
+  /* Make particles slightly larger and move faster */
   .angelic-bg .particles {
     @apply absolute inset-0;
     background-image:
-      radial-gradient(circle at center, gold 1px, transparent 1px),
-      radial-gradient(circle at center, gold 1px, transparent 1px);
-    background-size: 40px 40px, 80px 80px;
-    animation: particle-anim 20s linear infinite;
+      radial-gradient(circle at center, gold 1.5px, transparent 1.5px),
+      radial-gradient(circle at center, white 1px, transparent 1px);
+    background-size: 50px 50px, 90px 90px;
+    animation: particle-anim 18s linear infinite;
   }
   
   .cabbage-bg {
@@ -132,15 +134,17 @@
   }
 }
 
+/* Increase ray opacity during animation */
 @keyframes ray-anim {
   from { transform: translateY(-50vh) rotate(var(--angle, 0deg)); opacity: 0; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.6; }
   to { transform: translateY(150vh) rotate(var(--angle, 0deg)); opacity: 0; }
 }
 
+/* Increase particle travel distance for a faster perceived speed */
 @keyframes particle-anim {
     from { background-position: 0 0, 0 0; }
-    to { background-position: -100px 100px, -200px 200px; }
+    to { background-position: -150px 150px, -250px 250px; }
 }
 
 @keyframes veggie-float {

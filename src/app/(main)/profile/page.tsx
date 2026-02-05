@@ -184,7 +184,7 @@ export default function ProfilePage() {
                 This sits on top of the background image to provide contrast for the text content.
                 The backdrop-blur effect is also applied here.
             */}
-            <div className="absolute inset-0 w-full h-full bg-background/70 backdrop-blur-sm" />
+            <div className="absolute inset-0 w-full h-full bg-background/60 backdrop-blur-sm" />
 
             {/* 
                 Content Container.
@@ -195,7 +195,7 @@ export default function ProfilePage() {
                 <h1 className="font-headline text-4xl font-bold mb-8">Player Profile</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1 space-y-8">
-                        <Card className="bg-card/70 backdrop-blur-sm">
+                        <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader className="items-center text-center">
                                 <div className="relative group">
                                     <Avatar className="w-32 h-32 mb-4 border-4 border-primary/50 shadow-lg shadow-primary/20">
@@ -239,7 +239,7 @@ export default function ProfilePage() {
                             </CardHeader>
                         </Card>
 
-                        <Card className="bg-card/70 backdrop-blur-sm">
+                        <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><Mail /> Verification Status</CardTitle>
                             </CardHeader>
@@ -274,7 +274,7 @@ export default function ProfilePage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-card/70 backdrop-blur-sm">
+                        <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle>Badges</CardTitle>
                             </CardHeader>
@@ -293,7 +293,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="lg:col-span-2 space-y-8">
-                        <Card className="bg-card/70 backdrop-blur-sm">
+                        <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><Users /> Friends</CardTitle>
                                 <CardDescription>Your connected agents.</CardDescription>
@@ -333,7 +333,7 @@ export default function ProfilePage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-card/70 backdrop-blur-sm">
+                        <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle>Statistics</CardTitle>
                             </CardHeader>
@@ -353,7 +353,7 @@ export default function ProfilePage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="bg-card/70 backdrop-blur-sm">
+                        <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle>Achievement Log</CardTitle>
                                 <CardDescription>Your journey so far.</CardDescription>

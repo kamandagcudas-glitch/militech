@@ -110,7 +110,7 @@ export default function PublicProfilePage() {
                     style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
                 />
             )}
-            <div className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-sm" />
+            <div className="absolute inset-0 w-full h-full bg-background/60 backdrop-blur-sm" />
 
             <div className="relative z-10 p-4 md:p-6 lg:p-8">
                 <Breadcrumb className="mb-4">
@@ -135,7 +135,7 @@ export default function PublicProfilePage() {
                 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1 space-y-8">
-                        <Card className="bg-card/70 backdrop-blur-sm">
+                        <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader className="items-center text-center">
                                 <Avatar className="w-32 h-32 mb-4 border-4 border-primary/50 shadow-lg shadow-primary/20">
                                     <AvatarImage src={player.avatar} alt={player.username} />
@@ -160,7 +160,7 @@ export default function PublicProfilePage() {
                     </div>
                     
                     <div className="lg:col-span-2">
-                         <Card className="bg-card/70 backdrop-blur-sm">
+                         <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><Trophy /> Achievements</CardTitle>
                                 <CardDescription>A log of this agent's accomplishments.</CardDescription>

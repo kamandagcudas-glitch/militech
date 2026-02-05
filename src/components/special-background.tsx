@@ -19,8 +19,8 @@ const CabbageBackground = () => (
         style={{
           left: `${Math.random() * 100}vw`,
           fontSize: `${Math.random() * 2 + 1.5}rem`,
-          animationDuration: `${Math.random() * 10 + 15}s`,
-          animationDelay: `-${Math.random() * 25}s`,
+          animationDuration: `${Math.random() * 8 + 10}s`, // Speed up animation
+          animationDelay: `-${Math.random() * 18}s`,
           '--x-start': `${Math.random() * 20 - 10}vw`,
           '--x-end': `${Math.random() * 20 - 10}vw`,
         } as React.CSSProperties}
