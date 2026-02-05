@@ -148,7 +148,7 @@ export default function ProfilePage() {
 
 
     return (
-        <div className="relative rounded-xl border overflow-hidden shadow-2xl shadow-primary/10">
+        <div className="relative -m-4 md:-m-6 h-full">
             {/* Background Image & Overlay */}
             <div
                 className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500 -z-10"
