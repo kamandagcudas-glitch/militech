@@ -91,6 +91,7 @@
       linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
       linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px);
     background-size: 3.5rem 3.5rem;
+    animation: animated-grid 10s linear infinite;
   }
 }
 
@@ -173,4 +174,13 @@
 
 .animate-shake-head {
   animation: shake-head 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes animated-grid {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 3.5rem 3.5rem;
+  }
 }
