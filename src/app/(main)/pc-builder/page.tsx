@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useState, useEffect } from 'react';
@@ -8,7 +7,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { PcPartCategory } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Wrench, WifiOff, Cpu, MemoryStick, HardDrive, Tv, Power, Case, DollarSign } from 'lucide-react';
+import { Wrench, WifiOff, Cpu, MemoryStick, HardDrive, Tv, Power, PcCase, DollarSign } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import useLocalStorage from '@/hooks/use-local-storage';
@@ -20,7 +19,7 @@ const categoryIcons: Record<PcPartCategory, React.ReactNode> = {
     Storage: <HardDrive className="h-5 w-5" />,
     Motherboard: <Cpu className="h-5 w-5" />,
     'Power Supply': <Power className="h-5 w-5" />,
-    Case: <Case className="h-5 w-5" />,
+    Case: <PcCase className="h-5 w-5" />,
 };
 
 export default function PcBuilderPage() {
