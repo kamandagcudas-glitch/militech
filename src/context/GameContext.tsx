@@ -1,7 +1,7 @@
 
 "use client";
 
-import { createContext, ReactNode, useEffect, useState, useCallback } from 'react';
+import { createContext, ReactNode, useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount, UserFile, FeedbackPost, LoginAttempt, ActivityLog } from '@/lib/types';
@@ -15,6 +15,7 @@ const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
 
 export interface GameContextType {
   currentUser: UserAccount | null;
+  isAdmin: boolean;
   accounts: UserAccount[];
   loginHistory: LoginAttempt[];
   activityLogs: ActivityLog[];
@@ -66,6 +67,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // This allows for multiple users on the same browser, each with their own progress.
   const [accounts, setAccounts] = useLocalStorage<UserAccount[]>('game_accounts', []);
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [feedbackPosts, setFeedbackPosts] = useLocalStorage<FeedbackPost[]>('game_feedback', []);
   const [loginHistory, setLoginHistory] = useLocalStorage<LoginAttempt[]>('game_login_history', []);
   const [activityLogs, setActivityLogs] = useLocalStorage<ActivityLog[]>('game_activity_logs', []);
@@ -75,6 +77,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const router = useRouter();
   const { toast } = useToast();
+
+  useEffect(() => {
+    setIsAdmin(!!(currentUser && currentUser.player.isCreator));
+  }, [currentUser]);
 
   useEffect(() => {
     // Data Migration & User Loading Effect:
@@ -89,7 +95,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       !acc.player.friendRequests ||
       !('passwordResetCode' in acc.player) ||
       !('displayName' in acc.player) ||
-      !acc.files
+      !acc.files ||
+      acc.player.isCreator === undefined
     );
 
     if (needsPatch) {
@@ -104,6 +111,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
         if (!('displayName' in newAcc.player) || !newAcc.player.displayName) {
           newAcc.player.displayName = newAcc.player.username;
+        }
+
+        if (newAcc.player.isCreator === undefined) {
+          newAcc.player.isCreator = newAcc.player.username === CREATOR_USERNAME;
         }
 
         // Patch missing friendUsernames array from older data structures.
@@ -950,7 +961,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, loginHistory, activityLogs, logActivity, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, feedbackPosts, postFeedback }}>
+    <GameContext.Provider value={{ currentUser, isAdmin, accounts, loginHistory, activityLogs, logActivity, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, feedbackPosts, postFeedback }}>
       {children}
     </GameContext.Provider>
   );

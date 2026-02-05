@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useContext, useEffect, useState } from "react";
@@ -35,14 +36,14 @@ import {
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CreatorBadgeIcon, GamepadIcon } from "@/components/icons";
+import { CreatorBadgeIcon } from "@/components/icons";
 
 export default function MainAppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const game = useContext(GameContext) as GameContextType;
+  const { currentUser, isAdmin, logout } = useContext(GameContext) as GameContextType;
   const router = useRouter();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -52,12 +53,12 @@ export default function MainAppLayout({
   }, []);
 
   useEffect(() => {
-    if (isClient && !game.currentUser) {
+    if (isClient && !currentUser) {
       router.replace("/login");
     }
-  }, [game.currentUser, router, isClient]);
+  }, [currentUser, router, isClient]);
 
-  if (!isClient || !game.currentUser) {
+  if (!isClient || !currentUser) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -65,7 +66,7 @@ export default function MainAppLayout({
     );
   }
   
-  const { player } = game.currentUser;
+  const { player } = currentUser;
   const friendRequestCount = player.friendRequests?.length || 0;
 
   const navItems = [
@@ -90,7 +91,7 @@ export default function MainAppLayout({
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2">
-            <GamepadIcon className="size-8 text-primary" />
+            <CreatorBadgeIcon className="size-8 text-primary" />
             <h1 className="font-headline text-2xl font-bold">IT MAZING</h1>
           </div>
         </SidebarHeader>
@@ -110,7 +111,7 @@ export default function MainAppLayout({
                 </Link>
               </SidebarMenuItem>
             ))}
-            {player.isCreator && (
+            {isAdmin && (
               <SidebarMenuItem>
                 <Link href="/admin" className="w-full">
                   <SidebarMenuButton
@@ -128,7 +129,7 @@ export default function MainAppLayout({
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton onClick={game.logout}>
+              <SidebarMenuButton onClick={logout}>
                 <LogOut />
                 <span>Logout</span>
               </SidebarMenuButton>

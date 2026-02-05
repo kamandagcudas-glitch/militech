@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useContext, useState, useMemo, useEffect } from 'react';
@@ -12,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Shield, Loader2, ListFilter } from 'lucide-react';
 
 export default function AdminDashboardPage() {
-    const game = useContext(GameContext) as GameContextType;
+    const { currentUser, isAdmin, loginHistory, activityLogs } = useContext(GameContext) as GameContextType;
     const router = useRouter();
 
     const [usernameFilter, setUsernameFilter] = useState('');
@@ -20,26 +21,26 @@ export default function AdminDashboardPage() {
 
     // Route guard
     useEffect(() => {
-        if (game.currentUser && !game.currentUser.player.isCreator) {
+        if (currentUser && !isAdmin) {
             router.replace('/dashboard');
         }
-    }, [game.currentUser, router]);
+    }, [currentUser, isAdmin, router]);
 
     const filteredLoginHistory = useMemo(() => {
-        if (!game.loginHistory) return [];
-        return game.loginHistory
+        if (!loginHistory) return [];
+        return loginHistory
             .filter(log => usernameFilter ? log.username.toLowerCase().includes(usernameFilter.toLowerCase()) : true)
             .filter(log => dateFilter ? log.timestamp.startsWith(dateFilter) : true);
-    }, [game.loginHistory, usernameFilter, dateFilter]);
+    }, [loginHistory, usernameFilter, dateFilter]);
 
     const filteredActivityLogs = useMemo(() => {
-        if (!game.activityLogs) return [];
-        return game.activityLogs
+        if (!activityLogs) return [];
+        return activityLogs
             .filter(log => usernameFilter ? log.username.toLowerCase().includes(usernameFilter.toLowerCase()) : true)
             .filter(log => dateFilter ? log.timestamp.startsWith(dateFilter) : true);
-    }, [game.activityLogs, usernameFilter, dateFilter]);
+    }, [activityLogs, usernameFilter, dateFilter]);
 
-    if (!game.currentUser || !game.currentUser.player.isCreator) {
+    if (!currentUser || !isAdmin) {
         return (
             <div className="flex h-full w-full items-center justify-center">
                 <Loader2 className="h-16 w-16 animate-spin text-primary" />
