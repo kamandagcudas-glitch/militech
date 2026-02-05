@@ -33,7 +33,7 @@ export default function LessonPage() {
     if (game.logActivity && coc && step) {
         game.logActivity('Lesson Viewed', `COC: ${coc.title}, Step: ${step.title}`);
     }
-  }, [game, coc, step]);
+  }, [game.logActivity, coc, step]);
 
 
   if (!coc || !step) {

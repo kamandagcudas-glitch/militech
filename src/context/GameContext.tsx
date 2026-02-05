@@ -1,7 +1,7 @@
 
 "use client";
 
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import useLocalStorage from '@/hooks/use-local-storage';
 import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount, UserFile, FeedbackPost, LoginAttempt, ActivityLog } from '@/lib/types';
@@ -346,7 +346,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const logActivity = (activity: string, details: string) => {
+  const logActivity = useCallback((activity: string, details: string) => {
     if (!currentUser) return;
     const newLog: ActivityLog = {
         id: crypto.randomUUID(),
@@ -356,7 +356,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         details,
     };
     setActivityLogs(prev => [newLog, ...prev]);
-  };
+  }, [currentUser, setActivityLogs]);
 
   const updateAvatar = (avatarDataUrl: string) => {
     if (!currentUser) return;
