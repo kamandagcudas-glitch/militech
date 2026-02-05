@@ -36,13 +36,18 @@ export default function ProfilePage() {
     const [isBgDialogOpen, setIsBgDialogOpen] = useState(false);
     const [selectedBgFile, setSelectedBgFile] = useState<File | null>(null);
     const [bgPreviewUrl, setBgPreviewUrl] = useState<string | null>(null);
+    
+    // State for the email dialog
+    const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
+    const [newEmail, setNewEmail] = useState('');
+    const [emailError, setEmailError] = useState<string | null>(null);
 
 
     if (!game.currentUser || !game.accounts) {
         return null;
     }
 
-    const { currentUser, accounts, removeFriend, updateAvatar, sendVerificationEmail, verifyEmail, updateProfileBackground, acceptFriendRequest, rejectFriendRequest } = game;
+    const { currentUser, accounts, removeFriend, updateAvatar, sendVerificationEmail, verifyEmail, updateProfileBackground, acceptFriendRequest, rejectFriendRequest, updateEmail } = game;
     const { player, stats, achievements } = currentUser;
     const hasSpecialBg = !!player.specialBackground;
 
@@ -169,6 +174,18 @@ export default function ProfilePage() {
             // The toast is handled inside the context function
         }
     };
+    
+    const handleSaveEmail = async () => {
+        if (!updateEmail) return;
+        setEmailError(null);
+        const result = await updateEmail(newEmail);
+        if (result.success) {
+            setIsEmailDialogOpen(false);
+            setNewEmail('');
+        } else {
+            setEmailError(result.message);
+        }
+    };
 
 
     return (
@@ -253,14 +270,19 @@ export default function ProfilePage() {
                             <CardContent>
                                 {player.email ? (
                                     <div>
-                                        <p className="text-sm text-muted-foreground">Email: {player.email}</p>
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-sm text-muted-foreground truncate">Email: {player.email}</p>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0" onClick={() => { setNewEmail(player.email || ''); setIsEmailDialogOpen(true); setEmailError(null); }}>
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                         {player.emailVerified ? (
-                                            <div className="mt-4 flex items-center gap-2 text-green-500 font-semibold">
+                                            <div className="mt-2 flex items-center gap-2 text-green-500 font-semibold">
                                                 <CheckCircle className="h-5 w-5" />
                                                 <span>Verified</span>
                                             </div>
                                         ) : (
-                                            <div className="mt-4">
+                                            <div className="mt-2">
                                                 <p className="text-yellow-500 font-semibold mb-2">Not Verified</p>
                                                 <div className="flex flex-col gap-2">
                                                     <Button onClick={() => verifyEmail()} size="sm">Verify Now (Sim)</Button>
@@ -276,7 +298,10 @@ export default function ProfilePage() {
                                         )}
                                     </div>
                                 ) : (
-                                    <p className="text-muted-foreground">No email address has been provided for this account.</p>
+                                    <div className="text-center text-muted-foreground py-4">
+                                        <p>No email address has been provided.</p>
+                                        <Button variant="link" onClick={() => { setNewEmail(''); setIsEmailDialogOpen(true); setEmailError(null); }}>Add an email to enable verification</Button>
+                                    </div>
                                 )}
                             </CardContent>
                         </Card>
@@ -509,9 +534,35 @@ export default function ProfilePage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* EMAIL DIALOG */}
+            <Dialog open={isEmailDialogOpen} onOpenChange={(isOpen) => { if(!isOpen) { setEmailError(null); } setIsEmailDialogOpen(isOpen); }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Update Email Address</DialogTitle>
+                        <DialogDescription>Enter a valid Gmail address to associate with your account. This will reset your verification status.</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <Input
+                            id="email-update"
+                            type="email"
+                            placeholder="your.email@gmail.com"
+                            value={newEmail}
+                            onChange={(e) => setNewEmail(e.target.value)}
+                        />
+                        {emailError && <p className="text-sm text-destructive">{emailError}</p>}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => { setIsEmailDialogOpen(false); setEmailError(null); }}>Cancel</Button>
+                        <Button onClick={handleSaveEmail}>Save</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
 
+
+    
 
     

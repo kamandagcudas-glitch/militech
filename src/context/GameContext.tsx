@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, ReactNode, useEffect, useState } from 'react';
@@ -28,6 +29,7 @@ export interface GameContextType {
   sendVerificationEmail: () => void;
   verifyEmail: () => void;
   updateProfileBackground: (idOrUrl: string) => void;
+  updateEmail: (email: string) => Promise<{ success: boolean; message: string; }>;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -151,9 +153,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const register = async (username: string, password: string, email?: string): Promise<{ success: boolean; message: string; }> => {
     // Registration & Validation Logic:
     const trimmedUsername = username.trim();
-    // Checks if the username already exists in the stored accounts array.
     if (accounts.some(acc => acc.player.username.toLowerCase() === trimmedUsername.toLowerCase())) {
       return { success: false, message: 'Username already exists.' };
+    }
+
+    const trimmedEmail = email?.trim();
+    if (trimmedEmail && accounts.some(acc => acc.player.email?.toLowerCase() === trimmedEmail.toLowerCase())) {
+        return { success: false, message: 'Email is already in use.' };
     }
 
     const hashedPassword = await hashPassword(password);
@@ -186,7 +192,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const newPlayer: Player = {
       username: trimmedUsername,
       avatar: `https://api.dicebear.com/8.x/bottts/svg?seed=${trimmedUsername}`,
-      email: email || undefined, // Store email if provided
+      email: trimmedEmail || undefined, // Store email if provided
       emailVerified: false, // Default to not verified
       activeTitleId,
       unlockedTitleIds,
@@ -447,6 +453,34 @@ export function GameProvider({ children }: { children: ReactNode }) {
     } : null);
   };
 
+  const updateEmail = async (email: string): Promise<{ success: boolean; message: string; }> => {
+    if (!currentUser) return { success: false, message: 'Not logged in.' };
+
+    const trimmedEmail = email.trim();
+
+    if (!/^[^\s@]+@gmail\.com$/i.test(trimmedEmail)) {
+        return { success: false, message: 'Please enter a valid Gmail address.' };
+    }
+
+    if (accounts.some(acc => acc.player.email?.toLowerCase() === trimmedEmail.toLowerCase() && acc.player.username !== currentUser.player.username)) {
+        return { success: false, message: 'Email is already in use.' };
+    }
+    
+    const newPlayerState = { 
+        ...currentUser.player, 
+        email: trimmedEmail,
+        emailVerified: false // Reset verification status on email change
+    };
+    updateCurrentUser({ player: newPlayerState });
+
+    toast({
+        title: "Email Updated",
+        description: "Your email address has been updated. Please verify it.",
+    });
+
+    return { success: true, message: 'Email updated successfully.' };
+  };
+
   // --- Simulated Email Verification ---
   // The following functions simulate an email verification flow.
   // In a real application, these would involve a backend service to send emails.
@@ -554,8 +588,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail }}>
       {children}
     </GameContext.Provider>
   );
 }
+
+    
