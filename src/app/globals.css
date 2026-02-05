@@ -95,6 +95,85 @@
   }
 }
 
+@keyframes ray-anim {
+  from { transform: translateY(-50vh) rotate(var(--angle, 0deg)); opacity: 0; }
+  50% { opacity: 0.8; }
+  to { transform: translateY(150vh) rotate(var(--angle, 0deg)); opacity: 0; }
+}
+
+@keyframes particle-anim {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: -150px 250px, -250px 350px; }
+}
+
+@keyframes veggie-float {
+  from {
+    transform: translateY(105vh) translateX(var(--x-start, 0vw)) rotate(0deg);
+  }
+  to {
+    transform: translateY(-5vh) translateX(var(--x-end, 0vw)) rotate(720deg);
+  }
+}
+
+@keyframes shake-head {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  10% { transform: translateX(-5px) rotate(-5deg); }
+  20% { transform: translateX(5px) rotate(5deg); }
+  30% { transform: translateX(-5px) rotate(-5deg); }
+  40% { transform: translateX(5px) rotate(5deg); }
+  50% { transform: translateX(0) rotate(0); }
+}
+
+.animate-shake-head {
+  animation: shake-head 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes animated-grid {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 7rem 7rem;
+  }
+}
+
+@keyframes parallax-scroll {
+  from {
+    background-position: 50% 0%;
+  }
+  to {
+    background-position: 50% 200%;
+  }
+}
+
+@keyframes scanlines {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 50px;
+  }
+}
+
+.feedback-bg-image {
+  animation: parallax-scroll 150s linear infinite;
+}
+
+.feedback-bg-scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    hsla(var(--primary) / 0.05) 0,
+    hsla(var(--primary) / 0.15) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  background-size: 100% 4px;
+  animation: scanlines 0.3s linear infinite;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+
 @layer components {
   .special-bg-container {
     @apply absolute inset-0 w-full h-full overflow-hidden;
@@ -138,49 +217,5 @@
   /* Quiz anti-cheat styles */
   .quiz-anti-cheat {
     user-select: none;
-  }
-}
-
-/* Increase ray opacity during animation */
-@keyframes ray-anim {
-  from { transform: translateY(-50vh) rotate(var(--angle, 0deg)); opacity: 0; }
-  50% { opacity: 0.8; }
-  to { transform: translateY(150vh) rotate(var(--angle, 0deg)); opacity: 0; }
-}
-
-/* Increase particle travel distance for a faster perceived speed */
-@keyframes particle-anim {
-    from { background-position: 0 0, 0 0; }
-    to { background-position: -150px 250px, -250px 350px; }
-}
-
-@keyframes veggie-float {
-  from {
-    transform: translateY(105vh) translateX(var(--x-start, 0vw)) rotate(0deg);
-  }
-  to {
-    transform: translateY(-5vh) translateX(var(--x-end, 0vw)) rotate(720deg);
-  }
-}
-
-@keyframes shake-head {
-  0%, 100% { transform: translateX(0) rotate(0); }
-  10% { transform: translateX(-5px) rotate(-5deg); }
-  20% { transform: translateX(5px) rotate(5deg); }
-  30% { transform: translateX(-5px) rotate(-5deg); }
-  40% { transform: translateX(5px) rotate(5deg); }
-  50% { transform: translateX(0) rotate(0); }
-}
-
-.animate-shake-head {
-  animation: shake-head 0.6s cubic-bezier(.36,.07,.19,.97) both;
-}
-
-@keyframes animated-grid {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 7rem 7rem;
   }
 }
