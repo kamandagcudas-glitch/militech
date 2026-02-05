@@ -11,6 +11,7 @@ export interface Player {
   isCreator: boolean;
   profileBackgroundId?: string;
   profileBackgroundUrl?: string;
+  specialBackground?: 'angelic' | 'cabbage';
 }
 
 export interface PlayerStats {

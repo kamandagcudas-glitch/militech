@@ -65,7 +65,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       !acc.player.friendUsernames || 
       !acc.progress.coc1.scores ||
       acc.player.emailVerified === undefined ||
-      !acc.player.profileBackgroundId
+      !acc.player.profileBackgroundId ||
+      !('specialBackground' in acc.player)
     );
 
     if (needsPatch) {
@@ -100,6 +101,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
             newAcc.progress[coc.id].scores = {};
           }
         });
+
+        if (!('specialBackground' in newAcc.player)) {
+          if (newAcc.player.username === CREATOR_USERNAME) {
+            newAcc.player.specialBackground = 'angelic';
+          } else if (newAcc.player.username === CABBAGE_THIEF_USERNAME) {
+            newAcc.player.specialBackground = 'cabbage';
+          } else {
+            newAcc.player.specialBackground = null;
+          }
+        }
 
         return newAcc;
       });
@@ -137,17 +148,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
     let unlockedTitleIds: string[] = [];
     let initialAchievements: Achievement[] = [];
     let badgeIds: string[] = [];
+    let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
 
-    // Easter Egg Logic: Assign special titles for specific usernames.
+    // Easter Egg Logic: Assign special titles and backgrounds for specific usernames.
     if (isCreator) {
         activeTitleId = 'creator';
         unlockedTitleIds = ['creator'];
         badgeIds = ['creator-badge']; // This badge doesn't exist, but we preserve the original logic.
+        specialBackground = 'angelic';
         const achievement = achievementsData.find(a => a.id === 'creator');
         if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
     } else if (isCabbageThief) {
         activeTitleId = 'bk-foot-lettuce';
         unlockedTitleIds = ['bk-foot-lettuce'];
+        specialBackground = 'cabbage';
         const achievement = achievementsData.find(a => a.id === 'bk-foot-lettuce');
         if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
     }
@@ -165,6 +179,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       isCreator,
       profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
       profileBackgroundUrl: undefined,
+      specialBackground,
     };
     const newStats: PlayerStats = {
       coc1: { attempts: 0, resets: 0 },

@@ -93,3 +93,61 @@
     background-size: 3.5rem 3.5rem;
   }
 }
+
+@layer components {
+  .special-bg-container {
+    @apply absolute inset-0 w-full h-full overflow-hidden;
+  }
+
+  .angelic-bg {
+    @apply bg-gradient-to-br from-yellow-50 via-amber-100 to-white;
+  }
+
+  .angelic-bg .light-ray {
+    @apply absolute bg-gradient-to-t from-transparent to-yellow-200/50 w-1/4 h-full;
+    animation: ray-anim 15s linear infinite;
+  }
+
+  .angelic-bg .ray-1 { top: -50%; left: -10%; animation-delay: -2s; }
+  .angelic-bg .ray-2 { top: -50%; left: 10%; animation-delay: -5s;}
+  .angelic-bg .ray-3 { top: -50%; left: 60%; animation-delay: -10s;}
+  .angelic-bg .ray-4 { top: -50%; left: 80%; }
+
+  .angelic-bg .particles {
+    @apply absolute inset-0;
+    background-image:
+      radial-gradient(circle at center, gold 1px, transparent 1px),
+      radial-gradient(circle at center, gold 1px, transparent 1px);
+    background-size: 40px 40px, 80px 80px;
+    animation: particle-anim 20s linear infinite;
+  }
+  
+  .cabbage-bg {
+      @apply bg-gray-900;
+  }
+
+  .cabbage-bg .veggie {
+      @apply absolute;
+      animation: veggie-float linear infinite;
+  }
+}
+
+@keyframes ray-anim {
+  from { transform: translateY(-50vh) rotate(var(--angle, 0deg)); opacity: 0; }
+  50% { opacity: 0.5; }
+  to { transform: translateY(150vh) rotate(var(--angle, 0deg)); opacity: 0; }
+}
+
+@keyframes particle-anim {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: -100px 100px, -200px 200px; }
+}
+
+@keyframes veggie-float {
+  from {
+    transform: translateY(105vh) translateX(var(--x-start, 0vw)) rotate(0deg);
+  }
+  to {
+    transform: translateY(-5vh) translateX(var(--x-end, 0vw)) rotate(720deg);
+  }
+}

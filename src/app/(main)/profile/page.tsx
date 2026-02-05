@@ -2,7 +2,7 @@
 "use client";
 
 import Image from 'next/image';
-import { useContext, useState, useMemo } from 'react';
+import { useContext, useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { GameContext, GameContextType } from '@/context/GameContext';
@@ -12,6 +12,7 @@ import { predefinedBackgrounds } from '@/lib/backgrounds-data';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { CreatorBadgeIcon } from '@/components/icons';
+import { SpecialBackground } from '@/components/special-background';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Pencil, UserX, Users, Mail, Send, CheckCircle, Image as ImageIcon } from 'lucide-react';
+import { Pencil, UserX, Users, Mail, Send, CheckCircle, Image as ImageIcon, Sparkles } from 'lucide-react';
 
 
 export default function ProfilePage() {
@@ -43,6 +44,15 @@ export default function ProfilePage() {
 
     const { currentUser, accounts, removeFriend, updateAvatar, sendVerificationEmail, verifyEmail, updateProfileBackground } = game;
     const { player, stats, achievements } = currentUser;
+    const hasSpecialBg = !!player.specialBackground;
+
+    useEffect(() => {
+        if (hasSpecialBg) {
+            console.log(`Profile Background: User ${player.username} has special background '${player.specialBackground}' applied.`);
+        } else {
+            console.log(`Profile Background: User ${player.username} is using standard background system.`);
+        }
+    }, [player.username, hasSpecialBg, player.specialBackground]);
     
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
     const unlockedBadges = achievements.filter(a => a.type === 'badge');
@@ -161,10 +171,14 @@ export default function ProfilePage() {
                 It's an absolute-positioned div that fills the parent container.
                 The background image is applied via inline style from the `currentBackgroundUrl` state.
             */}
-            <div
-                className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500"
-                style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
-            />
+            {hasSpecialBg ? (
+                <SpecialBackground type={player.specialBackground!} />
+            ) : (
+                <div
+                    className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500"
+                    style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
+                />
+            )}
             {/* 
                 Overlay layer.
                 This sits on top of the background image to provide contrast for the text content.
@@ -197,21 +211,31 @@ export default function ProfilePage() {
                                     >
                                         <Pencil className="h-5 w-5" />
                                     </Button>
-                                    <Button
-                                        onClick={() => setIsBgDialogOpen(true)}
-                                        variant="outline"
-                                        size="icon"
-                                        className="absolute bottom-4 right-10 rounded-full h-10 w-10 bg-card/80 backdrop-blur-sm border-primary/50 hover:bg-primary/20"
-                                        aria-label="Customize profile background"
-                                    >
-                                        <ImageIcon className="h-5 w-5" />
-                                    </Button>
+                                     {hasSpecialBg ? (
+                                        <Badge variant="destructive" className="absolute bottom-4 right-10 flex items-center gap-1 h-10 px-3">
+                                            <Sparkles className="h-4 w-4" />
+                                            Special
+                                        </Badge>
+                                    ) : (
+                                        <Button
+                                            onClick={() => setIsBgDialogOpen(true)}
+                                            variant="outline"
+                                            size="icon"
+                                            className="absolute bottom-4 right-10 rounded-full h-10 w-10 bg-card/80 backdrop-blur-sm border-primary/50 hover:bg-primary/20"
+                                            aria-label="Customize profile background"
+                                        >
+                                            <ImageIcon className="h-5 w-5" />
+                                        </Button>
+                                    )}
                                 </div>
                                 <CardTitle className="font-headline text-3xl flex items-center gap-2">
                                     {player.username}
                                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
                                 </CardTitle>
                                 {activeTitle && <Badge variant="destructive" className="text-lg">{activeTitle.name}</Badge>}
+                                {hasSpecialBg && (
+                                    <p className="text-xs text-muted-foreground pt-2">This is a unique background assigned to this agent ID.</p>
+                                )}
                             </CardHeader>
                         </Card>
 

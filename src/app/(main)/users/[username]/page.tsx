@@ -2,7 +2,7 @@
 "use client";
 
 import Image from 'next/image';
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -10,6 +10,7 @@ import { GameContext, GameContextType } from '@/context/GameContext';
 import { achievementsData } from '@/lib/data';
 import { predefinedBackgrounds } from '@/lib/backgrounds-data';
 import { cn } from '@/lib/utils';
+import { SpecialBackground } from '@/components/special-background';
 
 import { CreatorBadgeIcon } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -39,6 +40,12 @@ export default function PublicProfilePage() {
         const decodedUsername = decodeURIComponent(username);
         return accounts.find(acc => acc.player.username.toLowerCase() === decodedUsername.toLowerCase());
     }, [accounts, username]);
+
+    useEffect(() => {
+        if (userAccount?.player.specialBackground) {
+            console.log(`Public Profile Background: User ${userAccount.player.username} has special background '${userAccount.player.specialBackground}' applied.`);
+        }
+    }, [userAccount]);
 
     /**
      * Public Profile Background Logic:
@@ -72,6 +79,7 @@ export default function PublicProfilePage() {
     }
     
     const { player, achievements } = userAccount;
+    const hasSpecialBg = !!player.specialBackground;
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
     
     const isFriend = currentUser?.player.friendUsernames.includes(player.username);
@@ -94,10 +102,14 @@ export default function PublicProfilePage() {
      */
     return (
         <div className="relative -m-4 md:-m-6 h-full">
-            <div
-                className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500"
-                style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
-            />
+             {hasSpecialBg ? (
+                <SpecialBackground type={player.specialBackground!} />
+            ) : (
+                <div
+                    className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500"
+                    style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
+                />
+            )}
             <div className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-sm" />
 
             <div className="relative z-10 p-4 md:p-6 lg:p-8">
