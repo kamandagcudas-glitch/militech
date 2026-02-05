@@ -6,6 +6,7 @@ import useLocalStorage from '@/hooks/use-local-storage';
 import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { achievementsData, cocData } from '@/lib/data';
+import { defaultBackground } from '@/lib/backgrounds-data';
 
 const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
 // This is a humorous easter egg feature
@@ -24,6 +25,7 @@ export interface GameContextType {
   removeFriend: (username: string) => void;
   sendVerificationEmail: () => void;
   verifyEmail: () => void;
+  updateProfileBackground: (idOrUrl: string) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -62,7 +64,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const needsPatch = accounts.some(acc => 
       !acc.player.friendUsernames || 
       !acc.progress.coc1.scores ||
-      acc.player.emailVerified === undefined
+      acc.player.emailVerified === undefined ||
+      !acc.player.profileBackgroundId
     );
 
     if (needsPatch) {
@@ -81,6 +84,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         }
         if (!('email' in newAcc.player)) {
             newAcc.player.email = undefined;
+        }
+
+        // Patch missing profile background fields.
+        if (!newAcc.player.profileBackgroundId) {
+            newAcc.player.profileBackgroundId = defaultBackground?.id || 'profile-bg-cyberpunk-red';
+            newAcc.player.profileBackgroundUrl = undefined;
         }
         
         // Patch missing scores objects for each COC.
@@ -154,6 +163,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       badgeIds,
       friendUsernames: [],
       isCreator,
+      profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+      profileBackgroundUrl: undefined,
     };
     const newStats: PlayerStats = {
       coc1: { attempts: 0, resets: 0 },
@@ -331,6 +342,37 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  /**
+   * Background Selection Logic:
+   * Updates the user's profile background. Can accept a predefined ID or a custom base64 data URL.
+   * If it's a custom URL, the ID is set to 'custom'. Otherwise, the URL is cleared.
+   */
+  const updateProfileBackground = (idOrUrl: string) => {
+    if (!currentUser) return;
+
+    let newPlayerState: Player;
+    
+    if (idOrUrl.startsWith('data:image/')) {
+      // It's a custom upload (base64 data URL)
+      newPlayerState = {
+        ...currentUser.player,
+        profileBackgroundId: 'custom',
+        profileBackgroundUrl: idOrUrl,
+      };
+    } else {
+      // It's a predefined background ID
+      newPlayerState = {
+        ...currentUser.player,
+        profileBackgroundId: idOrUrl,
+        profileBackgroundUrl: undefined,
+      };
+    }
+
+    updateCurrentUser({ player: newPlayerState });
+    toast({
+      title: "Profile Background Updated!",
+    });
+  };
 
   const completeQuiz = (cocId: string, stepId: string, score: number): 'pass' | 'retry' | 'reset' => {
       if (!currentUser) return 'retry';
@@ -376,7 +418,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, addFriend, removeFriend, sendVerificationEmail, verifyEmail }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, addFriend, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground }}>
       {children}
     </GameContext.Provider>
   );

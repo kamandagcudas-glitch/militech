@@ -9,6 +9,8 @@ export interface Player {
   friendUsernames: string[];
   // This is the creator easter egg flag
   isCreator: boolean;
+  profileBackgroundId?: string;
+  profileBackgroundUrl?: string;
 }
 
 export interface PlayerStats {
