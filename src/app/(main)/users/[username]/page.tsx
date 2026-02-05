@@ -36,7 +36,8 @@ export default function PublicProfilePage() {
 
     const userAccount = useMemo(() => {
         if (!username) return null;
-        return accounts.find(acc => acc.player.username.toLowerCase() === username.toLowerCase());
+        const decodedUsername = decodeURIComponent(username);
+        return accounts.find(acc => acc.player.username.toLowerCase() === decodedUsername.toLowerCase());
     }, [accounts, username]);
 
     /**
@@ -177,4 +178,3 @@ export default function PublicProfilePage() {
         </div>
     );
 }
-
