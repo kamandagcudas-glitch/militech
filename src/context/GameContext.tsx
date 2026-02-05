@@ -595,28 +595,31 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!currentUser) return;
 
     let newPlayerState: Player;
-    
-    // Custom uploads are disabled in this version to ensure offline capability
+
     if (idOrUrl.startsWith('data:image/')) {
-        toast({
-            variant: "destructive",
-            title: "Custom Backgrounds Disabled",
-            description: "Custom image uploads are not supported in this offline version.",
-        });
-        return;
+      // This is a custom background uploaded by the user
+      newPlayerState = {
+        ...currentUser.player,
+        profileBackgroundId: 'custom',
+        profileBackgroundUrl: idOrUrl,
+      };
+      toast({
+        title: 'Custom Background Applied!',
+        description: "Your background is saved in your browser's local storage.",
+      });
+    } else {
+      // This is a predefined background ID
+      newPlayerState = {
+        ...currentUser.player,
+        profileBackgroundId: idOrUrl,
+        profileBackgroundUrl: undefined,
+      };
+      toast({
+        title: 'Profile Background Updated!',
+      });
     }
-    
-    // It's a predefined background ID
-    newPlayerState = {
-    ...currentUser.player,
-    profileBackgroundId: idOrUrl,
-    profileBackgroundUrl: undefined,
-    };
 
     updateCurrentUser({ player: newPlayerState });
-    toast({
-      title: "Profile Background Updated!",
-    });
   };
 
   const completeQuiz = (cocId: string, stepId: string, score: number): 'pass' | 'retry' | 'reset' => {

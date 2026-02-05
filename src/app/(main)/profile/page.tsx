@@ -156,17 +156,32 @@ export default function ProfilePage() {
 
     const handleBgFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
-            setSelectedBgFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setBgPreviewUrl(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            toast({ variant: "destructive", title: "Invalid File Type" });
-            setSelectedBgFile(null);
-            setBgPreviewUrl(null);
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                toast({
+                    variant: "destructive",
+                    title: "Image Too Large",
+                    description: "Background images must be smaller than 5MB.",
+                });
+                return;
+            }
+
+            if (file.type === 'image/jpeg' || file.type === 'image/png') {
+                setSelectedBgFile(file);
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setBgPreviewUrl(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Invalid File Type",
+                    description: "Please select a JPG or PNG image.",
+                });
+                setSelectedBgFile(null);
+                setBgPreviewUrl(null);
+            }
         }
     };
 
