@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useLocalStorage from '@/hooks/use-local-storage';
-import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount } from '@/lib/types';
+import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount, UserFile } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { achievementsData, cocData } from '@/lib/data';
 import { defaultBackground } from '@/lib/backgrounds-data';
@@ -32,6 +32,9 @@ export interface GameContextType {
   sendPasswordResetCode: (usernameOrEmail: string) => Promise<{ success: boolean; message: string; }>;
   resetPassword: (username: string, code: string, newPassword: string) => Promise<{ success: boolean; message: string; }>;
   updateDisplayName: (displayName: string) => Promise<{ success: boolean; message: string; }>;
+  uploadFile: (file: File) => void;
+  deleteFile: (fileId: string) => void;
+  shareFile: (fileId: string, friendUsername: string) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -76,7 +79,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       (acc.player.username && acc.player.username.trim() !== acc.player.username) ||
       !acc.player.friendRequests ||
       !('passwordResetCode' in acc.player) ||
-      !('displayName' in acc.player)
+      !('displayName' in acc.player) ||
+      !acc.files
     );
 
     if (needsPatch) {
@@ -141,6 +145,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
           } else {
             newAcc.player.specialBackground = undefined;
           }
+        }
+        
+        // Patch the files array for existing users.
+        if (!newAcc.files) {
+          newAcc.files = [];
         }
 
         // Retroactively grant the Angelic Power Rune badge to the creator.
@@ -224,7 +233,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const newPlayer: Player = {
       username: trimmedUsername,
       displayName: displayName.trim(),
-      avatar: `https://api.dicebear.com/8.x/bottts/svg?seed=${trimmedUsername}`,
+      avatar: ``,
       email: trimmedEmail || undefined, // Store email if provided
       emailVerified: false, // Default to not verified
       activeTitleId,
@@ -256,7 +265,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       stats: newStats,
       progress: newProgress,
       achievements: initialAchievements,
-      hashedPassword: hashedPassword
+      hashedPassword: hashedPassword,
+      files: [],
     };
 
     setAccounts(prev => [...prev, newUserAccount]);
@@ -582,21 +592,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     let newPlayerState: Player;
     
+    // Custom uploads are disabled in this version to ensure offline capability
     if (idOrUrl.startsWith('data:image/')) {
-      // It's a custom upload (base64 data URL)
-      newPlayerState = {
-        ...currentUser.player,
-        profileBackgroundId: 'custom',
-        profileBackgroundUrl: idOrUrl,
-      };
-    } else {
-      // It's a predefined background ID
-      newPlayerState = {
-        ...currentUser.player,
-        profileBackgroundId: idOrUrl,
-        profileBackgroundUrl: undefined,
-      };
+        toast({
+            variant: "destructive",
+            title: "Custom Backgrounds Disabled",
+            description: "Custom image uploads are not supported in this offline version.",
+        });
+        return;
     }
+    
+    // It's a predefined background ID
+    newPlayerState = {
+    ...currentUser.player,
+    profileBackgroundId: idOrUrl,
+    profileBackgroundUrl: undefined,
+    };
 
     updateCurrentUser({ player: newPlayerState });
     toast({
@@ -737,6 +748,127 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     return { success: true, message: 'Password has been reset successfully.' };
   };
+  
+    /**
+   * File Management Logic
+   */
+  const uploadFile = (file: File) => {
+    if (!currentUser) return;
+    
+    // Warning for localStorage limitations
+    if (file.size > 2 * 1024 * 1024) { // 2MB limit warning
+      toast({
+        variant: "destructive",
+        title: "File is too large",
+        description: "This offline version has limited storage. Please upload files smaller than 2MB.",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      const newFile: UserFile = {
+        id: crypto.randomUUID(),
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        dataUrl: dataUrl,
+        ownerUsername: currentUser.player.username,
+        sharedWith: [],
+        uploadDate: new Date().toISOString(),
+      };
+
+      const updatedFiles = [...currentUser.files, newFile];
+      updateCurrentUser({ files: updatedFiles });
+      toast({ title: "File Uploaded", description: `"${file.name}" has been saved.` });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const deleteFile = (fileId: string) => {
+    if (!currentUser) return;
+    
+    const fileToDelete = currentUser.files.find(f => f.id === fileId);
+    if (!fileToDelete) return;
+    
+    // Only the owner can delete a file. This also prevents deleting shared-in copies.
+    if (fileToDelete.ownerUsername !== currentUser.player.username) {
+      toast({ variant: "destructive", title: "Permission Denied", description: "You can only delete files you own." });
+      return;
+    }
+
+    const updatedFiles = currentUser.files.filter(f => f.id !== fileId);
+    updateCurrentUser({ files: updatedFiles });
+    toast({ title: "File Deleted", description: `"${fileToDelete.name}" has been removed.` });
+  };
+  
+  const shareFile = (fileId: string, friendUsername: string) => {
+    if (!currentUser) return;
+
+    let originalFile: UserFile | undefined;
+    let success = false;
+
+    // Use setAccounts to ensure atomicity
+    setAccounts(prevAccounts => {
+      const currentUserAccount = prevAccounts.find(acc => acc.player.username === currentUser.player.username);
+      const friendAccount = prevAccounts.find(acc => acc.player.username === friendUsername);
+
+      if (!currentUserAccount || !friendAccount) return prevAccounts;
+
+      originalFile = currentUserAccount.files.find(f => f.id === fileId);
+
+      if (!originalFile || originalFile.ownerUsername !== currentUser.player.username) {
+        toast({ variant: "destructive", title: "Sharing Failed", description: "You can only share files you own." });
+        return prevAccounts;
+      }
+      
+      // Check if already shared with this friend
+      if (friendAccount.files.some(f => f.id === fileId)) {
+        toast({ title: "Already Shared", description: `This file is already shared with ${friendAccount.player.displayName}.` });
+        return prevAccounts;
+      }
+      
+      // Create a copy of the file for the friend.
+      // In a real app, this would be a pointer, but for local-only, we duplicate it.
+      const sharedFile_copy: UserFile = { ...originalFile, sharedWith: [] }; // The friend's copy isn't shared by them.
+      
+      // Update the original file's sharedWith list
+      originalFile.sharedWith.push(friendUsername);
+
+      // Create new account objects with the changes
+      const newFriendAccount = {
+        ...friendAccount,
+        files: [...friendAccount.files, sharedFile_copy],
+      };
+      
+      const newCurrentUserAccount = {
+          ...currentUserAccount,
+          files: currentUserAccount.files.map(f => f.id === fileId ? originalFile : f)
+      }
+
+      success = true;
+
+      // Return the newly updated list of all accounts
+      return prevAccounts.map(acc => {
+        if (acc.player.username === friendUsername) return newFriendAccount;
+        if (acc.player.username === currentUser.player.username) return newCurrentUserAccount;
+        return acc;
+      });
+    });
+
+    if (success) {
+      toast({ title: "File Shared!", description: `Shared "${originalFile?.name}" with ${friendUsername}.` });
+      // Manually trigger a state update for the current user's file list to show the 'shared' status
+      setCurrentUser(prev => {
+          if (!prev) return null;
+          return {
+              ...prev,
+              files: prev.files.map(f => f.id === fileId ? { ...f, sharedWith: [...f.sharedWith, friendUsername] } : f)
+          }
+      });
+    }
+  };
 
   useEffect(() => {
     if (currentUser?.stats && currentUser.stats.totalResets >= 10) {
@@ -745,7 +877,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile }}>
       {children}
     </GameContext.Provider>
   );
