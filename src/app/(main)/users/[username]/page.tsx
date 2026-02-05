@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -16,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { UserPlus, UserX, Lock, Trophy, Send, Mail } from 'lucide-react';
+import { UserPlus, UserX, Lock, Trophy, Send, Mail, ShieldX } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -80,6 +81,7 @@ export default function PublicProfilePage() {
     const { player } = userAccount;
     const hasSpecialBg = !!player.specialBackground;
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
+    const displayTitle = player.customTitle || activeTitle?.name;
     
     const isFriend = currentUser?.player.friendUsernames.includes(player.username);
     const requestSent = player.friendRequests?.includes(currentUser?.player.username || '');
@@ -148,7 +150,8 @@ export default function PublicProfilePage() {
                                     {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-6 w-6" title="Angelic Power Rune"/>}
                                 </CardTitle>
                                 <CardDescription>@{player.username}</CardDescription>
-                                {activeTitle && <Badge variant="destructive" className="text-lg mt-1">{activeTitle.name}</Badge>}
+                                {player.isBanned && <Badge variant="destructive" className="mt-2 text-base flex items-center gap-1"><ShieldX className="h-4 w-4"/>BANNED</Badge>}
+                                {displayTitle && <Badge variant="destructive" className="text-lg mt-1">{displayTitle}</Badge>}
                                 {!isCurrentUser && currentUser && (
                                     <div className="mt-4">
                                         {isFriend ? (
@@ -166,7 +169,7 @@ export default function PublicProfilePage() {
                                                 </Link>
                                             </Button>
                                         ) : (
-                                            <Button onClick={() => sendFriendRequest(player.username)}>
+                                            <Button onClick={() => sendFriendRequest(player.username)} disabled={player.isBanned}>
                                                 <UserPlus className="mr-2"/> Add Friend
                                             </Button>
                                         )}

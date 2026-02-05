@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo, useContext, useEffect } from 'react';
@@ -29,11 +30,21 @@ export default function MiniGamePage() {
     const currentRound = rounds[currentRoundIndex];
 
     useEffect(() => {
+        if (game.currentUser?.player.isBanned) {
+            toast({
+                variant: 'destructive',
+                title: 'Access Denied',
+                description: 'Your account is suspended and cannot play minigames.',
+            });
+            router.push('/dashboard');
+            return;
+        }
+
         if (game.logActivity && !gameStarted) {
             game.logActivity('Minigame Started', '4 Pics 1 Word');
             setGameStarted(true);
         }
-    }, [game.logActivity, gameStarted]);
+    }, [game.currentUser, game.logActivity, gameStarted, router, toast]);
 
     const images = useMemo(() => {
         return currentRound.imageIds.map(id => PlaceHolderImages.find(img => img.id === id));

@@ -1,3 +1,4 @@
+
 export interface Player {
   username: string;
   displayName: string;
@@ -5,6 +6,9 @@ export interface Player {
   email?: string;
   emailVerified: boolean;
   activeTitleId: string | null;
+  customTitle?: string;
+  isBanned: boolean;
+  isMuted: boolean;
   unlockedTitleIds: string[];
   badgeIds: string[];
   friendUsernames: string[];

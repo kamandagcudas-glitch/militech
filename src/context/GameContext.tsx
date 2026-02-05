@@ -42,6 +42,11 @@ export interface GameContextType {
   shareFile: (fileId: string, friendUsername: string) => void;
   feedbackPosts: FeedbackPost[];
   postFeedback: (message: string) => void;
+  banUser: (username: string) => void;
+  unbanUser: (username: string) => void;
+  muteUser: (username: string) => void;
+  unmuteUser: (username: string) => void;
+  setCustomTitle: (username: string, title: string) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -96,7 +101,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       !('passwordResetCode' in acc.player) ||
       !('displayName' in acc.player) ||
       !acc.files ||
-      acc.player.isCreator === undefined
+      acc.player.isCreator === undefined ||
+      acc.player.isBanned === undefined
     );
 
     if (needsPatch) {
@@ -115,6 +121,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
         if (newAcc.player.isCreator === undefined) {
           newAcc.player.isCreator = newAcc.player.username === CREATOR_USERNAME;
+        }
+
+        if (newAcc.player.isBanned === undefined) {
+          newAcc.player.isBanned = false;
+        }
+        if (newAcc.player.isMuted === undefined) {
+          newAcc.player.isMuted = false;
+        }
+        if (newAcc.player.customTitle === undefined) {
+          newAcc.player.customTitle = undefined;
         }
 
         // Patch missing friendUsernames array from older data structures.
@@ -262,6 +278,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       friendUsernames: [],
       friendRequests: [],
       isCreator,
+      isBanned: false,
+      isMuted: false,
       profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
       profileBackgroundUrl: undefined,
       specialBackground,
@@ -311,6 +329,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
     };
 
     if (account) {
+        if (account.player.isBanned) {
+            toast({
+                variant: 'destructive',
+                title: 'Access Denied',
+                description: 'This account has been suspended.',
+            });
+            setLoginHistory(prev => [{ ...newLog, id: crypto.randomUUID() }, ...prev]);
+            return false;
+        }
+
         const hashedPassword = await hashPassword(password);
         if (account.hashedPassword === hashedPassword) {
             newLog.status = 'Success';
@@ -659,6 +687,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const completeQuiz = (cocId: string, stepId: string, score: number): 'pass' | 'retry' | 'reset' => {
       if (!currentUser) return 'retry';
       
+      if (currentUser.player.isBanned) {
+        toast({
+            variant: 'destructive',
+            title: 'Action Restricted',
+            description: 'Your account is suspended and cannot complete quizzes.',
+        });
+        return 'retry';
+      }
+      
       let outcome: 'pass' | 'retry' | 'reset';
       const newStats = { ...currentUser.stats };
       const step = cocData.find(c => c.id === cocId)?.steps.find(s => s.id === stepId);
@@ -917,7 +954,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
   
-    const postFeedback = (message: string) => {
+  const postFeedback = (message: string) => {
     if (!currentUser) {
       toast({
         variant: "destructive",
@@ -925,6 +962,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
         description: "You must be logged in to post feedback.",
       });
       return;
+    }
+
+    if (currentUser.player.isBanned || currentUser.player.isMuted) {
+        toast({
+            variant: 'destructive',
+            title: 'Action Restricted',
+            description: 'You are currently unable to post feedback.',
+        });
+        return;
     }
     
     if (!message.trim()) {
@@ -954,6 +1000,55 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  /**
+   * Admin Functions
+   */
+
+  const updateUserPropertyByUsername = (username: string, updates: Partial<Player>) => {
+    setAccounts(prevAccounts =>
+      prevAccounts.map(acc =>
+        acc.player.username === username ? { ...acc, player: { ...acc.player, ...updates } } : acc
+      )
+    );
+  };
+  
+  const banUser = (username: string) => {
+    if (!isAdmin) return;
+    updateUserPropertyByUsername(username, { isBanned: true });
+    logActivity('User Banned', `Banned user: ${username}`);
+    toast({ title: 'User Banned', description: `${username} has been banned.` });
+  };
+
+  const unbanUser = (username: string) => {
+    if (!isAdmin) return;
+    updateUserPropertyByUsername(username, { isBanned: false });
+    logActivity('User Unbanned', `Unbanned user: ${username}`);
+    toast({ title: 'User Unbanned', description: `${username} has been unbanned.` });
+  };
+
+  const muteUser = (username: string) => {
+    if (!isAdmin) return;
+    updateUserPropertyByUsername(username, { isMuted: true });
+    logActivity('User Muted', `Muted user: ${username}`);
+    toast({ title: 'User Muted', description: `${username} has been muted.` });
+  };
+
+  const unmuteUser = (username: string) => {
+    if (!isAdmin) return;
+    updateUserPropertyByUsername(username, { isMuted: false });
+    logActivity('User Unmuted', `Unmuted user: ${username}`);
+    toast({ title: 'User Unmuted', description: `${username} has been unmuted.` });
+  };
+
+  const setCustomTitle = (username: string, title: string) => {
+    if (!isAdmin) return;
+    const cleanTitle = title.trim();
+    updateUserPropertyByUsername(username, { customTitle: cleanTitle });
+    logActivity('Custom Title Set', `Set title for ${username} to "${cleanTitle}"`);
+    toast({ title: 'Title Updated', description: `${username}'s title has been changed.` });
+  };
+
+
   useEffect(() => {
     if (currentUser?.stats && currentUser.stats.totalResets >= 10) {
       addAchievement('greatest-reset');
@@ -961,7 +1056,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, isAdmin, accounts, loginHistory, activityLogs, logActivity, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, feedbackPosts, postFeedback }}>
+    <GameContext.Provider value={{ currentUser, isAdmin, accounts, loginHistory, activityLogs, logActivity, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, feedbackPosts, postFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle }}>
       {children}
     </GameContext.Provider>
   );

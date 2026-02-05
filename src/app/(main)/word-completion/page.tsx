@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo, useContext, useEffect } from 'react';
@@ -46,11 +47,21 @@ export default function WordCompletionPage() {
     const currentRound = rounds[currentRoundIndex];
 
     useEffect(() => {
+        if (game.currentUser?.player.isBanned) {
+            toast({
+                variant: 'destructive',
+                title: 'Access Denied',
+                description: 'Your account is suspended and cannot play minigames.',
+            });
+            router.push('/dashboard');
+            return;
+        }
+
         if (game.logActivity && !gameStarted) {
             game.logActivity('Minigame Started', 'Word Completion');
             setGameStarted(true);
         }
-    }, [game.logActivity, gameStarted]);
+    }, [game.currentUser, game.logActivity, gameStarted, router, toast]);
     
     // Memoize the masked word so it doesn't change on re-renders
     const maskedWord = useMemo(() => maskWord(currentRound.answer), [currentRound]);

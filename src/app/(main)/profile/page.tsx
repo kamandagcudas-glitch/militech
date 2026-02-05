@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -64,6 +65,7 @@ export default function ProfilePage() {
     }, [player.username, hasSpecialBg, player.specialBackground]);
     
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
+    const displayTitle = player.customTitle || activeTitle?.name;
     const unlockedBadges = achievements.filter(a => a.type === 'badge');
 
     // Friend list logic: Find full user accounts for each friend username.
@@ -91,11 +93,14 @@ export default function ProfilePage() {
             .filter((acc): acc is UserAccount => !!acc);
     }, [currentUser?.player.friendRequests, accounts]);
     
-    // Helper to get the active title object from an achievement ID.
-    const getActiveTitle = (user: UserAccount) => {
-        if (!user.player.activeTitleId) return null;
-        return achievementsData.find(a => a.id === user.player.activeTitleId);
+    const getDisplayTitle = (user: UserAccount) => {
+        const { player } = user;
+        if (player.customTitle) return player.customTitle;
+        if (!player.activeTitleId) return null;
+        const achievement = achievementsData.find(a => a.id === player.activeTitleId);
+        return achievement ? achievement.name : null;
     };
+
 
     /**
      * Background Selection Logic:
@@ -190,7 +195,7 @@ export default function ProfilePage() {
             updateProfileBackground(bgPreviewUrl);
             setSelectedBgFile(null);
             setBgPreviewUrl(null);
-            // The toast is handled inside the context function
+            setIsBgDialogOpen(false);
         }
     };
     
@@ -294,7 +299,7 @@ export default function ProfilePage() {
                                     </Button>
                                 </div>
                                 <CardDescription>@{player.username}</CardDescription>
-                                {activeTitle && <Badge variant="destructive" className="text-lg mt-1">{activeTitle.name}</Badge>}
+                                {displayTitle && <Badge variant="destructive" className="text-lg mt-1">{displayTitle}</Badge>}
                                 {hasSpecialBg && (
                                     <p className="text-xs text-muted-foreground pt-2">This is a unique background assigned to this agent ID.</p>
                                 )}
@@ -403,7 +408,7 @@ export default function ProfilePage() {
                                 {friends.length > 0 ? (
                                     <div className="space-y-4">
                                         {friends.map(friend => {
-                                            const friendTitle = getActiveTitle(friend);
+                                            const friendTitle = getDisplayTitle(friend);
                                             return (
                                                 <div key={friend.player.username} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border border-white/10">
                                                     <Link href={`/users/${friend.player.username}`} className="flex items-center gap-3 group">
@@ -413,7 +418,7 @@ export default function ProfilePage() {
                                                         </Avatar>
                                                         <div>
                                                             <p className="font-semibold group-hover:underline">{friend.player.displayName}</p>
-                                                            {friendTitle && <p className="text-xs text-muted-foreground">{friendTitle.name}</p>}
+                                                            {friendTitle && <p className="text-xs text-muted-foreground">{friendTitle}</p>}
                                                         </div>
                                                     </Link>
                                                     <Button variant="ghost" size="icon" onClick={() => removeFriend(friend.player.username)} aria-label={`Remove ${friend.player.username} from friends`}>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useContext } from 'react';
@@ -40,22 +41,24 @@ export default function LeaderboardPage() {
 
         const totalPossibleSteps = cocData.reduce((sum, coc) => sum + coc.steps.length, 0);
 
-        const usersWithStats = game.accounts.map(account => {
-            const totalScore = Object.values(account.progress).reduce((cocSum, cocProgress) => {
-                const stepScores = Object.values(cocProgress.scores || {});
-                return cocSum + stepScores.reduce((stepSum, score) => stepSum + score, 0);
-            }, 0);
-            
-            const totalCompletedSteps = Object.values(account.progress).reduce((sum, p) => sum + p.completedSteps.length, 0);
-            
-            const completionPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
+        const usersWithStats = game.accounts
+            .filter(account => !account.player.isBanned) // Filter out banned users
+            .map(account => {
+                const totalScore = Object.values(account.progress).reduce((cocSum, cocProgress) => {
+                    const stepScores = Object.values(cocProgress.scores || {});
+                    return cocSum + stepScores.reduce((stepSum, score) => stepSum + score, 0);
+                }, 0);
+                
+                const totalCompletedSteps = Object.values(account.progress).reduce((sum, p) => sum + p.completedSteps.length, 0);
+                
+                const completionPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
 
-            return {
-                player: account.player,
-                totalScore,
-                completionPercentage
-            };
-        });
+                return {
+                    player: account.player,
+                    totalScore,
+                    completionPercentage
+                };
+            });
 
         usersWithStats.sort((a, b) => {
             if (b.totalScore !== a.totalScore) {
@@ -71,9 +74,10 @@ export default function LeaderboardPage() {
 
     }, [game.accounts]);
     
-    const getActiveTitle = (user: UserAccount['player']) => {
-        if (!user.activeTitleId) return null;
-        return achievementsData.find(a => a.id === user.activeTitleId);
+    const getDisplayTitle = (player: UserAccount['player']) => {
+        if (player.customTitle) return player.customTitle;
+        if (!player.activeTitleId) return null;
+        return achievementsData.find(a => a.id === player.activeTitleId)?.name || null;
     };
 
     return (
@@ -98,7 +102,7 @@ export default function LeaderboardPage() {
                         </TableHeader>
                         <TableBody>
                             {rankedUsers.map(user => {
-                                const activeTitle = getActiveTitle(user.player);
+                                const displayTitle = getDisplayTitle(user.player);
                                 const isCurrentUser = user.player.username === game.currentUser?.player.username;
                                 
                                 return (
@@ -119,7 +123,7 @@ export default function LeaderboardPage() {
                                                 </Avatar>
                                                 <div>
                                                     <p className="font-semibold text-base group-hover:underline group-hover:text-primary">{user.player.displayName}</p>
-                                                     {activeTitle && <Badge variant="destructive" className="mt-1">{activeTitle.name}</Badge>}
+                                                     {displayTitle && <Badge variant="destructive" className="mt-1">{displayTitle}</Badge>}
                                                 </div>
                                             </Link>
                                         </TableCell>
