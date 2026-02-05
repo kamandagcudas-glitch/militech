@@ -198,6 +198,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 }
             }
         }
+        
+        // Add the Vergil easter egg for existing users
+        if (newAcc.player.username.toLowerCase() === 'vergil') {
+            newAcc.player.customTitle = 'motivated gooner';
+        }
 
 
         return newAcc;
@@ -236,12 +241,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const hashedPassword = await hashPassword(password);
     const isCreator = trimmedUsername === CREATOR_USERNAME;
     const isCabbageThief = trimmedUsername === CABBAGE_THIEF_USERNAME;
+    const isVergil = trimmedUsername.toLowerCase() === 'vergil';
 
     let activeTitleId: string | null = null;
     let unlockedTitleIds: string[] = [];
     let badgeIds: string[] = [];
     let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
     let initialAchievements: Achievement[] = [];
+    let customTitle: string | undefined = undefined;
 
     // Easter Egg Logic: Assign special titles and backgrounds for specific usernames.
     if (isCreator) {
@@ -263,6 +270,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         specialBackground = 'cabbage';
         const achievement = achievementsData.find(a => a.id === 'bk-foot-lettuce');
         if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+    } else if (isVergil) {
+        customTitle = "motivated gooner";
     }
 
     // Create the initial Player object, including any easter egg properties.
@@ -273,6 +282,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       email: trimmedEmail || undefined, // Store email if provided
       emailVerified: false, // Default to not verified
       activeTitleId,
+      customTitle,
       unlockedTitleIds,
       badgeIds,
       friendUsernames: [],
@@ -283,6 +293,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
       profileBackgroundUrl: undefined,
       specialBackground,
+      passwordResetCode: undefined,
+      passwordResetExpires: undefined,
     };
     const newStats: PlayerStats = {
       coc1: { attempts: 0, resets: 0 },
