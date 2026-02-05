@@ -15,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarInset,
   SidebarTrigger,
+  SidebarMenuBadge,
 } from "@/components/ui/sidebar";
 import {
   LayoutGrid,
@@ -60,6 +61,7 @@ export default function MainAppLayout({
   }
   
   const { player } = game.currentUser;
+  const friendRequestCount = player.friendRequests?.length || 0;
 
   const navItems = [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
@@ -71,7 +73,7 @@ export default function MainAppLayout({
     { href: "/minigame", icon: <Puzzle />, label: "Mini-Game" },
     { href: "/leaderboard", icon: <Trophy />, label: "Leaderboard" },
     { href: "/users", icon: <Users />, label: "Users" },
-    { href: "/profile", icon: <User />, label: "Profile" },
+    { href: "/profile", icon: <User />, label: "Profile", badgeCount: friendRequestCount },
   ];
 
   return (
@@ -94,6 +96,7 @@ export default function MainAppLayout({
                   >
                     {item.icon}
                     <span>{item.label}</span>
+                     {item.badgeCount && item.badgeCount > 0 && <SidebarMenuBadge>{item.badgeCount}</SidebarMenuBadge>}
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
@@ -125,7 +128,7 @@ export default function MainAppLayout({
             </Avatar>
           </div>
         </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
+        <main className="relative flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

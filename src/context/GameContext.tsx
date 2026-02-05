@@ -21,7 +21,9 @@ export interface GameContextType {
   completeQuiz: (cocId: string, stepId: string, score: number) => 'pass' | 'retry' | 'reset';
   addAchievement: (achievementId: string) => void;
   updateAvatar: (avatarDataUrl: string) => void;
-  addFriend: (username: string) => void;
+  sendFriendRequest: (username: string) => void;
+  acceptFriendRequest: (senderUsername: string) => void;
+  rejectFriendRequest: (senderUsername: string) => void;
   removeFriend: (username: string) => void;
   sendVerificationEmail: () => void;
   verifyEmail: () => void;
@@ -67,7 +69,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       acc.player.emailVerified === undefined ||
       !acc.player.profileBackgroundId ||
       !('specialBackground' in acc.player) ||
-      (acc.player.username && acc.player.username.trim() !== acc.player.username)
+      (acc.player.username && acc.player.username.trim() !== acc.player.username) ||
+      !acc.player.friendRequests
     );
 
     if (needsPatch) {
@@ -83,6 +86,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
         // Patch missing friendUsernames array from older data structures.
         if (!newAcc.player.friendUsernames) {
           newAcc.player.friendUsernames = [];
+        }
+
+        // Patch missing friendRequests array.
+        if (!newAcc.player.friendRequests) {
+          newAcc.player.friendRequests = [];
         }
 
         // Patch missing email verification fields.
@@ -184,6 +192,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       unlockedTitleIds,
       badgeIds,
       friendUsernames: [],
+      friendRequests: [],
       isCreator,
       profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
       profileBackgroundUrl: undefined,
@@ -300,38 +309,142 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
   
   /**
-   * Friend Management Logic:
-   * The user's friend list is an array of usernames stored in `player.friendUsernames`.
-   * These functions add or remove a username from that list and update the user's account.
+   * Friend Request Logic
    */
-  const addFriend = (username: string) => {
-    if (!currentUser || (currentUser.player.friendUsernames && currentUser.player.friendUsernames.includes(username))) {
-      return;
-    }
+  const sendFriendRequest = (receiverUsername: string) => {
+    if (!currentUser) return;
+
+    setAccounts(prevAccounts => {
+      const receiverAccount = prevAccounts.find(acc => acc.player.username === receiverUsername);
+      if (!receiverAccount || receiverAccount.player.friendRequests.includes(currentUser.player.username)) {
+        return prevAccounts;
+      }
+
+      const newReceiverAccount = {
+        ...receiverAccount,
+        player: {
+          ...receiverAccount.player,
+          friendRequests: [...receiverAccount.player.friendRequests, currentUser.player.username],
+        },
+      };
+      
+      toast({
+        title: 'Request Sent!',
+        description: `Your friend request to ${receiverUsername} has been sent.`,
+      });
+
+      return prevAccounts.map(acc => acc.player.username === receiverUsername ? newReceiverAccount : acc);
+    });
+  };
+
+  const acceptFriendRequest = (senderUsername: string) => {
+    if (!currentUser) return;
+
+    setAccounts(prevAccounts => {
+      const senderAccount = prevAccounts.find(acc => acc.player.username === senderUsername);
+      const receiverAccount = prevAccounts.find(acc => acc.player.username === currentUser.player.username);
+      if (!senderAccount || !receiverAccount) return prevAccounts;
+
+      // Update receiver (current user)
+      const newReceiverAccount = {
+        ...receiverAccount,
+        player: {
+          ...receiverAccount.player,
+          friendUsernames: [...receiverAccount.player.friendUsernames, senderUsername],
+          friendRequests: receiverAccount.player.friendRequests.filter(req => req !== senderUsername),
+        },
+      };
+      
+      // Update sender
+      const newSenderAccount = {
+        ...senderAccount,
+        player: {
+          ...senderAccount.player,
+          friendUsernames: [...senderAccount.player.friendUsernames, currentUser.player.username],
+        },
+      };
+
+      toast({
+        title: 'Friend Added!',
+        description: `${senderUsername} is now your friend.`,
+      });
+
+      // Atomically update both accounts in the main list
+      return prevAccounts.map(acc => {
+        if (acc.player.username === currentUser.player.username) return newReceiverAccount;
+        if (acc.player.username === senderUsername) return newSenderAccount;
+        return acc;
+      });
+    });
+    // Manually trigger a state update for the currentUser to reflect the change immediately
+    setCurrentUser(prev => prev ? {
+        ...prev,
+        player: {
+            ...prev.player,
+            friendUsernames: [...prev.player.friendUsernames, senderUsername],
+            friendRequests: prev.player.friendRequests.filter(req => req !== senderUsername),
+        }
+    } : null);
+  };
+  
+  const rejectFriendRequest = (senderUsername: string) => {
+    if (!currentUser) return;
+
     const newPlayerState = {
       ...currentUser.player,
-      friendUsernames: [...(currentUser.player.friendUsernames || []), username],
+      friendRequests: currentUser.player.friendRequests.filter(req => req !== senderUsername),
     };
     updateCurrentUser({ player: newPlayerState });
     toast({
-      title: 'Friend Added!',
-      description: `${username} is now on your friends list.`,
+      title: 'Request Rejected',
+      description: `You have rejected the friend request from ${senderUsername}.`,
     });
   };
 
   const removeFriend = (username: string) => {
-    if (!currentUser || !currentUser.player.friendUsernames) return;
-    const newPlayerState = {
-      ...currentUser.player,
-      friendUsernames: currentUser.player.friendUsernames.filter(
-        (friend) => friend !== username
-      ),
-    };
-    updateCurrentUser({ player: newPlayerState });
-    toast({
-      title: 'Friend Removed',
-      description: `${username} has been removed from your friends list.`,
+    if (!currentUser) return;
+    
+    setAccounts(prevAccounts => {
+        const friendAccount = prevAccounts.find(acc => acc.player.username === username);
+        const selfAccount = prevAccounts.find(acc => acc.player.username === currentUser.player.username);
+
+        if (!friendAccount || !selfAccount) return prevAccounts;
+
+        const newSelfAccount = {
+            ...selfAccount,
+            player: {
+                ...selfAccount.player,
+                friendUsernames: selfAccount.player.friendUsernames.filter(friend => friend !== username),
+            }
+        };
+
+        const newFriendAccount = {
+            ...friendAccount,
+            player: {
+                ...friendAccount.player,
+                friendUsernames: friendAccount.player.friendUsernames.filter(friend => friend !== currentUser.player.username),
+            }
+        };
+        
+        toast({
+          title: 'Friend Removed',
+          description: `${username} has been removed from your friends list.`,
+        });
+
+        return prevAccounts.map(acc => {
+            if (acc.player.username === currentUser.player.username) return newSelfAccount;
+            if (acc.player.username === username) return newFriendAccount;
+            return acc;
+        });
     });
+
+    setCurrentUser(prev => prev ? {
+        ...prev,
+        player: {
+            ...prev.player,
+            friendUsernames: prev.player.friendUsernames.filter(friend => friend !== username),
+        }
+    } : null);
   };
 
   // --- Simulated Email Verification ---
@@ -441,7 +554,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, addFriend, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground }}>
       {children}
     </GameContext.Provider>
   );

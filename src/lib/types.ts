@@ -7,6 +7,7 @@ export interface Player {
   unlockedTitleIds: string[];
   badgeIds: string[];
   friendUsernames: string[];
+  friendRequests: string[];
   // This is the creator easter egg flag
   isCreator: boolean;
   profileBackgroundId?: string;

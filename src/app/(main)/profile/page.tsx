@@ -20,7 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Pencil, UserX, Users, Mail, Send, CheckCircle, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Pencil, UserX, Users, Mail, Send, CheckCircle, Image as ImageIcon, Sparkles, X, Check } from 'lucide-react';
 
 
 export default function ProfilePage() {
@@ -42,7 +42,7 @@ export default function ProfilePage() {
         return null;
     }
 
-    const { currentUser, accounts, removeFriend, updateAvatar, sendVerificationEmail, verifyEmail, updateProfileBackground } = game;
+    const { currentUser, accounts, removeFriend, updateAvatar, sendVerificationEmail, verifyEmail, updateProfileBackground, acceptFriendRequest, rejectFriendRequest } = game;
     const { player, stats, achievements } = currentUser;
     const hasSpecialBg = !!player.specialBackground;
 
@@ -74,6 +74,13 @@ export default function ProfilePage() {
             .map(username => accounts.find(acc => acc.player.username === username))
             .filter((acc): acc is UserAccount => !!acc);
     }, [player.friendUsernames, accounts]);
+
+    const friendRequests = useMemo(() => {
+        if (!currentUser?.player.friendRequests) return [];
+        return currentUser.player.friendRequests
+            .map(username => accounts.find(acc => acc.player.username === username))
+            .filter((acc): acc is UserAccount => !!acc);
+    }, [currentUser?.player.friendRequests, accounts]);
     
     // Helper to get the active title object from an achievement ID.
     const getActiveTitle = (user: UserAccount) => {
@@ -293,6 +300,36 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="lg:col-span-2 space-y-8">
+                        {friendRequests.length > 0 && (
+                            <Card className="bg-card/75 backdrop-blur-sm border-accent/50 shadow-lg shadow-accent/10">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2 text-accent"><Mail /> Friend Requests</CardTitle>
+                                    <CardDescription>You have {friendRequests.length} pending friend request(s).</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-4">
+                                        {friendRequests.map(requestingUser => (
+                                            <div key={requestingUser.player.username} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
+                                                <div className="flex items-center gap-3">
+                                                    <Avatar>
+                                                        <AvatarImage src={requestingUser.player.avatar} alt={requestingUser.player.username} />
+                                                        <AvatarFallback>{requestingUser.player.username.charAt(0)}</AvatarFallback>
+                                                    </Avatar>
+                                                    <div>
+                                                        <p className="font-semibold">{requestingUser.player.username}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2">
+                                                    <Button size="sm" variant="secondary" onClick={() => acceptFriendRequest(requestingUser.player.username)}><Check className="h-4 w-4 mr-2" /> Accept</Button>
+                                                    <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => rejectFriendRequest(requestingUser.player.username)}><X className="h-4 w-4 mr-2" /> Reject</Button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+                        
                         <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><Users /> Friends</CardTitle>
@@ -305,16 +342,16 @@ export default function ProfilePage() {
                                             const friendTitle = getActiveTitle(friend);
                                             return (
                                                 <div key={friend.player.username} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border border-white/10">
-                                                    <div className="flex items-center gap-3">
+                                                    <Link href={`/users/${friend.player.username}`} className="flex items-center gap-3 group">
                                                         <Avatar>
                                                             <AvatarImage src={friend.player.avatar} alt={friend.player.username} />
                                                             <AvatarFallback>{friend.player.username.charAt(0)}</AvatarFallback>
                                                         </Avatar>
                                                         <div>
-                                                            <p className="font-semibold">{friend.player.username}</p>
+                                                            <p className="font-semibold group-hover:underline">{friend.player.username}</p>
                                                             {friendTitle && <p className="text-xs text-muted-foreground">{friendTitle.name}</p>}
                                                         </div>
-                                                    </div>
+                                                    </Link>
                                                     <Button variant="ghost" size="icon" onClick={() => removeFriend(friend.player.username)} aria-label={`Remove ${friend.player.username} from friends`}>
                                                         <UserX className="h-5 w-5 text-destructive/80 hover:text-destructive" />
                                                     </Button>

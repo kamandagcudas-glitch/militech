@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { UserPlus, UserX, Lock, Trophy } from 'lucide-react';
+import { UserPlus, UserX, Lock, Trophy, Send, Mail } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -33,7 +33,7 @@ export default function PublicProfilePage() {
     const router = useRouter();
     const username = params.username as string;
 
-    const { accounts, currentUser, addFriend, removeFriend } = game;
+    const { accounts, currentUser, sendFriendRequest, removeFriend } = game;
 
     const userAccount = useMemo(() => {
         if (!username) return null;
@@ -78,11 +78,13 @@ export default function PublicProfilePage() {
         );
     }
     
-    const { player, achievements } = userAccount;
+    const { player } = userAccount;
     const hasSpecialBg = !!player.specialBackground;
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
     
     const isFriend = currentUser?.player.friendUsernames.includes(player.username);
+    const requestSent = player.friendRequests?.includes(currentUser?.player.username || '');
+    const requestReceived = currentUser?.player.friendRequests.includes(player.username);
     const isCurrentUser = currentUser?.player.username === player.username;
 
     // If the user is viewing their own public profile, redirect them to their editable profile page.
@@ -147,13 +149,27 @@ export default function PublicProfilePage() {
                                 </CardTitle>
                                 {activeTitle && <Badge variant="destructive" className="text-lg">{activeTitle.name}</Badge>}
                                 {!isCurrentUser && currentUser && (
-                                     <Button 
-                                        onClick={() => isFriend ? removeFriend(player.username) : addFriend(player.username)} 
-                                        className="mt-4"
-                                        variant={isFriend ? "outline" : "default"}
-                                    >
-                                        {isFriend ? <><UserX className="mr-2" /> Remove Friend</> : <><UserPlus className="mr-2"/> Add Friend</>}
-                                    </Button>
+                                    <div className="mt-4">
+                                        {isFriend ? (
+                                            <Button onClick={() => removeFriend(player.username)} variant="outline">
+                                                <UserX className="mr-2" /> Remove Friend
+                                            </Button>
+                                        ) : requestSent ? (
+                                            <Button disabled variant="secondary">
+                                                <Send className="mr-2" /> Request Sent
+                                            </Button>
+                                        ) : requestReceived ? (
+                                            <Button asChild>
+                                                <Link href="/profile">
+                                                    <Mail className="mr-2"/> Respond to Request
+                                                </Link>
+                                            </Button>
+                                        ) : (
+                                            <Button onClick={() => sendFriendRequest(player.username)}>
+                                                <UserPlus className="mr-2"/> Add Friend
+                                            </Button>
+                                        )}
+                                    </div>
                                 )}
                             </CardHeader>
                         </Card>
@@ -167,7 +183,7 @@ export default function PublicProfilePage() {
                             </CardHeader>
                             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {achievementsData.map(ach => {
-                                    const isUnlocked = achievements.some(unlocked => unlocked.id === ach.id);
+                                    const isUnlocked = userAccount.achievements.some(unlocked => unlocked.id === ach.id);
                                     return (
                                         <div key={ach.id} className={cn("flex items-start gap-4 p-4 rounded-lg border", isUnlocked ? "bg-primary/20 border-primary/30" : "bg-muted/20 border-muted/30 opacity-60")}>
                                             <div className="mt-1 text-3xl">{ach.type === 'badge' ? '🎖️' : '🏆'}</div>
