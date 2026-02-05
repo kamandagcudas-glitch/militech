@@ -108,7 +108,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           } else if (newAcc.player.username === CABBAGE_THIEF_USERNAME) {
             newAcc.player.specialBackground = 'cabbage';
           } else {
-            newAcc.player.specialBackground = null;
+            newAcc.player.specialBackground = undefined;
           }
         }
 
