@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import Image from 'next/image';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { miniGameData } from '@/lib/data';
@@ -24,8 +24,16 @@ export default function MiniGamePage() {
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
     const [showSummary, setShowSummary] = useState(false);
     const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [gameStarted, setGameStarted] = useState(false);
 
     const currentRound = rounds[currentRoundIndex];
+
+    useEffect(() => {
+        if (game.logActivity && !gameStarted) {
+            game.logActivity('Minigame Started', '4 Pics 1 Word');
+            setGameStarted(true);
+        }
+    }, [game.logActivity, gameStarted]);
 
     const images = useMemo(() => {
         return currentRound.imageIds.map(id => PlaceHolderImages.find(img => img.id === id));
@@ -62,6 +70,7 @@ export default function MiniGamePage() {
             if (correctAnswers + 1 === rounds.length) {
                 game.addAchievement('minigame-complete');
             }
+            game.logActivity('Minigame Finished', `4 Pics 1 Word - Score: ${correctAnswers + 1}/${rounds.length}`);
             setShowSummary(true);
         }
     };
@@ -72,6 +81,7 @@ export default function MiniGamePage() {
         setFeedback(null);
         setShowSummary(false);
         setCorrectAnswers(0);
+        setGameStarted(false); // Reset for logging
     };
 
     return (

@@ -31,6 +31,7 @@ import {
   Files,
   MessageSquare,
   SpellCheck,
+  Shield,
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -109,6 +110,19 @@ export default function MainAppLayout({
                 </Link>
               </SidebarMenuItem>
             ))}
+            {player.isCreator && (
+              <SidebarMenuItem>
+                <Link href="/admin" className="w-full">
+                  <SidebarMenuButton
+                    isActive={pathname.startsWith('/admin')}
+                    tooltip="Admin Dashboard"
+                  >
+                    <Shield />
+                    <span>Admin Dashboard</span>
+                  </SidebarMenuButton>
+                </Link>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>

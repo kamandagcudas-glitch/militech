@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
+import { useContext, useEffect } from 'react';
 import { cocData } from '@/lib/data';
+import { GameContext, GameContextType } from '@/context/GameContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -20,11 +22,19 @@ import {
 export default function LessonPage() {
   const params = useParams();
   const router = useRouter();
+  const game = useContext(GameContext) as GameContextType;
   const cocId = params.cocId as string;
   const stepId = params.stepId as string;
 
   const coc = cocData.find(c => c.id === cocId);
   const step = coc?.steps.find(s => s.id === stepId);
+
+  useEffect(() => {
+    if (game.logActivity && coc && step) {
+        game.logActivity('Lesson Viewed', `COC: ${coc.title}, Step: ${step.title}`);
+    }
+  }, [game, coc, step]);
+
 
   if (!coc || !step) {
     return <div>Lesson not found.</div>;

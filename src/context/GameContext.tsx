@@ -4,7 +4,7 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useLocalStorage from '@/hooks/use-local-storage';
-import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount, UserFile, FeedbackPost } from '@/lib/types';
+import { Player, PlayerStats, PlayerProgress, Achievement, UserAccount, UserFile, FeedbackPost, LoginAttempt, ActivityLog } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { achievementsData, cocData } from '@/lib/data';
 import { defaultBackground } from '@/lib/backgrounds-data';
@@ -16,6 +16,9 @@ const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
 export interface GameContextType {
   currentUser: UserAccount | null;
   accounts: UserAccount[];
+  loginHistory: LoginAttempt[];
+  activityLogs: ActivityLog[];
+  logActivity: (activity: string, details: string) => void;
   register: (username: string, displayName: string, password: string, email?: string) => Promise<{ success: boolean; message: string; }>;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -64,6 +67,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [accounts, setAccounts] = useLocalStorage<UserAccount[]>('game_accounts', []);
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
   const [feedbackPosts, setFeedbackPosts] = useLocalStorage<FeedbackPost[]>('game_feedback', []);
+  const [loginHistory, setLoginHistory] = useLocalStorage<LoginAttempt[]>('game_login_history', []);
+  const [activityLogs, setActivityLogs] = useLocalStorage<ActivityLog[]>('game_activity_logs', []);
   
   // To keep the user logged in across page refreshes, we store the username of the logged-in user.
   const [loggedInUser, setLoggedInUser] = useLocalStorage<string | null>('game_loggedInUser', null);
@@ -287,20 +292,26 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    // Login Validation Logic:
-    // 1. Finds the user by username.
-    // 2. Hashes the provided password.
-    // 3. Compares the generated hash with the stored hash.
     const account = accounts.find(acc => acc.player.username.toLowerCase() === username.toLowerCase());
+    const newLog: Omit<LoginAttempt, 'id'> = {
+        username: username,
+        timestamp: new Date().toISOString(),
+        status: 'Failed',
+    };
+
     if (account) {
-      const hashedPassword = await hashPassword(password);
-      if (account.hashedPassword === hashedPassword) {
-        setCurrentUser(account);
-        setLoggedInUser(account.player.username);
-        router.push('/dashboard');
-        return true;
-      }
+        const hashedPassword = await hashPassword(password);
+        if (account.hashedPassword === hashedPassword) {
+            newLog.status = 'Success';
+            setLoginHistory(prev => [{...newLog, id: crypto.randomUUID()}, ...prev]);
+            setCurrentUser(account);
+            setLoggedInUser(account.player.username);
+            router.push('/dashboard');
+            return true;
+        }
     }
+    
+    setLoginHistory(prev => [{...newLog, id: crypto.randomUUID()}, ...prev]);
     return false;
   };
 
@@ -333,6 +344,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
         acc.player.username === currentUser.player.username ? updatedAccount : acc
       )
     );
+  };
+
+  const logActivity = (activity: string, details: string) => {
+    if (!currentUser) return;
+    const newLog: ActivityLog = {
+        id: crypto.randomUUID(),
+        username: currentUser.player.username,
+        timestamp: new Date().toISOString(),
+        activity,
+        details,
+    };
+    setActivityLogs(prev => [newLog, ...prev]);
   };
 
   const updateAvatar = (avatarDataUrl: string) => {
@@ -627,6 +650,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
       
       let outcome: 'pass' | 'retry' | 'reset';
       const newStats = { ...currentUser.stats };
+      const step = cocData.find(c => c.id === cocId)?.steps.find(s => s.id === stepId);
+      const totalQuestions = step?.quiz.length || 20;
+
       (newStats as any)[cocId].attempts += 1;
 
       let newProgress = JSON.parse(JSON.stringify(currentUser.progress));
@@ -655,6 +681,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       }
       
       updateCurrentUser({ stats: newStats, progress: newProgress });
+      logActivity('Quiz Taken', `COC: ${cocId}, Step: ${stepId}, Score: ${score}/${totalQuestions}, Outcome: ${outcome}`);
 
       return outcome;
   };
@@ -763,7 +790,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!currentUser) return;
     
     // Warning for localStorage limitations
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit warning
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit 
       toast({
         variant: "destructive",
         title: "File is too large",
@@ -788,6 +815,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
       const updatedFiles = [...currentUser.files, newFile];
       updateCurrentUser({ files: updatedFiles });
+      logActivity('File Uploaded', `File: ${file.name}, Size: ${file.size} bytes`);
       toast({ title: "File Uploaded", description: `"${file.name}" has been saved.` });
     };
     reader.readAsDataURL(file);
@@ -851,10 +879,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
       
       const newCurrentUserAccount = {
           ...currentUserAccount,
-          files: currentUserAccount.files.map(f => f.id === fileId ? originalFile : f)
+          files: currentUserAccount.files.map(f => f.id === fileId ? originalFile! : f)
       }
 
       success = true;
+      logActivity('File Shared', `File: ${originalFile.name}, To: ${friendUsername}`);
 
       // Return the newly updated list of all accounts
       return prevAccounts.map(acc => {
@@ -906,6 +935,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     };
 
     setFeedbackPosts(prev => [newFeedback, ...prev]);
+    logActivity('Feedback Posted', `Message: "${message.substring(0, 30)}..."`);
 
     toast({
       title: "Feedback Submitted!",
@@ -920,7 +950,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, feedbackPosts, postFeedback }}>
+    <GameContext.Provider value={{ currentUser, accounts, loginHistory, activityLogs, logActivity, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, feedbackPosts, postFeedback }}>
       {children}
     </GameContext.Provider>
   );

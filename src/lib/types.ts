@@ -9,7 +9,7 @@ export interface Player {
   badgeIds: string[];
   friendUsernames: string[];
   friendRequests: string[];
-  // This is the creator easter egg flag
+  // This is the creator easter egg flag, also used for admin access
   isCreator: boolean;
   profileBackgroundId?: string;
   profileBackgroundUrl?: string;
@@ -59,6 +59,21 @@ export interface FeedbackPost {
   avatar: string;
   message: string;
   timestamp: string;
+}
+
+export interface LoginAttempt {
+  id: string;
+  username: string;
+  timestamp: string;
+  status: 'Success' | 'Failed';
+}
+
+export interface ActivityLog {
+  id: string;
+  username: string;
+  timestamp: string;
+  activity: string;
+  details: string;
 }
 
 // This is the main data structure for a user account, stored in local storage.

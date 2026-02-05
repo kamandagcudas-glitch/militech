@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import { wordCompletionGameData } from '@/lib/data';
+import { GameContext, GameContextType } from '@/context/GameContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -31,6 +32,7 @@ const maskWord = (word: string): string => {
 
 
 export default function WordCompletionPage() {
+    const game = useContext(GameContext) as GameContextType;
     const { toast } = useToast();
     const router = useRouter();
     const [rounds] = useState(() => wordCompletionGameData.sort(() => 0.5 - Math.random()));
@@ -39,8 +41,16 @@ export default function WordCompletionPage() {
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
     const [showSummary, setShowSummary] = useState(false);
     const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [gameStarted, setGameStarted] = useState(false);
 
     const currentRound = rounds[currentRoundIndex];
+
+    useEffect(() => {
+        if (game.logActivity && !gameStarted) {
+            game.logActivity('Minigame Started', 'Word Completion');
+            setGameStarted(true);
+        }
+    }, [game.logActivity, gameStarted]);
     
     // Memoize the masked word so it doesn't change on re-renders
     const maskedWord = useMemo(() => maskWord(currentRound.answer), [currentRound]);
@@ -73,6 +83,7 @@ export default function WordCompletionPage() {
             setGuess('');
             setFeedback(null);
         } else {
+            game.logActivity('Minigame Finished', `Word Completion - Score: ${correctAnswers}/${rounds.length}`);
             setShowSummary(true);
         }
     };
@@ -83,6 +94,7 @@ export default function WordCompletionPage() {
         setFeedback(null);
         setShowSummary(false);
         setCorrectAnswers(0);
+        setGameStarted(false);
     };
 
     return (
