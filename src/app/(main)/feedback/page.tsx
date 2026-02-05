@@ -30,7 +30,7 @@ export default function FeedbackPage() {
                 style={{ backgroundImage: `url(${feedbackPageBackgroundUrl})` }}
                 data-ai-hint="cyberpunk city"
             />
-            <div className="absolute inset-0 w-full h-full bg-black/80 backdrop-blur-md" />
+            <div className="absolute inset-0 w-full h-full bg-black/40 backdrop-blur-[6px]" />
             <div className="absolute inset-0 w-full h-full feedback-bg-scanlines" />
 
             {/* Content Layer */}
@@ -44,7 +44,7 @@ export default function FeedbackPage() {
                         <p className="text-muted-foreground">This is a public channel to the developers. Leave your thoughts below.</p>
                     </div>
                     
-                    <Card className="mb-8 bg-card/80 backdrop-blur-md border-primary/20 shadow-lg shadow-primary/10">
+                    <Card className="mb-8 bg-background/75 backdrop-blur-[6px] border-primary/20 shadow-lg shadow-primary/10">
                         <CardHeader>
                             <CardTitle>Submit New Feedback</CardTitle>
                             <CardDescription>Your message will be visible to all other agents.</CardDescription>
@@ -75,7 +75,7 @@ export default function FeedbackPage() {
                                 game.feedbackPosts.map((post, index) => (
                                     <div 
                                         key={post.id} 
-                                        className="p-4 border rounded-lg bg-card-foreground/5 flex flex-col gap-4 justify-between transition-all duration-300 border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                                        className="p-4 border rounded-lg bg-background/75 backdrop-blur-[6px] flex flex-col gap-4 justify-between transition-all duration-300 border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
                                         style={{ animationDelay: `${50 * index}ms`, animationFillMode: 'backwards' }}
                                     >
                                         <div className="flex items-start justify-between">
@@ -99,7 +99,7 @@ export default function FeedbackPage() {
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-center py-16 text-muted-foreground border-2 border-dashed rounded-lg bg-card/70">
+                                <div className="text-center py-16 text-muted-foreground border-2 border-dashed rounded-lg bg-background/75 backdrop-blur-[6px]">
                                     <p className="text-lg font-semibold mb-2">The board is silent.</p>
                                     <p>Be the first to leave a message.</p>
                                 </div>
