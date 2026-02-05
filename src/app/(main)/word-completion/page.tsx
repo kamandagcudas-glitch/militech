@@ -5,7 +5,7 @@ import { wordCompletionGameData } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Lightbulb, Check, X, RotateCw, ArrowRight, SpellCheck } from 'lucide-react';
+import { Lightbulb, Check, X, RotateCw, ArrowRight, SpellCheck, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
