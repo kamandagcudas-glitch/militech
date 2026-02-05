@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useState, useContext, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { cocData } from '@/lib/data';
@@ -34,9 +34,11 @@ export default function QuizPage() {
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [outcome, setOutcome] = useState<'pass' | 'retry' | 'reset' | null>(null);
+  const [focusLost, setFocusLost] = useState(false);
 
   useEffect(() => {
-    if (outcome) {
+    // Do not show the emoji toast if the quiz was failed due to focus loss.
+    if (outcome && !focusLost) {
         const emojis = { pass: '🎉', retry: '💪', reset: '😢' };
         const titles = { pass: 'Step Passed!', retry: 'Try Again!', reset: 'Step Reset!'};
         const descriptions = { 
@@ -50,7 +52,42 @@ export default function QuizPage() {
             duration: 3000
         });
     }
-  }, [outcome, score, toast]);
+  }, [outcome, score, toast, focusLost]);
+
+  // Quiz Focus Monitor Logic: This function fails the quiz if the user switches tabs or minimizes the window.
+  const failQuizForLosingFocus = useCallback(() => {
+    // Check if the quiz is already over to prevent multiple triggers.
+    if (showResult) return;
+
+    setFocusLost(true);
+    const finalScore = 0;
+    setScore(finalScore);
+    const result = game.completeQuiz(cocId, stepId, finalScore);
+    setOutcome(result); // This will always be 'reset'
+    setShowResult(true);
+  }, [showResult, game, cocId, stepId]);
+
+  // This effect attaches the focus and visibility listeners.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+        if (document.hidden) {
+            failQuizForLosingFocus();
+        }
+    };
+
+    // Only add listeners if the quiz is currently active.
+    if (!showResult) {
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('blur', failQuizForLosingFocus);
+    }
+
+    // Cleanup listeners when the component unmounts or the quiz is finished.
+    return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.removeEventListener('blur', failQuizForLosingFocus);
+    };
+  }, [showResult, failQuizForLosingFocus]);
+
 
   // Anti-Cheat Logic: This effect adds event listeners to the quiz container
   // to disable right-clicking, copying, and dragging. It also shows a warning toast.
@@ -144,7 +181,11 @@ export default function QuizPage() {
         <CardHeader>
           <Progress value={progressPercentage} className="mb-4" />
           <CardTitle className="font-headline text-2xl">{step.title} - Quiz</CardTitle>
-          <CardDescription>Question {currentQuestionIndex + 1} of {totalQuestions}</CardDescription>
+          <CardDescription>
+            Question {currentQuestionIndex + 1} of {totalQuestions}
+            <br />
+            <span className="font-bold text-destructive">Do not leave this tab or window, or your attempt will be failed.</span>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="font-semibold text-xl mb-8 min-h-[3em]">{question.question}</p>
@@ -174,18 +215,20 @@ export default function QuizPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center font-headline text-3xl">
-                {outcome === 'pass' && '🎉 Step Passed! 🎉'}
-                {outcome === 'retry' && '💪 Keep Going! 💪'}
-                {outcome === 'reset' && '😢 Oh no... 😢'}
+                {focusLost && 'Focus Lost - Quiz Failed'}
+                {!focusLost && outcome === 'pass' && '🎉 Step Passed! 🎉'}
+                {!focusLost && outcome === 'retry' && '💪 Keep Going! 💪'}
+                {!focusLost && outcome === 'reset' && '😢 Oh no... 😢'}
             </DialogTitle>
             <DialogDescription className="text-center text-lg">
               You scored {score} / {totalQuestions}.
             </DialogDescription>
           </DialogHeader>
           <div className="text-center my-4">
-              {outcome === 'pass' && <p>Excellent work! You're ready for the next step.</p>}
-              {outcome === 'retry' && <p>You're close! Review the lesson and try again.</p>}
-              {outcome === 'reset' && <p>Back to basics. Let's build a stronger foundation.</p>}
+              {focusLost && <p>You navigated away from the quiz window, so your attempt has been marked as failed.</p>}
+              {!focusLost && outcome === 'pass' && <p>Excellent work! You're ready for the next step.</p>}
+              {!focusLost && outcome === 'retry' && <p>You're close! Review the lesson and try again.</p>}
+              {!focusLost && outcome === 'reset' && <p>Back to basics. Let's build a stronger foundation.</p>}
           </div>
           <DialogFooter>
             <Button onClick={handleDialogClose} className="w-full">Continue</Button>
