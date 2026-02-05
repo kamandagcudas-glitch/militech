@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -73,19 +74,25 @@ export default function ProfilePage() {
     /**
      * Background Selection Logic:
      * This determines the correct background image URL to display.
-     * If the user has uploaded a custom image (`profileBackgroundId` is 'custom'),
-     * it uses the `profileBackgroundUrl` (a base64 string).
-     * Otherwise, it finds the URL from the `predefinedBackgrounds` array based on the stored ID.
+     * The value is read from the user's data in the GameContext.
+     * It falls back to the default background if no selection is found.
+     * Console logs are added for debugging purposes.
      */
     const currentBackgroundUrl = useMemo(() => {
-        if (!player) return '';
+        if (!player) {
+            console.log('Profile Background: Player data not available.');
+            return '';
+        }
     
         if (player.profileBackgroundId === 'custom' && player.profileBackgroundUrl) {
+            console.log('Profile Background: Applying custom uploaded background.');
             return player.profileBackgroundUrl;
         }
         
         const predefined = predefinedBackgrounds.find(bg => bg.id === player.profileBackgroundId);
-        return predefined ? predefined.imageUrl : (predefinedBackgrounds[0]?.imageUrl || '');
+        const url = predefined ? predefined.imageUrl : (predefinedBackgrounds[0]?.imageUrl || '');
+        console.log(`Profile Background: Applying predefined background with ID '${player.profileBackgroundId}'. URL: ${url}`);
+        return url;
     }, [player]);
 
     const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,14 +156,28 @@ export default function ProfilePage() {
 
     return (
         <div className="relative -m-4 md:-m-6 h-full">
-            {/* Background Image & Overlay */}
+            {/* 
+                Background Image Container.
+                It's an absolute-positioned div that fills the parent container.
+                The background image is applied via inline style from the `currentBackgroundUrl` state.
+            */}
             <div
-                className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500 -z-10"
+                className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500"
                 style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
             />
-            <div className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-sm -z-10" />
+            {/* 
+                Overlay layer.
+                This sits on top of the background image to provide contrast for the text content.
+                The backdrop-blur effect is also applied here.
+            */}
+            <div className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-sm" />
 
-            <div className="relative z-0 container mx-auto p-4 md:p-6 lg:p-8">
+            {/* 
+                Content Container.
+                This holds all the visible page content (cards, titles, etc.).
+                `position: relative` and `z-10` ensure it sits on top of the background and overlay layers.
+            */}
+            <div className="relative z-10 container mx-auto p-4 md:p-6 lg:p-8">
                 <h1 className="font-headline text-4xl font-bold mb-8">Player Profile</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-1 space-y-8">
@@ -430,3 +451,4 @@ export default function ProfilePage() {
         </div>
     );
 }
+
