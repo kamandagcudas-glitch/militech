@@ -30,6 +30,8 @@ export interface GameContextType {
   verifyEmail: () => void;
   updateProfileBackground: (idOrUrl: string) => void;
   updateEmail: (email: string) => Promise<{ success: boolean; message: string; }>;
+  sendPasswordResetCode: (usernameOrEmail: string) => Promise<{ success: boolean; message: string; }>;
+  resetPassword: (username: string, code: string, newPassword: string) => Promise<{ success: boolean; message: string; }>;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -72,7 +74,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       !acc.player.profileBackgroundId ||
       !('specialBackground' in acc.player) ||
       (acc.player.username && acc.player.username.trim() !== acc.player.username) ||
-      !acc.player.friendRequests
+      !acc.player.friendRequests ||
+      !('passwordResetCode' in acc.player)
     );
 
     if (needsPatch) {
@@ -101,6 +104,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         }
         if (!('email' in newAcc.player)) {
             newAcc.player.email = undefined;
+        }
+
+        // Patch missing password reset fields
+        if (!('passwordResetCode' in newAcc.player)) {
+            newAcc.player.passwordResetCode = undefined;
+            newAcc.player.passwordResetExpires = undefined;
         }
 
         // Patch missing profile background fields.
@@ -581,6 +590,103 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return outcome;
   };
   
+    /**
+   * Password Recovery Logic (Simulated)
+   */
+  const sendPasswordResetCode = async (usernameOrEmail: string): Promise<{ success: boolean; message: string; }> => {
+    const account = accounts.find(acc => 
+        acc.player.username.toLowerCase() === usernameOrEmail.toLowerCase() || 
+        (acc.player.email && acc.player.email.toLowerCase() === usernameOrEmail.toLowerCase())
+    );
+
+    if (!account) {
+        return { success: false, message: 'User not found.' };
+    }
+    if (!account.player.email || !account.player.emailVerified) {
+        return { success: false, message: 'This account does not have a verified email address for password recovery.' };
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date(new Date().getTime() + 10 * 60 * 1000); // 10 minutes expiry
+
+    const updatedAccount = {
+        ...account,
+        player: {
+            ...account.player,
+            passwordResetCode: code,
+            passwordResetExpires: expires.toISOString(),
+        }
+    };
+    
+    setAccounts(prevAccounts =>
+      prevAccounts.map(acc =>
+        acc.player.username === account.player.username ? updatedAccount : acc
+      )
+    );
+    
+    // This is a simulation, so we show the code in a toast instead of emailing it.
+    toast({
+        title: 'Verification Code Sent (Simulation)',
+        description: `Your recovery code is ${code}. It expires in 10 minutes.`,
+        duration: 15000,
+    });
+    
+    return { success: true, message: `A recovery code has been "sent" to ${account.player.email}.` };
+  };
+
+  const resetPassword = async (username: string, code: string, newPassword: string): Promise<{ success: boolean; message: string; }> => {
+    const account = accounts.find(acc => acc.player.username === username);
+
+    if (!account) {
+        return { success: false, message: 'User not found.' };
+    }
+
+    const now = new Date();
+    const expires = account.player.passwordResetExpires ? new Date(account.player.passwordResetExpires) : null;
+
+    if (!account.player.passwordResetCode || account.player.passwordResetCode !== code) {
+        return { success: false, message: 'Invalid verification code.' };
+    }
+
+    if (!expires || now > expires) {
+        // Clear the expired code
+         const updatedAccount = {
+            ...account,
+            player: {
+                ...account.player,
+                passwordResetCode: undefined,
+                passwordResetExpires: undefined,
+            }
+        };
+        setAccounts(prevAccounts =>
+            prevAccounts.map(acc =>
+                acc.player.username === account.player.username ? updatedAccount : acc
+            )
+        );
+        return { success: false, message: 'Verification code has expired. Please request a new one.' };
+    }
+    
+    const hashedPassword = await hashPassword(newPassword);
+
+    const updatedAccount = {
+        ...account,
+        hashedPassword,
+        player: {
+            ...account.player,
+            passwordResetCode: undefined,
+            passwordResetExpires: undefined,
+        }
+    };
+
+    setAccounts(prevAccounts =>
+      prevAccounts.map(acc =>
+        acc.player.username === account.player.username ? updatedAccount : acc
+      )
+    );
+
+    return { success: true, message: 'Password has been reset successfully.' };
+  };
+
   useEffect(() => {
     if (currentUser?.stats && currentUser.stats.totalResets >= 10) {
       addAchievement('greatest-reset');
@@ -588,7 +694,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword }}>
       {children}
     </GameContext.Provider>
   );

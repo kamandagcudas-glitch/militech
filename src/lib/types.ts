@@ -13,6 +13,8 @@ export interface Player {
   profileBackgroundId?: string;
   profileBackgroundUrl?: string;
   specialBackground?: 'angelic' | 'cabbage';
+  passwordResetCode?: string;
+  passwordResetExpires?: string;
 }
 
 export interface PlayerStats {
