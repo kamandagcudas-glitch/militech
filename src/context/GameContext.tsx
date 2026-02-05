@@ -374,28 +374,29 @@ export function GameProvider({ children }: { children: ReactNode }) {
   
   // This helper function updates the current user's data both in the `accounts` array
   // (which is persisted to local storage) and in the active `currentUser` state.
-  const updateCurrentUser = (updatedData: Partial<UserAccount>) => {
-    if (!currentUser) return;
-    
-    // Merge the updates with the current user data.
-    const updatedAccount = { 
-      ...currentUser, 
-      ...updatedData,
-      player: { ...currentUser.player, ...updatedData.player },
-      stats: { ...currentUser.stats, ...updatedData.stats },
-      progress: { ...currentUser.progress, ...updatedData.progress },
-    };
-    
-    // Update the state for the current session
-    setCurrentUser(updatedAccount);
-    
-    // Update the account in the persisted array
-    setAccounts(prevAccounts =>
-      prevAccounts.map(acc =>
-        acc.player.username === currentUser.player.username ? updatedAccount : acc
-      )
-    );
-  };
+  const updateCurrentUser = useCallback((updatedData: Partial<UserAccount>) => {
+    setCurrentUser(prevUser => {
+      if (!prevUser) return null;
+
+      const updatedAccount = { 
+        ...prevUser, 
+        ...updatedData,
+        player: { ...prevUser.player, ...(updatedData.player || {}) },
+        stats: { ...prevUser.stats, ...(updatedData.stats || {}) },
+        progress: { ...prevUser.progress, ...(updatedData.progress || {}) },
+        achievements: updatedData.achievements || prevUser.achievements,
+        files: updatedData.files || prevUser.files,
+      };
+
+      setAccounts(prevAccounts =>
+        prevAccounts.map(acc =>
+          acc.player.username === prevUser.player.username ? updatedAccount : acc
+        )
+      );
+
+      return updatedAccount;
+    });
+  }, [setAccounts]);
 
   const logActivity = useCallback((activity: string, details: string) => {
     if (!currentUser) return;
@@ -440,25 +441,40 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return { success: true, message: 'Display name updated.' };
   };
 
-  const addAchievement = (achievementId: string) => {
-    if (!currentUser || currentUser.achievements.some(a => a.id === achievementId)) return;
+  const addAchievement = useCallback((achievementId: string) => {
+    setCurrentUser(currentUser => {
+        if (!currentUser || currentUser.achievements.some(a => a.id === achievementId)) {
+            return currentUser; // no change
+        }
 
-    const achievementToAdd = achievementsData.find(a => a.id === achievementId);
-    if (achievementToAdd) {
+        const achievementToAdd = achievementsData.find(a => a.id === achievementId);
+        if (!achievementToAdd) {
+            return currentUser; // no change
+        }
+
         const newAchievement: Achievement = {
             ...achievementToAdd,
             timestamp: new Date().toISOString(),
         }
         const newAchievements = [...currentUser.achievements, newAchievement];
-        updateCurrentUser({ achievements: newAchievements });
         
+        const updatedAccount = { ...currentUser, achievements: newAchievements };
+
+        setAccounts(prevAccounts =>
+          prevAccounts.map(acc =>
+            acc.player.username === currentUser.player.username ? updatedAccount : acc
+          )
+        );
+
         toast({
             title: <div className="text-2xl text-center w-full">{achievementToAdd.type === 'badge' ? '🎖️' : '🏆'}</div>,
             description: <div className="text-center"><b>{achievementToAdd.type === 'badge' ? 'Badge' : 'Title'} Unlocked:</b> {achievementToAdd.name}</div>,
             duration: 4000
-        })
-    }
-  };
+        });
+
+        return updatedAccount;
+    });
+  }, [setAccounts, toast]);
   
   /**
    * Friend Request Logic
@@ -1065,7 +1081,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (currentUser?.stats && currentUser.stats.totalResets >= 10) {
       addAchievement('greatest-reset');
     }
-  }, [currentUser?.stats.totalResets]);
+  }, [currentUser, addAchievement]);
 
   return (
     <GameContext.Provider value={{ currentUser, isAdmin, accounts, loginHistory, activityLogs, logActivity, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, feedbackPosts, postFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle }}>
