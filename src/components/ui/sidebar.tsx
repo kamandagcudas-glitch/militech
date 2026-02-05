@@ -556,6 +556,11 @@ const SidebarMenuButton = React.forwardRef<
     const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
+    const tooltipContentProps = React.useMemo(() => {
+      if (!tooltip) return null
+      return typeof tooltip === "string" ? { children: tooltip } : tooltip
+    }, [tooltip])
+
     const button = (
       <Comp
         ref={ref}
@@ -567,12 +572,9 @@ const SidebarMenuButton = React.forwardRef<
       />
     )
 
-    if (!tooltip) {
+    if (!tooltipContentProps) {
       return button
     }
-
-    const tooltipContentProps =
-      typeof tooltip === "string" ? { children: tooltip } : tooltip
 
     return (
       <Tooltip>
