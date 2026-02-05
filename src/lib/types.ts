@@ -1,5 +1,6 @@
 export interface Player {
   username: string;
+  displayName: string;
   avatar: string;
   email?: string;
   emailVerified: boolean;

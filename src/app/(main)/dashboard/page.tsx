@@ -20,10 +20,11 @@ export default function DashboardPage() {
         <div className="container mx-auto">
             <div className="mb-8">
                 <h1 className="font-headline text-4xl font-bold flex items-center gap-2">
-                    Welcome, {player.username}! 
+                    Welcome, {player.displayName}! 
                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8" title="Creator"/>}
                 </h1>
-                <p className="text-muted-foreground">Ready to level up your IT skills? Choose a module to begin.</p>
+                <p className="text-muted-foreground">@{player.username}</p>
+                <p className="text-muted-foreground mt-2">Ready to level up your IT skills? Choose a module to begin.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

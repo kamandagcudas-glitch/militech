@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function RegisterPage() {
     const [username, setUsername] = useState('');
+    const [displayName, setDisplayName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,7 +26,19 @@ export default function RegisterPage() {
         setError(null);
 
         if (!username.trim()) {
-            setError('Username cannot be empty.');
+            setError('Callsign cannot be empty.');
+            return;
+        }
+        if (!displayName.trim()) {
+            setError('Display Name cannot be empty.');
+            return;
+        }
+        if (displayName.trim().length > 20) {
+            setError('Display Name cannot be more than 20 characters.');
+            return;
+        }
+        if (!/^[a-zA-Z0-9_ ]+$/.test(displayName.trim())) {
+            setError('Display Name can only contain letters, numbers, spaces, and underscores.');
             return;
         }
         if (password.length < 6) {
@@ -42,7 +55,7 @@ export default function RegisterPage() {
             return;
         }
 
-        const result = await game.register(username, password, email);
+        const result = await game.register(username, displayName, password, email);
 
         if (result.success) {
             toast({
@@ -64,14 +77,25 @@ export default function RegisterPage() {
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="username">Callsign</Label>
-                            <Input
-                                id="username"
-                                placeholder="Choose a unique callsign"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="username">Callsign (Unique)</Label>
+                                <Input
+                                    id="username"
+                                    placeholder="e.g. Agent007"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="displayName">Display Name</Label>
+                                <Input
+                                    id="displayName"
+                                    placeholder="Your public name"
+                                    value={displayName}
+                                    onChange={(e) => setDisplayName(e.target.value)}
+                                />
+                            </div>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="email">Email (Optional, Gmail only)</Label>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from 'next/image';
@@ -42,12 +41,17 @@ export default function ProfilePage() {
     const [newEmail, setNewEmail] = useState('');
     const [emailError, setEmailError] = useState<string | null>(null);
 
+    // State for display name dialog
+    const [isDisplayNameDialogOpen, setIsDisplayNameDialogOpen] = useState(false);
+    const [newDisplayName, setNewDisplayName] = useState('');
+    const [displayNameError, setDisplayNameError] = useState<string | null>(null);
+
 
     if (!game.currentUser || !game.accounts) {
         return null;
     }
 
-    const { currentUser, accounts, removeFriend, updateAvatar, sendVerificationEmail, verifyEmail, updateProfileBackground, acceptFriendRequest, rejectFriendRequest, updateEmail } = game;
+    const { currentUser, accounts, removeFriend, updateAvatar, sendVerificationEmail, verifyEmail, updateProfileBackground, acceptFriendRequest, rejectFriendRequest, updateEmail, updateDisplayName } = game;
     const { player, stats, achievements } = currentUser;
     const hasSpecialBg = !!player.specialBackground;
 
@@ -187,6 +191,18 @@ export default function ProfilePage() {
         }
     };
 
+    const handleSaveDisplayName = async () => {
+        if (!updateDisplayName) return;
+        setDisplayNameError(null);
+        const result = await updateDisplayName(newDisplayName);
+        if (result.success) {
+            setIsDisplayNameDialogOpen(false);
+            setNewDisplayName('');
+        } else {
+            setDisplayNameError(result.message);
+        }
+    };
+
 
     return (
         <div className="relative -m-4 md:-m-6 h-full">
@@ -224,7 +240,7 @@ export default function ProfilePage() {
                                 <div className="relative group">
                                     <Avatar className="w-32 h-32 mb-4 border-4 border-primary/50 shadow-lg shadow-primary/20">
                                         <AvatarImage src={player.avatar} alt={player.username} />
-                                        <AvatarFallback className="text-4xl">{player.username.charAt(0)}</AvatarFallback>
+                                        <AvatarFallback className="text-4xl">{player.displayName.charAt(0)}</AvatarFallback>
                                     </Avatar>
                                     <Button
                                         onClick={() => setIsAvatarDialogOpen(true)}
@@ -252,11 +268,17 @@ export default function ProfilePage() {
                                         </Button>
                                     )}
                                 </div>
-                                <CardTitle className="font-headline text-3xl flex items-center gap-2">
-                                    {player.username}
-                                    {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
-                                </CardTitle>
-                                {activeTitle && <Badge variant="destructive" className="text-lg">{activeTitle.name}</Badge>}
+                                <div className="flex items-center gap-2">
+                                    <CardTitle className="font-headline text-3xl flex items-center gap-2">
+                                        {player.displayName}
+                                        {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
+                                    </CardTitle>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setNewDisplayName(player.displayName); setIsDisplayNameDialogOpen(true); setDisplayNameError(null);}}>
+                                        <Pencil className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                                <CardDescription>@{player.username}</CardDescription>
+                                {activeTitle && <Badge variant="destructive" className="text-lg mt-1">{activeTitle.name}</Badge>}
                                 {hasSpecialBg && (
                                     <p className="text-xs text-muted-foreground pt-2">This is a unique background assigned to this agent ID.</p>
                                 )}
@@ -338,10 +360,11 @@ export default function ProfilePage() {
                                                 <div className="flex items-center gap-3">
                                                     <Avatar>
                                                         <AvatarImage src={requestingUser.player.avatar} alt={requestingUser.player.username} />
-                                                        <AvatarFallback>{requestingUser.player.username.charAt(0)}</AvatarFallback>
+                                                        <AvatarFallback>{requestingUser.player.displayName.charAt(0)}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
-                                                        <p className="font-semibold">{requestingUser.player.username}</p>
+                                                        <p className="font-semibold">{requestingUser.player.displayName}</p>
+                                                        <p className="text-sm text-muted-foreground">@{requestingUser.player.username}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-2">
@@ -370,10 +393,10 @@ export default function ProfilePage() {
                                                     <Link href={`/users/${friend.player.username}`} className="flex items-center gap-3 group">
                                                         <Avatar>
                                                             <AvatarImage src={friend.player.avatar} alt={friend.player.username} />
-                                                            <AvatarFallback>{friend.player.username.charAt(0)}</AvatarFallback>
+                                                            <AvatarFallback>{friend.player.displayName.charAt(0)}</AvatarFallback>
                                                         </Avatar>
                                                         <div>
-                                                            <p className="font-semibold group-hover:underline">{friend.player.username}</p>
+                                                            <p className="font-semibold group-hover:underline">{friend.player.displayName}</p>
                                                             {friendTitle && <p className="text-xs text-muted-foreground">{friendTitle.name}</p>}
                                                         </div>
                                                     </Link>
@@ -558,11 +581,31 @@ export default function ProfilePage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+             {/* DISPLAY NAME DIALOG */}
+            <Dialog open={isDisplayNameDialogOpen} onOpenChange={(isOpen) => { if(!isOpen) { setDisplayNameError(null); } setIsDisplayNameDialogOpen(isOpen); }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Update Display Name</DialogTitle>
+                        <DialogDescription>Choose a new public name. Max 20 characters. Letters, numbers, spaces, and underscores only.</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <Input
+                            id="displayName-update"
+                            type="text"
+                            placeholder="Your new display name"
+                            value={newDisplayName}
+                            onChange={(e) => setNewDisplayName(e.target.value)}
+                            maxLength={20}
+                        />
+                        {displayNameError && <p className="text-sm text-destructive">{displayNameError}</p>}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => { setIsDisplayNameDialogOpen(false); setDisplayNameError(null); }}>Cancel</Button>
+                        <Button onClick={handleSaveDisplayName}>Save</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
-
-
-    
-
-    

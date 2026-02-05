@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useContext, useMemo } from 'react';
@@ -31,9 +30,11 @@ export default function UsersPage() {
     // Memoize the filtered user list based on the search query.
     const filteredUsers = useMemo(() => {
         if (!searchQuery) return otherUsers;
-        // Perform a case-insensitive search on the username.
+        // Perform a case-insensitive search on the username or display name.
+        const lowerCaseQuery = searchQuery.toLowerCase();
         return otherUsers.filter(acc =>
-            acc.player.username.toLowerCase().includes(searchQuery.toLowerCase())
+            acc.player.username.toLowerCase().includes(lowerCaseQuery) ||
+            acc.player.displayName.toLowerCase().includes(lowerCaseQuery)
         );
     }, [otherUsers, searchQuery]);
     
@@ -54,7 +55,7 @@ export default function UsersPage() {
                 </div>
                 <Input
                     type="text"
-                    placeholder="Search for a user..."
+                    placeholder="Search by display name or @callsign..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     className="max-w-xs"
@@ -71,13 +72,14 @@ export default function UsersPage() {
                         return (
                              <Card key={user.player.username} className="text-center bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all flex flex-col">
                                 <CardContent className="pt-6 flex-grow flex flex-col items-center gap-4">
-                                    <Link href={`/users/${user.player.username}`} className="flex flex-col items-center gap-4 text-foreground hover:text-foreground">
+                                    <Link href={`/users/${user.player.username}`} className="flex flex-col items-center gap-2 text-foreground hover:text-foreground">
                                         <Avatar className="w-24 h-24 border-4 border-primary/50">
                                             <AvatarImage src={user.player.avatar} alt={user.player.username} />
-                                            <AvatarFallback>{user.player.username.charAt(0)}</AvatarFallback>
+                                            <AvatarFallback>{user.player.displayName.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div className="hover:underline">
-                                            <h3 className="text-xl font-bold">{user.player.username}</h3>
+                                            <h3 className="text-xl font-bold">{user.player.displayName}</h3>
+                                            <p className="text-sm text-muted-foreground">@{user.player.username}</p>
                                             {activeTitle && <Badge variant="destructive" className="mt-1">{activeTitle.name}</Badge>}
                                         </div>
                                     </Link>

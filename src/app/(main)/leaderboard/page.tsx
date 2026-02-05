@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useContext } from 'react';
@@ -116,10 +115,10 @@ export default function LeaderboardPage() {
                                             <Link href={`/users/${user.player.username}`} className="flex items-center gap-4 group hover:cursor-pointer">
                                                 <Avatar>
                                                     <AvatarImage src={user.player.avatar} alt={user.player.username} />
-                                                    <AvatarFallback>{user.player.username.charAt(0)}</AvatarFallback>
+                                                    <AvatarFallback>{user.player.displayName.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <p className="font-semibold text-base group-hover:underline group-hover:text-primary">{user.player.username}</p>
+                                                    <p className="font-semibold text-base group-hover:underline group-hover:text-primary">{user.player.displayName}</p>
                                                      {activeTitle && <Badge variant="destructive" className="mt-1">{activeTitle.name}</Badge>}
                                                 </div>
                                             </Link>

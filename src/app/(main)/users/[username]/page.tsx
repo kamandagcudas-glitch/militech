@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from 'next/image';
@@ -130,7 +129,7 @@ export default function PublicProfilePage() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>{player.username}</BreadcrumbPage>
+                            <BreadcrumbPage>{player.displayName}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
@@ -141,13 +140,14 @@ export default function PublicProfilePage() {
                             <CardHeader className="items-center text-center">
                                 <Avatar className="w-32 h-32 mb-4 border-4 border-primary/50 shadow-lg shadow-primary/20">
                                     <AvatarImage src={player.avatar} alt={player.username} />
-                                    <AvatarFallback className="text-4xl">{player.username.charAt(0)}</AvatarFallback>
+                                    <AvatarFallback className="text-4xl">{player.displayName.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <CardTitle className="font-headline text-3xl flex items-center gap-2">
-                                    {player.username}
+                                    {player.displayName}
                                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
                                 </CardTitle>
-                                {activeTitle && <Badge variant="destructive" className="text-lg">{activeTitle.name}</Badge>}
+                                <CardDescription>@{player.username}</CardDescription>
+                                {activeTitle && <Badge variant="destructive" className="text-lg mt-1">{activeTitle.name}</Badge>}
                                 {!isCurrentUser && currentUser && (
                                     <div className="mt-4">
                                         {isFriend ? (

@@ -120,13 +120,13 @@ export default function MainAppLayout({
         <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm">
           <SidebarTrigger />
           <div className="flex items-center gap-3">
-             <div className="flex items-center gap-1 text-sm font-medium">
-              <span>{player.username}</span>
-              {player.isCreator && <CreatorBadgeIcon className="text-yellow-400" title="Creator" />}
+             <div className="flex flex-col items-end -space-y-1">
+              <span className="font-medium">{player.displayName}</span>
+              <span className="text-xs text-muted-foreground">@{player.username}</span>
             </div>
             <Avatar className="h-8 w-8">
               <AvatarImage src={player.avatar} alt={player.username} />
-              <AvatarFallback>{player.username.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{player.displayName.charAt(0)}</AvatarFallback>
             </Avatar>
           </div>
         </header>

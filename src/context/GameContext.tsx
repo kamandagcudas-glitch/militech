@@ -1,4 +1,3 @@
-
 "use client";
 
 import { createContext, ReactNode, useEffect, useState } from 'react';
@@ -16,7 +15,7 @@ const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
 export interface GameContextType {
   currentUser: UserAccount | null;
   accounts: UserAccount[];
-  register: (username: string, password: string, email?: string) => Promise<{ success: boolean; message: string; }>;
+  register: (username: string, displayName: string, password: string, email?: string) => Promise<{ success: boolean; message: string; }>;
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   completeQuiz: (cocId: string, stepId: string, score: number) => 'pass' | 'retry' | 'reset';
@@ -32,6 +31,7 @@ export interface GameContextType {
   updateEmail: (email: string) => Promise<{ success: boolean; message: string; }>;
   sendPasswordResetCode: (usernameOrEmail: string) => Promise<{ success: boolean; message: string; }>;
   resetPassword: (username: string, code: string, newPassword: string) => Promise<{ success: boolean; message: string; }>;
+  updateDisplayName: (displayName: string) => Promise<{ success: boolean; message: string; }>;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -75,7 +75,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       !('specialBackground' in acc.player) ||
       (acc.player.username && acc.player.username.trim() !== acc.player.username) ||
       !acc.player.friendRequests ||
-      !('passwordResetCode' in acc.player)
+      !('passwordResetCode' in acc.player) ||
+      !('displayName' in acc.player)
     );
 
     if (needsPatch) {
@@ -86,6 +87,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
         // Trim username to fix any past data entry issues and ensure accurate matching.
         if (newAcc.player.username) {
             newAcc.player.username = newAcc.player.username.trim();
+        }
+
+        if (!('displayName' in newAcc.player) || !newAcc.player.displayName) {
+          newAcc.player.displayName = newAcc.player.username;
         }
 
         // Patch missing friendUsernames array from older data structures.
@@ -159,7 +164,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [loggedInUser, accounts, setAccounts, setLoggedInUser]);
 
 
-  const register = async (username: string, password: string, email?: string): Promise<{ success: boolean; message: string; }> => {
+  const register = async (username: string, displayName: string, password: string, email?: string): Promise<{ success: boolean; message: string; }> => {
     // Registration & Validation Logic:
     const trimmedUsername = username.trim();
     if (accounts.some(acc => acc.player.username.toLowerCase() === trimmedUsername.toLowerCase())) {
@@ -200,6 +205,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     // Create the initial Player object, including any easter egg properties.
     const newPlayer: Player = {
       username: trimmedUsername,
+      displayName: displayName.trim(),
       avatar: `https://api.dicebear.com/8.x/bottts/svg?seed=${trimmedUsername}`,
       email: trimmedEmail || undefined, // Store email if provided
       emailVerified: false, // Default to not verified
@@ -303,6 +309,31 @@ export function GameProvider({ children }: { children: ReactNode }) {
     updateCurrentUser({ player: newPlayerState });
   };
   
+  const updateDisplayName = async (displayName: string): Promise<{ success: boolean; message: string; }> => {
+    if (!currentUser) return { success: false, message: 'Not logged in.' };
+    
+    const trimmedDisplayName = displayName.trim();
+    if (trimmedDisplayName.length === 0) {
+        return { success: false, message: 'Display name cannot be empty.' };
+    }
+    if (trimmedDisplayName.length > 20) {
+        return { success: false, message: 'Display name cannot be more than 20 characters.' };
+    }
+    if (!/^[a-zA-Z0-9_ ]+$/.test(trimmedDisplayName)) {
+        return { success: false, message: 'Display name can only contain letters, numbers, spaces, and underscores.' };
+    }
+
+    const newPlayerState = { ...currentUser.player, displayName: trimmedDisplayName };
+    updateCurrentUser({ player: newPlayerState });
+
+    toast({
+        title: "Display Name Updated!",
+        description: `Your new display name is ${trimmedDisplayName}.`
+    });
+
+    return { success: true, message: 'Display name updated.' };
+  };
+
   const addAchievement = (achievementId: string) => {
     if (!currentUser || currentUser.achievements.some(a => a.id === achievementId)) return;
 
@@ -345,7 +376,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       
       toast({
         title: 'Request Sent!',
-        description: `Your friend request to ${receiverUsername} has been sent.`,
+        description: `Your friend request to ${receiverAccount.player.displayName} has been sent.`,
       });
 
       return prevAccounts.map(acc => acc.player.username === receiverUsername ? newReceiverAccount : acc);
@@ -381,7 +412,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
       toast({
         title: 'Friend Added!',
-        description: `${senderUsername} is now your friend.`,
+        description: `${senderAccount.player.displayName} is now your friend.`,
       });
 
       // Atomically update both accounts in the main list
@@ -405,6 +436,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const rejectFriendRequest = (senderUsername: string) => {
     if (!currentUser) return;
 
+    const sender = accounts.find(acc => acc.player.username === senderUsername);
+
     const newPlayerState = {
       ...currentUser.player,
       friendRequests: currentUser.player.friendRequests.filter(req => req !== senderUsername),
@@ -412,7 +445,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     updateCurrentUser({ player: newPlayerState });
     toast({
       title: 'Request Rejected',
-      description: `You have rejected the friend request from ${senderUsername}.`,
+      description: `You have rejected the friend request from ${sender?.player.displayName || senderUsername}.`,
     });
   };
 
@@ -443,7 +476,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         
         toast({
           title: 'Friend Removed',
-          description: `${username} has been removed from your friends list.`,
+          description: `${friendAccount.player.displayName} has been removed from your friends list.`,
         });
 
         return prevAccounts.map(acc => {
@@ -694,10 +727,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [currentUser?.stats.totalResets]);
 
   return (
-    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword }}>
+    <GameContext.Provider value={{ currentUser, accounts, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName }}>
       {children}
     </GameContext.Provider>
   );
 }
-
-    
