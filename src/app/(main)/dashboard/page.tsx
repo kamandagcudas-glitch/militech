@@ -37,7 +37,7 @@ export default function DashboardPage() {
                     return (
                         <Card 
                             key={coc.id} 
-                            className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                            className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
                             style={{ animationDelay: `${150 * index}ms`, animationFillMode: 'backwards' }}
                         >
                             <CardHeader>
@@ -59,7 +59,7 @@ export default function DashboardPage() {
                     );
                 })}
                  <Card 
-                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
                     style={{ animationDelay: `${150 * cocData.length}ms`, animationFillMode: 'backwards' }}
                 >
                     <CardHeader>
@@ -75,7 +75,7 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
                 <Card 
-                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
                     style={{ animationDelay: `${150 * (cocData.length + 1)}ms`, animationFillMode: 'backwards' }}
                 >
                     <CardHeader>
