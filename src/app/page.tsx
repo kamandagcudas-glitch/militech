@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useContext, useEffect, useState } from "react";
@@ -35,13 +36,13 @@ export default function LandingPage() {
     <main className="flex min-h-screen flex-col items-center justify-center text-center p-4">
       <AnimatedIntro onFinished={() => setIntroFinished(true)} />
       
-      <div className={cn("transition-opacity duration-1000", introFinished ? "opacity-100" : "opacity-0")}>
-        <Link href="/login">
-            <Button size="lg" className="text-xl h-14 px-10">
-            Enter Simulation <ArrowRight className="ml-2" />
-            </Button>
+      <div className={cn("transition-opacity duration-1000 mt-8", introFinished ? "opacity-100" : "opacity-0")}>
+        <Link href="/login" className="btn-futuristic">
+          Enter Simulation
         </Link>
       </div>
     </main>
   );
 }
+
+  
