@@ -100,13 +100,22 @@ export default {
         'caret-blink': {
             '0%, 100%': { opacity: '1' },
             '50%': { opacity: '0' },
-        }
+        },
+        'glitch': {
+          '0%': { transform: 'translate(0, 0)' },
+          '25%': { transform: 'translate(-3px, 2px)' },
+          '50%': { transform: 'translate(3px, -2px)' },
+          '75%': { transform: 'translate(-1px, 1px)' },
+          '100%': { transform: 'translate(0, 0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'text-glitch': 'text-glitch 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite',
         'caret-blink': 'caret-blink 1.2s step-end infinite',
+        'glitch-red': 'glitch 1.5s ease-in-out infinite',
+        'glitch-cyan': 'glitch 2s ease-in-out infinite',
       },
     },
   },
