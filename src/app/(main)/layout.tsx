@@ -33,6 +33,7 @@ import {
   MessageSquare,
   SpellCheck,
   Shield,
+  Cog,
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -155,6 +156,17 @@ export default function MainAppLayout({
         </SidebarContent>
         <SidebarFooter>
           <SidebarMenu>
+            <SidebarMenuItem>
+                <Link href="/settings" className="w-full">
+                  <SidebarMenuButton
+                    isActive={pathname.startsWith('/settings')}
+                    tooltip="Settings"
+                  >
+                    <Cog />
+                    <span>Settings</span>
+                  </SidebarMenuButton>
+                </Link>
+            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton onClick={logout}>
                 <LogOut />
