@@ -83,6 +83,96 @@
     --sidebar-border: 260 20% 25%;
     --sidebar-ring: 283 63% 58%;
   }
+
+  .cyberpunk {
+    --background: 226 55% 8%;
+    --foreground: 180 100% 95%;
+    --card: 225 40% 12%;
+    --card-foreground: 180 100% 95%;
+    --popover: 226 55% 6%;
+    --popover-foreground: 180 100% 95%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 226 55% 8%;
+    --secondary: 225 40% 20%;
+    --secondary-foreground: 180 100% 95%;
+    --muted: 225 40% 20%;
+    --muted-foreground: 180 100% 65%;
+    --accent: 300 100% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 350 100% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 180 100% 30%;
+    --input: 225 40% 15%;
+    --ring: 180 100% 50%;
+    --sidebar-background: 226 55% 8%;
+    --sidebar-foreground: 180 100% 95%;
+    --sidebar-primary: 180 100% 50%;
+    --sidebar-primary-foreground: 226 55% 8%;
+    --sidebar-accent: 225 40% 20%;
+    --sidebar-accent-foreground: 180 100% 95%;
+    --sidebar-border: 180 100% 30%;
+    --sidebar-ring: 180 100% 50%;
+  }
+
+  .samurai {
+    --background: 30 30% 96%;
+    --foreground: 20 15% 10%;
+    --card: 30 30% 100%;
+    --card-foreground: 20 15% 10%;
+    --popover: 30 30% 100%;
+    --popover-foreground: 20 15% 10%;
+    --primary: 0 65% 45%;
+    --primary-foreground: 30 30% 98%;
+    --secondary: 30 20% 92%;
+    --secondary-foreground: 20 15% 10%;
+    --muted: 30 20% 92%;
+    --muted-foreground: 20 15% 40%;
+    --accent: 0 65% 50%;
+    --accent-foreground: 30 30% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 20% 88%;
+    --input: 30 20% 90%;
+    --ring: 0 65% 45%;
+    --sidebar-background: 30 30% 99%;
+    --sidebar-foreground: 20 15% 10%;
+    --sidebar-primary: 0 65% 45%;
+    --sidebar-primary-foreground: 30 30% 98%;
+    --sidebar-accent: 30 20% 92%;
+    --sidebar-accent-foreground: 20 15% 10%;
+    --sidebar-border: 30 20% 88%;
+    --sidebar-ring: 0 65% 45%;
+  }
+
+  .flames {
+    --background: 15 20% 5%;
+    --foreground: 35 100% 95%;
+    --card: 20 20% 10%;
+    --card-foreground: 35 100% 95%;
+    --popover: 15 20% 5%;
+    --popover-foreground: 35 100% 95%;
+    --primary: 35 90% 55%;
+    --primary-foreground: 15 20% 5%;
+    --secondary: 20 20% 18%;
+    --secondary-foreground: 35 100% 95%;
+    --muted: 20 20% 18%;
+    --muted-foreground: 35 100% 65%;
+    --accent: 15 95% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 35 90% 30%;
+    --input: 20 20% 15%;
+    --ring: 35 90% 55%;
+    --sidebar-background: 15 20% 5%;
+    --sidebar-foreground: 35 100% 95%;
+    --sidebar-primary: 35 90% 55%;
+    --sidebar-primary-foreground: 15 20% 5%;
+    --sidebar-accent: 20 20% 18%;
+    --sidebar-accent-foreground: 35 100% 95%;
+    --sidebar-border: 35 90% 30%;
+    --sidebar-ring: 35 90% 55%;
+  }
 }
 
 @layer base {
@@ -92,14 +182,33 @@
   body {
     @apply bg-background text-foreground;
   }
+  .light body {
+    background-color: hsl(var(--background));
+    background-image: none;
+    animation: none;
+  }
   .dark body {
     background-color: hsl(var(--background));
-    /* Cyberpunk grid background */
+    background-image: none;
+    animation: none;
+  }
+  .cyberpunk body {
+    background-color: hsl(var(--background));
     background-image: 
-      linear-gradient(hsl(var(--primary) / 0.15) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--primary) / 0.15) 1px, transparent 1px);
+      linear-gradient(hsl(var(--primary) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px);
     background-size: 3.5rem 3.5rem;
     animation: animated-grid 30s linear infinite;
+  }
+  .samurai body {
+    background-color: hsl(var(--background));
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a12022' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5zm95 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    animation: none;
+  }
+  .flames body {
+    background: linear-gradient(120deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--background)), hsl(var(--primary)));
+    background-size: 400% 400%;
+    animation: animated-flames 15s ease infinite;
   }
 }
 
@@ -143,6 +252,12 @@
   to {
     background-position: 7rem 7rem;
   }
+}
+
+@keyframes animated-flames {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes parallax-scroll {
