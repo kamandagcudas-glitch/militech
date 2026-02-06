@@ -5,7 +5,7 @@ import { useTheme, type Theme } from '@/context/ThemeContext';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Moon, Sun, Cpu, Shield, Flame } from 'lucide-react';
+import { Moon, Sun, Cpu, Shield, Flame, Feather } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const themes = [
@@ -14,6 +14,7 @@ const themes = [
     { name: 'Cyberpunk', value: 'cyberpunk', icon: <Cpu className="h-5 w-5" />, bgClass: 'bg-[#0a0f23] text-[#00f6ff]' },
     { name: 'Samurai', value: 'samurai', icon: <Shield className="h-5 w-5" />, bgClass: 'bg-[#f4f1e9] text-[#a12022]' },
     { name: 'Flames', value: 'flames', icon: <Flame className="h-5 w-5" />, bgClass: 'bg-[#1a0a02] text-orange-400' },
+    { name: 'Angelic', value: 'angelic', icon: <Feather className="h-5 w-5" />, bgClass: 'bg-[#fffcf2] text-[#c9a35e]' },
 ];
 
 export default function SettingsPage() {

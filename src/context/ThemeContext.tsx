@@ -4,7 +4,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import useLocalStorage from '@/hooks/use-local-storage';
 
-export type Theme = "dark" | "light" | "cyberpunk" | "samurai" | "flames";
+export type Theme = "dark" | "light" | "cyberpunk" | "samurai" | "flames" | "angelic";
 
 type ThemeContextType = {
   theme: Theme;
@@ -18,7 +18,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove("light", "dark", "cyberpunk", "samurai", "flames");
+    root.classList.remove("light", "dark", "cyberpunk", "samurai", "flames", "angelic");
     root.classList.add(theme);
   }, [theme]);
 
