@@ -34,13 +34,13 @@ export const AnimatedIntro = ({ onFinished }: { onFinished: () => void }) => {
         <div className="flex flex-col items-center justify-center text-center p-4 min-h-[400px]">
             <AnimatedGlitchText
                 text="MI-LITECH"
-                className="font-code text-6xl md:text-8xl text-primary"
+                className="font-headline text-6xl md:text-8xl text-primary"
                 onAnimationEnd={() => setTextAnimationFinished(true)}
             />
             
             <div className="h-24 mt-4">
                  <p className={cn(
-                    "max-w-2xl text-xl text-accent mb-8 font-code transition-opacity duration-1000",
+                    "max-w-2xl text-xl text-accent mb-8 font-headline transition-opacity duration-1000",
                     showSubtitle ? "opacity-100" : "opacity-0"
                 )}>
                     Do you have what it takes?
