@@ -112,6 +112,36 @@
     --sidebar-ring: 283 63% 48%;
   }
 
+  .cyberpunk {
+    --background: 220 15% 5%; /* #0B0B0F */
+    --foreground: 210 40% 98%;
+    --card: 220 15% 8%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 15% 8%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 340 100% 50%; /* Neon Red */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 180 100% 20%; /* Dark Cyan */
+    --secondary-foreground: 180 100% 90%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 210 20% 65%;
+    --accent: 180 100% 50%; /* Bright Cyan */
+    --accent-foreground: 226 40% 10%;
+    --destructive: 340 100% 50%; /* Neon Red */
+    --destructive-foreground: 210 40% 98%;
+    --border: 300 100% 50%; /* Magenta */
+    --input: 220 15% 10%;
+    --ring: 180 100% 50%; /* Cyan */
+    --sidebar-background: 220 15% 5%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 340 100% 50%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 300 100% 50%;
+    --sidebar-ring: 180 100% 50%;
+  }
+
   .samurai {
     --background: 30 30% 96%;
     --foreground: 20 15% 10%;
@@ -450,33 +480,7 @@
 
   .cyberpunk body::before,
   .cyberpunk body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: hsl(var(--background));
-    background-image: 
-      linear-gradient(hsl(var(--accent) / 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--accent) / 0.1) 1px, transparent 1px);
-    background-size: 3.5rem 3.5rem;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  .cyberpunk body::before {
-    animation: animated-grid 30s linear infinite, glitch-red 1.5s steps(4, end) infinite;
-    background-color: hsl(var(--primary));
-    mix-blend-mode: screen;
-    opacity: 0.6;
-  }
-
-  .cyberpunk body::after {
-    animation: animated-grid 30s linear infinite, glitch-cyan 2s steps(4, end) reverse infinite;
-    background-color: hsl(var(--accent));
-    mix-blend-mode: screen;
-    opacity: 0.6;
+    content: none;
   }
 
   /* Custom overrides for Cyberpunk theme to remove blur and ensure solid backgrounds */
@@ -493,14 +497,13 @@
   }
 
   .cyberpunk [class*="bg-black/"] {
-      background-color: hsl(var(--card) / 0.75);
+      background-color: hsl(var(--card) / 0.85);
   }
 
   .btn-futuristic {
     @apply relative inline-block border-2 bg-transparent font-headline text-xl h-auto px-10 py-4 font-bold uppercase tracking-widest text-primary no-underline outline-none transition-all duration-300;
     clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
     text-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary) / 0.7);
-    animation: futuristic-pulse-border 4s infinite ease-in-out;
     border-color: hsl(var(--primary) / 0.5);
   }
 
@@ -522,7 +525,7 @@
     color: hsl(var(--primary));
     background-color: hsl(var(--primary) / 0.1);
     box-shadow: 0 5px 20px hsl(var(--primary) / 0.4);
-    animation-play-state: running;
+    animation: futuristic-pulse-border 1.5s infinite ease-in-out;
   }
   
   .btn-futuristic:hover::before {
@@ -554,3 +557,6 @@
     
 
   
+
+
+    
