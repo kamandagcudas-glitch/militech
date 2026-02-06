@@ -9,12 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowRight } from "lucide-react";
 import { AnimatedIntro } from "@/components/animated-intro";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [introFinished, setIntroFinished] = useState(false);
   const router = useRouter();
   const game = useContext(GameContext) as GameContextType;
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (game.currentUser) {
@@ -37,12 +39,18 @@ export default function LandingPage() {
       <AnimatedIntro onFinished={() => setIntroFinished(true)} />
       
       <div className={cn("transition-opacity duration-1000 mt-8", introFinished ? "opacity-100" : "opacity-0")}>
-        <Link href="/login" className="btn-futuristic">
-          Enter Simulation
-        </Link>
+        {theme === 'cyberpunk' ? (
+            <Link href="/login" className="btn-futuristic">
+                Enter Simulation
+            </Link>
+        ) : (
+            <Button asChild size="lg" className="text-xl h-14">
+                <Link href="/login">
+                    Enter Simulation <ArrowRight className="ml-2" />
+                </Link>
+            </Button>
+        )}
       </div>
     </main>
   );
 }
-
-  

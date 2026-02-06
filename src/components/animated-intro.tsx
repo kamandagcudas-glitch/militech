@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -57,12 +58,12 @@ const GlitchTitle = ({ text, onComplete }: { text: string; onComplete: () => voi
     return (
         // The title uses a relative container with multiple absolute-positioned spans for the glitch effect
         <h1 className="font-headline text-7xl font-bold text-primary tracking-widest uppercase relative" style={{ textShadow: '0 0 8px hsl(var(--primary) / 0.7)'}}>
-            {/* Cyan glitch layer */}
-            <span className="absolute -inset-1 animate-text-glitch text-cyan-400/50 mix-blend-screen" aria-hidden="true">{displayText}</span>
+            {/* Accent glitch layer */}
+            <span className="absolute -inset-1 animate-text-glitch text-accent/50 mix-blend-screen" aria-hidden="true">{displayText}</span>
             {/* Main text layer */}
             {displayText}
-            {/* Red glitch layer, slightly skewed */}
-            <span className="absolute -inset-1 animate-text-glitch text-red-500/50 mix-blend-screen -skew-x-12" aria-hidden="true">{displayText}</span>
+            {/* Destructive glitch layer, slightly skewed */}
+            <span className="absolute -inset-1 animate-text-glitch text-destructive/50 mix-blend-screen -skew-x-12" aria-hidden="true">{displayText}</span>
         </h1>
     );
 };
