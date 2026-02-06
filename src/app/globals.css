@@ -173,6 +173,13 @@
   pointer-events: none;
 }
 
+@keyframes black-flame-flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  25% { opacity: 0.8; transform: scale(1.02) skewX(2deg); }
+  50% { opacity: 0.9; transform: scale(0.98); }
+  75% { opacity: 1; transform: scale(1.05) skewX(-2deg); }
+}
+
 
 @layer components {
   .special-bg-container {
@@ -217,5 +224,15 @@
   /* Quiz anti-cheat styles */
   .quiz-anti-cheat {
     user-select: none;
+  }
+
+  .animate-black-flame-main {
+      animation: black-flame-flicker 3s ease-in-out infinite;
+      transform-origin: bottom;
+  }
+  .animate-black-flame-inner {
+      animation: black-flame-flicker 2.5s ease-in-out infinite;
+      animation-delay: -0.5s;
+      transform-origin: bottom;
   }
 }

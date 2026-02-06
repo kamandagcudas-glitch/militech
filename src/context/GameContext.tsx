@@ -12,6 +12,7 @@ import { defaultBackground } from '@/lib/backgrounds-data';
 const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
 // This is a humorous easter egg feature
 const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
+const RAYTHEON_USERNAME = "Raytheon";
 
 export interface GameContextType {
   currentUser: UserAccount | null;
@@ -102,7 +103,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       !('displayName' in acc.player) ||
       !acc.files ||
       acc.player.isCreator === undefined ||
-      acc.player.isBanned === undefined
+      acc.player.isBanned === undefined ||
+      !('specialInsignia' in acc.player)
     );
 
     if (needsPatch) {
@@ -204,6 +206,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
             newAcc.player.customTitle = 'motivated gooner';
         }
 
+        // Patch for specialInsignia
+        if (!('specialInsignia' in newAcc.player)) {
+            if (newAcc.player.username === RAYTHEON_USERNAME) {
+                newAcc.player.specialInsignia = 'black-flame';
+                newAcc.player.customTitle = 'Black Flame Wanderer';
+            } else {
+                newAcc.player.specialInsignia = undefined;
+            }
+        } else if (newAcc.player.username === RAYTHEON_USERNAME) {
+            // Retroactively apply if user exists but doesn't have it
+            newAcc.player.specialInsignia = 'black-flame';
+            newAcc.player.customTitle = 'Black Flame Wanderer';
+        }
+
 
         return newAcc;
       });
@@ -242,11 +258,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const isCreator = trimmedUsername === CREATOR_USERNAME;
     const isCabbageThief = trimmedUsername === CABBAGE_THIEF_USERNAME;
     const isVergil = trimmedUsername.toLowerCase() === 'vergil';
+    const isRaytheon = trimmedUsername === RAYTHEON_USERNAME;
 
     let activeTitleId: string | null = null;
     let unlockedTitleIds: string[] = [];
     let badgeIds: string[] = [];
     let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
+    let specialInsignia: 'black-flame' | undefined = undefined;
     let initialAchievements: Achievement[] = [];
     let customTitle: string | undefined = undefined;
 
@@ -272,6 +290,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
         if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
     } else if (isVergil) {
         customTitle = "motivated gooner";
+    } else if (isRaytheon) {
+        customTitle = "Black Flame Wanderer";
+        specialInsignia = 'black-flame';
     }
 
     // Create the initial Player object, including any easter egg properties.
@@ -293,6 +314,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
       profileBackgroundUrl: undefined,
       specialBackground,
+      specialInsignia,
       passwordResetCode: undefined,
       passwordResetExpires: undefined,
     };
@@ -1017,6 +1039,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       avatar: currentUser.player.avatar,
       message: message,
       timestamp: new Date().toISOString(),
+      specialInsignia: currentUser.player.specialInsignia,
     };
 
     setFeedbackPosts(prev => [newFeedback, ...prev]);

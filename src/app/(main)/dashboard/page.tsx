@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck } from 'lucide-react';
-import { CreatorBadgeIcon, AngelicPowerRuneIcon } from '@/components/icons';
+import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import AnimatedGlitchText from '@/components/animated-glitch-text';
 
 export default function DashboardPage() {
@@ -24,6 +24,7 @@ export default function DashboardPage() {
                     <AnimatedGlitchText text={`Welcome, ${player.displayName}!`} />
                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-12" title="Creator"/>}
                     {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-[-12deg]" title="Angelic Power Rune"/>}
+                    {player.specialInsignia === 'black-flame' && <BlackFlameIcon className="text-primary h-8 w-8 transition-transform duration-300 hover:scale-125" title="Black Flame Wanderer"/>}
                 </h1>
                 <p className="text-muted-foreground">@{player.username}</p>
                 <p className="text-muted-foreground mt-2">Ready to level up your IT skills? Choose a module to begin.</p>

@@ -11,7 +11,7 @@ import { predefinedBackgrounds } from '@/lib/backgrounds-data';
 import { cn } from '@/lib/utils';
 import { SpecialBackground } from '@/components/special-background';
 
-import { CreatorBadgeIcon, AngelicPowerRuneIcon } from '@/components/icons';
+import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -156,6 +156,7 @@ export default function PublicProfilePage() {
                                     {player.displayName}
                                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
                                     {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-6 w-6" title="Angelic Power Rune"/>}
+                                    {player.specialInsignia === 'black-flame' && <BlackFlameIcon className="text-primary h-6 w-6" title="Black Flame Wanderer"/>}
                                 </CardTitle>
                                 <CardDescription>@{player.username}</CardDescription>
                                 {player.isBanned && <Badge variant="destructive" className="mt-2 text-base flex items-center gap-1"><ShieldX className="h-4 w-4"/>BANNED</Badge>}

@@ -18,6 +18,7 @@ export interface Player {
   profileBackgroundId?: string;
   profileBackgroundUrl?: string;
   specialBackground?: 'angelic' | 'cabbage';
+  specialInsignia?: 'black-flame';
   passwordResetCode?: string;
   passwordResetExpires?: string;
 }
@@ -63,6 +64,7 @@ export interface FeedbackPost {
   avatar: string;
   message: string;
   timestamp: string;
+  specialInsignia?: 'black-flame';
 }
 
 export interface LoginAttempt {

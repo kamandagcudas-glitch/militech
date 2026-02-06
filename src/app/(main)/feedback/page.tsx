@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MessageSquare, Send } from 'lucide-react';
+import { BlackFlameIcon } from '@/components/icons';
 
 const feedbackPageBackgroundUrl = "https://images.unsplash.com/photo-1514439827219-9137a0b99245?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjeWJlcnB1bmslMjBjaXR5fGVufDB8fHx8MTc3MDIyMDE0N3ww&ixlib=rb-4.1.0&q=80&w=1080";
 
@@ -85,7 +86,10 @@ export default function FeedbackPage() {
                                                     <AvatarFallback>{post.displayName.charAt(0)}</AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <p className="font-semibold text-primary">{post.displayName}</p>
+                                                    <p className="font-semibold text-primary flex items-center gap-1.5">
+                                                        {post.displayName}
+                                                        {post.specialInsignia === 'black-flame' && <BlackFlameIcon className="h-4 w-4 text-primary" />}
+                                                    </p>
                                                     <p className="text-xs text-muted-foreground">@{post.username}</p>
                                                 </div>
                                             </div>
