@@ -44,8 +44,8 @@ const AnimatedGlitchText = ({ text, className, onAnimationEnd }: { text: string;
             {/* The glitch effect layers. These are only visible during the animation. */}
             {displayText !== text && (
                 <>
-                    <span className="absolute left-0 top-0 w-full h-full animate-text-glitch text-cyan-400/50 mix-blend-screen" aria-hidden="true">{displayText}</span>
-                    <span className="absolute left-0 top-0 w-full h-full animate-text-glitch text-red-500/50 mix-blend-screen -skew-x-12" aria-hidden="true">{displayText}</span>
+                    <span className="absolute left-0 top-0 w-full h-full animate-text-glitch text-accent/50 mix-blend-screen" aria-hidden="true">{displayText}</span>
+                    <span className="absolute left-0 top-0 w-full h-full animate-text-glitch text-destructive/50 mix-blend-screen -skew-x-12" aria-hidden="true">{displayText}</span>
                 </>
             )}
         </span>

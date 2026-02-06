@@ -34,7 +34,7 @@ export const AnimatedIntro = ({ onFinished }: { onFinished: () => void }) => {
         <div className="flex flex-col items-center justify-center text-center p-4 min-h-[400px]">
             <AnimatedGlitchText
                 text="MI-LITECH"
-                className="font-headline text-6xl md:text-8xl text-primary"
+                className="font-code text-6xl md:text-8xl text-primary"
                 onAnimationEnd={() => setTextAnimationFinished(true)}
             />
             
