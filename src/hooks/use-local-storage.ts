@@ -1,26 +1,26 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
 
 function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === 'undefined') {
-      return initialValue;
-    }
+  const [storedValue, setStoredValue] = useState<T>(initialValue);
+
+  // When the component mounts on the client, this effect will run and
+  // sync the state with the value from localStorage, preventing a hydration mismatch.
+  useEffect(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      if (item) {
+        setStoredValue(JSON.parse(item));
+      }
     } catch (error) {
-      console.error(error);
-      return initialValue;
+      console.error(`Error reading localStorage key “${key}”:`, error);
     }
-  });
+  }, [key]);
 
   const setValue = useCallback((value: T | ((val: T) => T)) => {
     try {
-      // By using the functional update form of useState, we can ensure that
-      // this useCallback hook doesn't need to depend on `storedValue`,
-      // making the `setValue` function stable across re-renders.
       setStoredValue((prev) => {
         const valueToStore = value instanceof Function ? value(prev) : value;
         if (typeof window !== 'undefined') {
@@ -29,19 +29,17 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
         return valueToStore;
       });
     } catch (error) {
-      console.error(error);
+      console.error(`Error setting localStorage key “${key}”:`, error);
     }
   }, [key]);
   
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === key) {
+      if (e.key === key && e.newValue) {
         try {
-          if(e.newValue) {
-            setStoredValue(JSON.parse(e.newValue));
-          }
+          setStoredValue(JSON.parse(e.newValue));
         } catch (error) {
-          console.error(error);
+          console.error(`Error parsing new value for “${key}”:`, error);
         }
       }
     };
