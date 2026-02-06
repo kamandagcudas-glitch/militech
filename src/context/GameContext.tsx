@@ -206,18 +206,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
             newAcc.player.customTitle = 'motivated gooner';
         }
 
-        // Patch for specialInsignia
+        // Patch for specialInsignia and Raytheon achievement
         if (!('specialInsignia' in newAcc.player)) {
-            if (newAcc.player.username === RAYTHEON_USERNAME) {
-                newAcc.player.specialInsignia = 'black-flame';
-                newAcc.player.customTitle = 'Black Flame Wanderer';
-            } else {
-                newAcc.player.specialInsignia = undefined;
+            newAcc.player.specialInsignia = undefined; // Default for old accounts
+        }
+
+        if (newAcc.player.username === RAYTHEON_USERNAME) {
+            newAcc.player.specialInsignia = 'black-flame'; // Ensure insignia is set
+
+            const hasBfwAch = newAcc.achievements.some((a: Achievement) => a.id === 'black-flame-wanderer');
+            if (!hasBfwAch) {
+                const bfwAchievement = achievementsData.find(a => a.id === 'black-flame-wanderer');
+                if (bfwAchievement) {
+                    newAcc.achievements.push({ ...bfwAchievement, timestamp: new Date().toISOString() });
+                }
             }
-        } else if (newAcc.player.username === RAYTHEON_USERNAME) {
-            // Retroactively apply if user exists but doesn't have it
-            newAcc.player.specialInsignia = 'black-flame';
-            newAcc.player.customTitle = 'Black Flame Wanderer';
+            newAcc.player.activeTitleId = 'black-flame-wanderer';
+            
+            // Remove old custom title if it exists to avoid override
+            if (newAcc.player.customTitle === 'Black Flame Wanderer') {
+                newAcc.player.customTitle = undefined;
+            }
         }
 
 
@@ -291,8 +300,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     } else if (isVergil) {
         customTitle = "motivated gooner";
     } else if (isRaytheon) {
-        customTitle = "Black Flame Wanderer";
         specialInsignia = 'black-flame';
+        const achievement = achievementsData.find(a => a.id === 'black-flame-wanderer');
+        if (achievement) {
+            initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+            unlockedTitleIds.push(achievement.id);
+            activeTitleId = achievement.id;
+        }
     }
 
     // Create the initial Player object, including any easter egg properties.
