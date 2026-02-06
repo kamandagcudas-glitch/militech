@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useContext } from 'react';
@@ -11,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function ForgotPasswordPage() {
     const [step, setStep] = useState(1); // 1: Enter email, 2: Enter code and new password
@@ -25,6 +25,7 @@ export default function ForgotPasswordPage() {
     const router = useRouter();
     const game = useContext(GameContext) as GameContextType;
     const { toast } = useToast();
+    const { theme } = useTheme();
 
     const handleSendCode = async () => {
         setError(null);
@@ -99,9 +100,15 @@ export default function ForgotPasswordPage() {
                                 />
                             </div>
                             {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
-                            <Button onClick={handleSendCode} className="w-full" disabled={isLoading || !usernameOrEmail.trim()}>
-                                {isLoading ? 'Sending...' : 'Send Recovery Code'}
-                            </Button>
+                            {theme === 'cyberpunk' ? (
+                                <button onClick={handleSendCode} className="btn-futuristic w-full" disabled={isLoading || !usernameOrEmail.trim()}>
+                                    {isLoading ? 'Sending...' : 'Send Recovery Code'}
+                                </button>
+                            ) : (
+                                <Button onClick={handleSendCode} className="w-full" disabled={isLoading || !usernameOrEmail.trim()}>
+                                    {isLoading ? 'Sending...' : 'Send Recovery Code'}
+                                </Button>
+                            )}
                         </div>
                     )}
                     {step === 2 && (
@@ -140,9 +147,15 @@ export default function ForgotPasswordPage() {
                                 />
                             </div>
                             {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
-                            <Button onClick={handleResetPassword} className="w-full" disabled={isLoading || !code.trim() || !newPassword.trim()}>
-                                {isLoading ? 'Resetting...' : 'Reset Password'}
-                            </Button>
+                             {theme === 'cyberpunk' ? (
+                                <button onClick={handleResetPassword} className="btn-futuristic w-full" disabled={isLoading || !code.trim() || !newPassword.trim()}>
+                                    {isLoading ? 'Resetting...' : 'Reset Password'}
+                                </button>
+                            ) : (
+                                <Button onClick={handleResetPassword} className="w-full" disabled={isLoading || !code.trim() || !newPassword.trim()}>
+                                    {isLoading ? 'Resetting...' : 'Reset Password'}
+                                </Button>
+                            )}
                         </div>
                     )}
                     <div className="mt-6 text-center">

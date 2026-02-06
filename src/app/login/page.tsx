@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const router = useRouter();
   const game = useContext(GameContext) as GameContextType;
   const { toast } = useToast();
+  const { theme } = useTheme();
 
   useEffect(() => {
     // If the user is already logged in, redirect to the dashboard.
@@ -53,7 +55,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <Link href="/" className="absolute top-8 left-8 text-sm text-primary-foreground/50 hover:text-primary">&larr; Back to Home</Link>
+      <Link href="/" className="absolute top-8 left-8 text-sm text-muted-foreground hover:text-primary">&larr; Back to Home</Link>
       <Card className="w-full max-w-sm shadow-2xl bg-card/80 backdrop-blur-sm border border-primary/20">
         <CardHeader className="text-center">
           <CardTitle className="font-headline text-4xl font-bold text-primary">
@@ -86,13 +88,23 @@ export default function LoginPage() {
                 onKeyDown={(e) => e.key === "Enter" && handleLogin()}
               />
             </div>
-            <Button
-              onClick={handleLogin}
-              className="w-full h-12 text-lg font-bold"
-              disabled={!username.trim() || !password.trim()}
-            >
-              Access Terminal
-            </Button>
+            {theme === 'cyberpunk' ? (
+                <button
+                    onClick={handleLogin}
+                    className="btn-futuristic w-full"
+                    disabled={!username.trim() || !password.trim()}
+                >
+                    Access Terminal
+                </button>
+            ) : (
+                <Button
+                    onClick={handleLogin}
+                    className="w-full h-12 text-lg font-bold"
+                    disabled={!username.trim() || !password.trim()}
+                >
+                    Access Terminal
+                </Button>
+            )}
           </div>
           <div className="mt-4 text-center text-sm">
             <p className="text-muted-foreground">

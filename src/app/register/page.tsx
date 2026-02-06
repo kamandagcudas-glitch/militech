@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function RegisterPage() {
     const [username, setUsername] = useState('');
@@ -21,6 +22,7 @@ export default function RegisterPage() {
     const router = useRouter();
     const game = useContext(GameContext) as GameContextType;
     const { toast } = useToast();
+    const { theme } = useTheme();
 
     const handleRegister = async () => {
         setError(null);
@@ -67,6 +69,8 @@ export default function RegisterPage() {
             setError(result.message);
         }
     };
+
+    const isButtonDisabled = !username.trim() || !displayName.trim() || !password.trim() || !confirmPassword.trim();
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -133,9 +137,15 @@ export default function RegisterPage() {
 
                         {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
 
-                        <Button onClick={handleRegister} className="w-full h-12 text-lg font-bold">
-                            Register
-                        </Button>
+                        {theme === 'cyberpunk' ? (
+                            <button onClick={handleRegister} className="btn-futuristic w-full" disabled={isButtonDisabled}>
+                                Register
+                            </button>
+                        ) : (
+                            <Button onClick={handleRegister} className="w-full h-12 text-lg font-bold" disabled={isButtonDisabled}>
+                                Register
+                            </Button>
+                        )}
                     </div>
                      <div className="mt-4 text-center text-sm">
                         <p className="text-muted-foreground">
