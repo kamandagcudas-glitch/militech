@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { cocData } from '@/lib/data';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle, XCircle, ChevronLeft, ChevronRight, RotateCw } from 'lucide-react';
+import { CheckCircle, XCircle, ChevronLeft, ChevronRight, RotateCw, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import {
@@ -19,6 +19,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { QuizQuestion } from '@/lib/types';
 
 
 export default function PracticeModePage() {
@@ -27,9 +28,15 @@ export default function PracticeModePage() {
   const cocId = params.cocId as string;
   const coc = cocData.find(c => c.id === cocId);
 
-  const allQuestions = useMemo(() => {
-    return coc ? coc.steps.flatMap(step => step.quiz).sort(() => 0.5 - Math.random()) : [];
+  const [allQuestions, setAllQuestions] = useState<QuizQuestion[]>([]);
+
+  useEffect(() => {
+    if (coc) {
+      // Shuffle questions on the client side to avoid hydration mismatch
+      setAllQuestions(coc.steps.flatMap(step => step.quiz).sort(() => 0.5 - Math.random()));
+    }
   }, [coc]);
+
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -39,10 +46,18 @@ export default function PracticeModePage() {
     return <div>COC not found.</div>;
   }
   
+  if (allQuestions.length === 0) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+          <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   const question = allQuestions[currentQuestionIndex];
 
   const handleCheckAnswer = () => {
-    if (selectedAnswer) {
+    if (selectedAnswer && question) {
       const isCorrect = selectedAnswer === question.correctAnswer;
       setFeedback({ correct: isCorrect, explanation: question.explanation });
     }
@@ -68,6 +83,7 @@ export default function PracticeModePage() {
   };
   
   const restartPractice = () => {
+      setAllQuestions(prev => [...prev].sort(() => 0.5 - Math.random())); // Re-shuffle
       setCurrentQuestionIndex(0);
       setSelectedAnswer(null);
       setFeedback(null);

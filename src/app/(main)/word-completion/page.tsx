@@ -1,20 +1,20 @@
 
 "use client";
 
-import { useState, useMemo, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { wordCompletionGameData } from '@/lib/data';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Lightbulb, Check, X, RotateCw, ArrowRight, SpellCheck, CheckCircle } from 'lucide-react';
+import { Lightbulb, Check, X, RotateCw, ArrowRight, SpellCheck, CheckCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { useRouter } from 'next/navigation';
 
 // Function to create the word with missing letters
-const maskWord = (word: string): string => {
+const createMaskedWord = (word: string): string => {
     if (word.length <= 3) return word;
     const chars = word.split('');
     const indicesToMask = new Set<number>();
@@ -36,15 +36,14 @@ export default function WordCompletionPage() {
     const game = useContext(GameContext) as GameContextType;
     const { toast } = useToast();
     const router = useRouter();
-    const [rounds] = useState(() => wordCompletionGameData.sort(() => 0.5 - Math.random()));
+    const [rounds, setRounds] = useState(wordCompletionGameData);
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [guess, setGuess] = useState('');
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
     const [showSummary, setShowSummary] = useState(false);
     const [correctAnswers, setCorrectAnswers] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
-
-    const currentRound = rounds[currentRoundIndex];
+    const [maskedWord, setMaskedWord] = useState('');
 
     useEffect(() => {
         if (game.currentUser?.player.isBanned) {
@@ -63,11 +62,22 @@ export default function WordCompletionPage() {
         }
     }, [game.currentUser, game.logActivity, gameStarted, router, toast]);
     
-    // Memoize the masked word so it doesn't change on re-renders
-    const maskedWord = useMemo(() => maskWord(currentRound.answer), [currentRound]);
+    useEffect(() => {
+        // Shuffle rounds on client mount
+        setRounds(prev => [...prev].sort(() => 0.5 - Math.random()));
+    }, []);
+
+    const currentRound = rounds[currentRoundIndex];
+
+    useEffect(() => {
+        if (currentRound?.answer) {
+            setMaskedWord(createMaskedWord(currentRound.answer));
+        }
+    }, [currentRound]);
+
 
     const handleGuess = () => {
-        if (feedback) return;
+        if (feedback || !currentRound) return;
 
         if (guess.trim().toUpperCase() === currentRound.answer.toUpperCase()) {
             setFeedback('correct');
@@ -100,6 +110,7 @@ export default function WordCompletionPage() {
     };
 
     const restartGame = () => {
+        setRounds(prev => [...prev].sort(() => 0.5 - Math.random()));
         setCurrentRoundIndex(0);
         setGuess('');
         setFeedback(null);
@@ -107,6 +118,14 @@ export default function WordCompletionPage() {
         setCorrectAnswers(0);
         setGameStarted(false);
     };
+
+    if (!currentRound || !maskedWord) {
+        return (
+             <Card className="w-full max-w-2xl mx-auto flex items-center justify-center min-h-[400px]">
+                <Loader2 className="h-16 w-16 animate-spin text-primary" />
+            </Card>
+        )
+    }
 
     return (
         <>

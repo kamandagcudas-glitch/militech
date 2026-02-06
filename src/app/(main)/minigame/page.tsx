@@ -9,7 +9,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Lightbulb, Check, X, RotateCw, CheckCircle, ArrowRight } from 'lucide-react';
+import { Lightbulb, Check, X, RotateCw, CheckCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -19,13 +19,18 @@ export default function MiniGamePage() {
     const game = useContext(GameContext) as GameContextType;
     const { toast } = useToast();
     const router = useRouter();
-    const [rounds] = useState(() => miniGameData.sort(() => 0.5 - Math.random()));
+    const [rounds, setRounds] = useState(miniGameData);
     const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
     const [guess, setGuess] = useState('');
     const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
     const [showSummary, setShowSummary] = useState(false);
     const [correctAnswers, setCorrectAnswers] = useState(0);
     const [gameStarted, setGameStarted] = useState(false);
+
+    useEffect(() => {
+        // Shuffle rounds on client-side mount to avoid hydration errors
+        setRounds(prevRounds => [...prevRounds].sort(() => 0.5 - Math.random()));
+    }, []);
 
     const currentRound = rounds[currentRoundIndex];
 
@@ -47,11 +52,12 @@ export default function MiniGamePage() {
     }, [game.currentUser, game.logActivity, gameStarted, router, toast]);
 
     const images = useMemo(() => {
+        if (!currentRound) return [];
         return currentRound.imageIds.map(id => PlaceHolderImages.find(img => img.id === id));
     }, [currentRound]);
 
     const handleGuess = () => {
-        if (feedback) return;
+        if (feedback || !currentRound) return;
 
         if (guess.toUpperCase() === currentRound.answer.toUpperCase()) {
             setFeedback('correct');
@@ -87,6 +93,7 @@ export default function MiniGamePage() {
     };
 
     const restartGame = () => {
+        setRounds(prevRounds => [...prevRounds].sort(() => 0.5 - Math.random()));
         setCurrentRoundIndex(0);
         setGuess('');
         setFeedback(null);
@@ -94,6 +101,14 @@ export default function MiniGamePage() {
         setCorrectAnswers(0);
         setGameStarted(false); // Reset for logging
     };
+    
+    if (!currentRound) {
+        return (
+          <Card className="w-full max-w-2xl mx-auto flex items-center justify-center min-h-[500px]">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+          </Card>
+        )
+    }
 
     return (
         <>
