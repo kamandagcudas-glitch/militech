@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CreatorBadgeIcon, DragonIcon } from "@/components/icons";
+import { CreatorBadgeIcon, GamepadIcon } from "@/components/icons";
 
 export default function MainAppLayout({
   children,
@@ -112,7 +112,7 @@ export default function MainAppLayout({
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2">
-            <DragonIcon className="size-8 text-primary" />
+            <GamepadIcon className="size-8 text-primary" />
             <h1 className="font-headline text-2xl font-bold">IT MAZING</h1>
           </div>
         </SidebarHeader>

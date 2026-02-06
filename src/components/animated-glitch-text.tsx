@@ -10,7 +10,7 @@ const GLITCH_CHARS = '█▓▒░>_#';
  * AnimatedGlitchText Component
  * Animates a text with a glitch effect, revealing it character by character.
  */
-const AnimatedGlitchText = ({ text, className }: { text: string; className?: string; }) => {
+const AnimatedGlitchText = ({ text, className, onAnimationEnd }: { text: string; className?: string; onAnimationEnd?: () => void; }) => {
     const [displayText, setDisplayText] = useState('');
 
     useEffect(() => {
@@ -19,6 +19,7 @@ const AnimatedGlitchText = ({ text, className }: { text: string; className?: str
             if (currentIndex >= text.length) {
                 clearInterval(intervalId);
                 setDisplayText(text);
+                onAnimationEnd?.(); // Signal that the animation has finished.
                 return;
             }
 
@@ -33,7 +34,7 @@ const AnimatedGlitchText = ({ text, className }: { text: string; className?: str
         }, 50); // Controls the speed of the animation
 
         return () => clearInterval(intervalId);
-    }, [text]);
+    }, [text, onAnimationEnd]);
     
     // The container is relative to position the glitch effect layers absolutely within it.
     return (
