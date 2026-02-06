@@ -33,8 +33,6 @@
     --input: 260 20% 90%;
     --ring: 283 63% 48%;
     
-    --radius: 0.5rem;
-
     --sidebar-background: 260 30% 99%;
     --sidebar-foreground: 260 20% 10%;
     --sidebar-primary: 283 63% 48%;
@@ -85,33 +83,33 @@
   }
 
   .cyberpunk {
-    --background: 226 40% 10%;
+    --background: 226 25% 8%;
     --foreground: 210 40% 98%;
-    --card: 225 30% 14%;
+    --card: 226 25% 12%;
     --card-foreground: 210 40% 98%;
     --popover: 226 50% 7%;
     --popover-foreground: 210 40% 98%;
-    --primary: 350 100% 68%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 226 40% 10%;
     --secondary: 225 30% 22%;
     --secondary-foreground: 210 40% 98%;
     --muted: 225 30% 18%;
     --muted-foreground: 210 20% 65%;
-    --accent: 180 100% 50%;
-    --accent-foreground: 226 40% 10%;
-    --destructive: 350 100% 68%;
+    --accent: 330 100% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    --border: 350 100% 35%;
+    --border: 180 100% 30%;
     --input: 225 30% 16%;
-    --ring: 350 100% 68%;
-    --sidebar-background: 226 40% 10%;
+    --ring: 180 100% 50%;
+    --sidebar-background: 226 25% 10%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 350 100% 68%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-primary: 180 100% 50%;
+    --sidebar-primary-foreground: 226 40% 10%;
     --sidebar-accent: 225 30% 22%;
     --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 350 100% 35%;
-    --sidebar-ring: 350 100% 68%;
+    --sidebar-border: 180 100% 30%;
+    --sidebar-ring: 180 100% 50%;
   }
 
   .samurai {
@@ -452,15 +450,48 @@
 
   .cyberpunk body::before {
     animation: animated-grid 30s linear infinite, glitch-red 1.5s steps(4, end) infinite;
-    background-color: hsl(var(--destructive));
+    background-color: hsl(var(--accent));
     mix-blend-mode: screen;
     opacity: 0.4;
   }
 
   .cyberpunk body::after {
     animation: animated-grid 30s linear infinite, glitch-cyan 2s steps(4, end) reverse infinite;
-    background-color: hsl(var(--accent));
+    background-color: hsl(var(--primary));
     mix-blend-mode: screen;
     opacity: 0.4;
   }
+
+  /* Custom overrides for Cyberpunk theme to remove blur and ensure solid backgrounds */
+  .cyberpunk [class*="backdrop-blur"] {
+    backdrop-filter: none;
+  }
+
+  .cyberpunk [class*="bg-card/"] {
+    background-color: hsl(var(--card));
+  }
+    
+  .cyberpunk [class*="bg-background/"] {
+    background-color: hsl(var(--background));
+  }
+
+  .cyberpunk [class*="bg-black/"] {
+      background-color: hsl(var(--background) / 0.75);
+  }
 }
+
+@keyframes glitch-red {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-3px, 2px); }
+  50% { transform: translate(3px, -2px); }
+  75% { transform: translate(-1px, 1px); }
+}
+
+@keyframes glitch-cyan {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(2px, -3px); }
+  50% { transform: translate(-2px, 3px); }
+  75% { transform: translate(1px, -1px); }
+}
+
+    
