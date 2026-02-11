@@ -14,8 +14,8 @@
     },
     {
       "id": "coc1-step3",
-      "description": "A bootable USB drive being created on a laptop.",
-      "imageUrl": "https://picsum.photos/seed/coc1-step3/1080/720",
+      "description": "A person plugging a bootable USB drive into a laptop.",
+      "imageUrl": "https://images.unsplash.com/photo-1614741118884-62ac1e8992f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx1c2IlMjBkcml2ZXxlbnwwfHx8fDE3NzEyNTAyNDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "bootable usb"
     },
     {
@@ -170,9 +170,9 @@
     },
     {
       "id": "minigame3-pic3",
-      "description": "An icon representing a DNS server.",
-      "imageUrl": "https://picsum.photos/seed/mg3-p3/600/600",
-      "imageHint": "dns icon"
+      "description": "A hologram of a server rack representing DNS services.",
+      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhJTIwY2VudGVyfGVufDB8fHx8MTc3MTI1MDk0NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dns server"
     },
     {
       "id": "minigame3-pic4",
@@ -356,8 +356,8 @@
     },
     {
       "id": "coding-storage",
-      "description": "Crucial MX500 SSD.",
-      "imageUrl": "https://picsum.photos/seed/coding-storage/600/400",
+      "description": "A Crucial brand SATA SSD drive.",
+      "imageUrl": "https://images.unsplash.com/photo-1591799264318-7e6244154de7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxTU0R8ZW58MHx8fHwxNzcxMjUyNTUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "crucial ssd"
     },
     {
@@ -368,8 +368,8 @@
     },
     {
       "id": "coding-psu",
-      "description": "EVGA 650W power supply unit.",
-      "imageUrl": "https://picsum.photos/seed/coding-psu/600/400",
+      "description": "An EVGA brand computer power supply unit.",
+      "imageUrl": "https://images.unsplash.com/photo-1627824132474-754d8244017c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwYyUyMHBvd2VyJTIwc3VwcGx5fGVufDB8fHx8MTc3MTI1Mjg1N3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "evga psu"
     },
     {
