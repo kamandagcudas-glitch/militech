@@ -21,13 +21,13 @@
     {
       "id": "coc1-step4",
       "description": "A Windows installation screen on a computer monitor.",
-      "imageUrl": "https://images.unsplash.com/photo-1758780691544-d11ce61aae47?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvcyUyMGluc3RhbGxhdGlvbnxlbnwwfHx8fDE3NzAxOTc2ODl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1593431806399-91842c679b36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aW5kb3dzJTIwaW5zdGFsbHxlbnwwfHx8fDE3NzE0NTg3MjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "os installation"
     },
     {
       "id": "coc1-step5",
       "description": "The Windows Device Manager open on a screen, showing a list of hardware.",
-      "imageUrl": "https://images.unsplash.com/photo-1758158445546-b35b4cb555ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1629854743288-4171e228d447?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTQ1ODc4Nnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "device manager"
     },
     {
@@ -39,7 +39,7 @@
     {
       "id": "coc2-step2",
       "description": "A hand using a crimping tool on an ethernet cable with RJ-45 connectors nearby.",
-      "imageUrl": "https://images.unsplash.com/photo-1761228606303-0fed5c0d8f3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYWJsZSUyMGNyaW1waW5nfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYWJsZSUyMGNyaW1waW5nfGVufDB8fHx8MTc3MTQ1ODg0NHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cable crimping"
     },
     {
@@ -57,7 +57,7 @@
     {
       "id": "coc2-step5",
       "description": "The command prompt open on a computer screen, showing the output of a network ping test.",
-      "imageUrl": "https://images.unsplash.com/photo-1761497723235-568a796506cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwdGVzdGluZ3xlbnwwfHx8fDE3NzAxOTc2ODl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1581093452418-55b80b7d41d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwcGluZyUyMHRlc3R8ZW58MHx8fHwxNzcxNDU4ODk5fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "network testing"
     },
     {
@@ -69,14 +69,14 @@
     {
       "id": "coc3-step2",
       "description": "A person using a laptop to remotely connect to another computer.",
-      "imageUrl": "https://images.unsplash.com/photo-1763991345257-a1f4313be3dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyZW1vdGUlMjBkZXNrdG9wfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1611095790444-9c5f8b9e6c4c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyZW1vdGUlMjBkZXNrdG9wJTIwc2Vzc2lvbnxlbnwwfHx8fDE3NzE0NTkwMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "remote desktop"
     },
     {
       "id": "coc3-step3",
-      "description": "A network diagram showing a server connected to several client computers.",
-      "imageUrl": "https://images.unsplash.com/photo-1742318412606-06916d82c6ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuZXR3b3JrJTIwZGlhZ3JhbXxlbnwwfHx8fDE3NzAxOTc2OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "server client network"
+      "description": "A computer screen showing firewall rules being configured.",
+      "imageUrl": "https://images.unsplash.com/photo-1624969862293-c359dd594a12?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYXJld2FsbCUyMHJ1bGVzfGVufDB8fHx8MTc3MTQ1OTA2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "firewall rules"
     },
     {
       "id": "coc4-step1",
@@ -87,13 +87,13 @@
     {
       "id": "coc4-step2",
       "description": "The System Restore window open on a computer screen.",
-      "imageUrl": "https://images.unsplash.com/photo-1706006901178-adc90fa803e7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzeXN0ZW0lMjByZXN0b3JlfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1629854743288-4171e228d447?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzeXN0ZW0lMjByZXN0b3JlJTIwd2luZG93fGVufDB8fHx8MTc3MTQ1OTEzNnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "system restore"
     },
     {
       "id": "coc4-step3",
       "description": "The Disk Defragmenter and Optimizer tool open on Windows.",
-      "imageUrl": "https://images.unsplash.com/photo-1689535090503-e9b3f0d7ad97?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkaXNrJTIwZGVmcmFnbWVudGF0aW9ufGVufDB8fHx8MTc3MDE5NzY4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1629854743288-4171e228d447?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvcHRpbWl6ZSUyMGRyaXZlcyUyMHdpbmRvd3N8ZW58MHx8fHwxNzcxNDU5MTg0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "disk defragmentation"
     },
     {
@@ -152,9 +152,9 @@
     },
     {
       "id": "minigame2-pic4",
-      "description": "A diagram showing interconnected devices in a network.",
-      "imageUrl": "https://images.unsplash.com/photo-1742318412606-06916d82c6ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuZXR3b3JrJTIwZGlhZ3JhbXxlbnwwfHx8fDE3NzAxOTc2OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "network diagram"
+      "description": "A network diagram showing interconnected devices in a network.",
+      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhJTIwY2VudGVyfGVufDB8fHx8MTc3MTI1MDk0NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dns server"
     },
     {
       "id": "minigame3-pic1",
@@ -255,7 +255,7 @@
     {
       "id": "gaming-cpu",
       "description": "Intel Core i9 processor for gaming.",
-      "imageUrl": "https://images.unsplash.com/photo-1555616635-640b71bdb185?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxpbnRlbCUyMGk5fGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1641861867938-67ab728bb5c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbnRlbCUyMGk5fGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "intel i9"
     },
     {
@@ -267,25 +267,25 @@
     {
       "id": "gaming-ram",
       "description": "Corsair Dominator Platinum RGB RAM.",
-      "imageUrl": "https://images.unsplash.com/photo-1620050506248-fbdd178e38ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxnYW1pbmclMjByYW18ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1620050503346-ba7c99ec97ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnYW1pbmclMjByYW18ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gaming ram"
     },
     {
       "id": "gaming-storage",
       "description": "Samsung 980 Pro NVMe SSD.",
-      "imageUrl": "https://images.unsplash.com/photo-1659535915214-e7cbac112038?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnYW1pbmclMjBzc2R8ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1734605022656-937e1cf0839d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnYW1pbmclMjBzc2R8ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gaming ssd"
     },
     {
       "id": "gaming-motherboard",
       "description": "ASUS ROG gaming motherboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1617181218772-1be04dfc9d70?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxnYW1pbmclMjBtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzA3NjYzNjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxnYW1pbmclMjBtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzA3NjYzNjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gaming motherboard"
     },
     {
       "id": "gaming-psu",
       "description": "Corsair 1000W power supply unit.",
-      "imageUrl": "https://images.unsplash.com/photo-1670748076990-643f5af37b87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxnYW1pbmclMjBwc3V8ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1630541678699-bb279c3281f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnYW1pbmclMjBwc3V8ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gaming psu"
     },
     {
@@ -303,13 +303,13 @@
     {
       "id": "working-gpu",
       "description": "NVIDIA GeForce RTX 4070 graphics card.",
-      "imageUrl": "https://images.unsplash.com/photo-1706954777655-7cb60eb69f51?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxydHglMjA0MDcwfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1695499310372-79328365b7cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxydHglMjA0MDcwfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rtx 4070"
     },
     {
       "id": "working-ram",
       "description": "Crucial Pro RAM module.",
-      "imageUrl": "https://images.unsplash.com/photo-1718380236109-2fd5d2a040c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcm8lMjByYW18ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1769085795297-b45cc8c92f5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwcm8lMjByYW18ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "pro ram"
     },
     {
@@ -321,7 +321,7 @@
     {
       "id": "working-motherboard",
       "description": "Gigabyte motherboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1722888061843-2bb5bc8c793f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnaWdhYnl0ZSUyMG1vdGhlcmJvYXJkfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1754928864246-dc4fa729ee1b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnaWdhYnl0ZSUyMG1vdGhlcmJvYXJkfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gigabyte motherboard"
     },
     {
@@ -333,7 +333,7 @@
     {
       "id": "working-case",
       "description": "Fractal Design PC case.",
-      "imageUrl": "https://images.unsplash.com/photo-1672385965360-eb1f513b527d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmcmFjdGFsJTIwY2FzZXxlbnwwfHx8fDE3NzA4MjYyMTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1651443040219-ce2e7a36219f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmcmFjdGFsJTIwY2FzZXxlbnwwfHx8fDE3NzA4MjYyMTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fractal case"
     },
     {
