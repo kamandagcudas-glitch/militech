@@ -1,3 +1,4 @@
+
 export type ImagePlaceholder = {
   id: string;
   description: string;
@@ -261,91 +262,91 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "gaming-cpu",
       "description": "Intel Core i9 processor for gaming.",
-      "imageUrl": "https://picsum.photos/seed/cpu1/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1641861867938-67ab728bb5c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "intel i9"
     },
     {
       "id": "gaming-gpu",
       "description": "NVIDIA GeForce RTX 4090 graphics card.",
-      "imageUrl": "https://picsum.photos/seed/gpu1/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1716967318503-05b7064afa41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "rtx 4090"
     },
     {
       "id": "gaming-ram",
       "description": "Corsair Dominator Platinum RGB RAM.",
-      "imageUrl": "https://picsum.photos/seed/ram1/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1620050503346-ba7c99ec97ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "gaming ram"
     },
     {
       "id": "gaming-storage",
       "description": "Samsung 980 Pro NVMe SSD.",
-      "imageUrl": "https://picsum.photos/seed/ssd1/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1734605022656-937e1cf0839d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "gaming ssd"
     },
     {
       "id": "gaming-motherboard",
       "description": "ASUS ROG gaming motherboard.",
-      "imageUrl": "https://picsum.photos/seed/mobo1/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "gaming motherboard"
     },
     {
       "id": "gaming-psu",
       "description": "Corsair 1000W power supply unit.",
-      "imageUrl": "https://picsum.photos/seed/psu1/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1630541678699-bb279c3281f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "gaming psu"
     },
     {
       "id": "gaming-case",
       "description": "Lian Li gaming PC case.",
-      "imageUrl": "https://picsum.photos/seed/case1/600/400",
-      "imageHint": "gaming case"
+      "imageUrl": "https://images.unsplash.com/photo-1640036948080-99d48ca959b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageHint": "lianli case"
     },
     {
       "id": "working-cpu",
       "description": "AMD Ryzen 9 processor.",
-      "imageUrl": "https://picsum.photos/seed/cpu2/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1629725413175-396025477a04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "amd ryzen 9"
     },
     {
       "id": "working-gpu",
       "description": "NVIDIA GeForce RTX 4070 graphics card.",
-      "imageUrl": "https://picsum.photos/seed/gpu2/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1695499310372-79328365b7cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "rtx 4070"
     },
     {
       "id": "working-ram",
       "description": "Crucial Pro RAM module.",
-      "imageUrl": "https://picsum.photos/seed/ram2/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1769085795297-b45cc8c92f5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "pro ram"
     },
     {
       "id": "working-storage",
       "description": "WD Black NVMe SSD.",
-      "imageUrl": "https://picsum.photos/seed/ssd2/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1760623227551-2eae8f9cb675?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "nvme ssd"
     },
     {
       "id": "working-motherboard",
       "description": "Gigabyte motherboard.",
-      "imageUrl": "https://picsum.photos/seed/mobo2/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1754928864246-dc4fa729ee1b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "gigabyte motherboard"
     },
     {
       "id": "working-psu",
       "description": "Seasonic Focus power supply unit.",
-      "imageUrl": "https://picsum.photos/seed/psu2/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1740133305582-c49f6bb688de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "seasonic psu"
     },
     {
       "id": "working-case",
       "description": "Fractal Design PC case.",
-      "imageUrl": "https://picsum.photos/seed/case2/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1651443040219-ce2e7a36219f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "fractal case"
     },
     {
       "id": "coding-cpu",
       "description": "AMD Ryzen 7 processor.",
-      "imageUrl": "https://picsum.photos/seed/cpu3/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1611275484976-52812441218a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "amd ryzen 7"
     },
     {
@@ -357,7 +358,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coding-ram",
       "description": "G.Skill Ripjaws RAM module.",
-      "imageUrl": "https://picsum.photos/seed/ram3/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1563056985-1e46b46c4982?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnc2tpbGwlMjByYW18ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gskill ram"
     },
     {
@@ -369,7 +370,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coding-motherboard",
       "description": "MSI motherboard.",
-      "imageUrl": "https://picsum.photos/seed/mobo3/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "msi motherboard"
     },
     {
@@ -381,7 +382,9 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coding-case",
       "description": "NZXT H510 PC case.",
-      "imageUrl": "https://picsum.photos/seed/case3/600/400",
+      "imageUrl": "https://images.unsplash.com/photo-1593152077897-2cc2dcbc041f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuenh0JTIwY2FzZXxlbnwwfHx8fDE3NzA4MjYyMTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "nzxt case"
     }
   ];
+
+    
