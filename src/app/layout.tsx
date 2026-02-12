@@ -5,8 +5,10 @@ import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "IT MAZING",
-  description: "A gamified, offline-first learning system.",
+  title: "MI-LITECH | Cyberpunk Learning Platform",
+  description: "MI-LITECH is a gamified web-based learning and assessment platform for Grade 12 CSS Certificate of Competency.",
+  keywords: ["MI-LITECH", "Cyberpunk", "Learning", "CSS", "COC", "Quiz", "Gamified"],
+  authors: [{ name: "Your Name" }],
 };
 
 export default function RootLayout({
