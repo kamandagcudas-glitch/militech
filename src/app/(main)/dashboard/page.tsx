@@ -1,21 +1,81 @@
+
 "use client";
 
-import { useContext } from 'react';
+import { useContext, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { cocData } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck } from 'lucide-react';
+import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck, Search } from 'lucide-react';
 import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import AnimatedGlitchText from '@/components/animated-glitch-text';
+import { Input } from '@/components/ui/input';
 
 export default function DashboardPage() {
     const game = useContext(GameContext) as GameContextType;
+    const [searchQuery, setSearchQuery] = useState('');
+
     if (!game.currentUser) return null;
 
     const { player, progress } = game.currentUser;
+
+    const lowercasedQuery = searchQuery.toLowerCase();
+
+    const filteredCocData = useMemo(() => {
+        if (!searchQuery) return cocData;
+        return cocData.filter(coc => 
+            coc.title.toLowerCase().includes(lowercasedQuery) ||
+            coc.description.toLowerCase().includes(lowercasedQuery)
+        );
+    }, [lowercasedQuery]);
+
+    const otherCards = useMemo(() => [
+        {
+            href: "/minigame",
+            icon: <Puzzle/>,
+            title: "4 Pics 1 Word",
+            description: "Test your knowledge with a fun mini-game.",
+            buttonText: "Play Now"
+        },
+        {
+            href: "/word-completion",
+            icon: <SpellCheck />,
+            title: "Word Completion",
+            description: "Guess the word by filling in the blanks.",
+            buttonText: "Play Now"
+        },
+        {
+            href: "/profile",
+            icon: <User />,
+            title: "Player Profile",
+            description: "View your achievements, badges, and stats.",
+            buttonText: "View Profile"
+        },
+        {
+            href: "/files",
+            icon: <Files />,
+            title: "File Storage",
+            description: "Manage and share your files.",
+            buttonText: "Open Storage"
+        },
+        {
+            href: "/feedback",
+            icon: <MessageSquare />,
+            title: "Board of Feedback",
+            description: "Leave your thoughts and suggestions for the system.",
+            buttonText: "Go to Board"
+        }
+    ], []);
+
+    const filteredOtherCards = useMemo(() => {
+        if (!searchQuery) return otherCards;
+        return otherCards.filter(card =>
+            card.title.toLowerCase().includes(lowercasedQuery) ||
+            card.description.toLowerCase().includes(lowercasedQuery)
+        )
+    }, [lowercasedQuery, otherCards]);
 
     return (
         <div className="container mx-auto">
@@ -27,11 +87,21 @@ export default function DashboardPage() {
                     {player.specialInsignia === 'black-flame' && <BlackFlameIcon className="text-primary h-8 w-8 transition-transform duration-300 hover:scale-125" title="Black Flame Wanderer"/>}
                 </h1>
                 <p className="text-muted-foreground">@{player.username}</p>
-                <p className="text-muted-foreground mt-2">Ready to level up your IT skills? Choose a module to begin.</p>
+                <p className="text-muted-foreground mt-2">Ready to level up your IT skills? Find a module to begin.</p>
+            </div>
+
+            <div className="mb-8 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input 
+                    placeholder="Search for modules or features..."
+                    className="pl-12 text-lg h-14"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {cocData.map((coc, index) => {
+                {filteredCocData.map((coc, index) => {
                     const completedSteps = progress![coc.id]?.completedSteps.length || 0;
                     const totalSteps = coc.steps.length;
                     const progressPercentage = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
@@ -60,87 +130,33 @@ export default function DashboardPage() {
                         </Card>
                     );
                 })}
-                 <Card 
-                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                    style={{ animationDelay: `${150 * cocData.length}ms`, animationFillMode: 'backwards' }}
-                >
-                    <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2"><Puzzle/> 4 Pics 1 Word</CardTitle>
-                        <CardDescription>Test your knowledge with a fun mini-game.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow flex items-end">
-                        <Link href="/minigame" passHref>
-                            <Button className="w-full mt-2" variant="secondary">
-                                Play Now <ArrowRight className="ml-2" />
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
-                 <Card 
-                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                    style={{ animationDelay: `${150 * (cocData.length + 1)}ms`, animationFillMode: 'backwards' }}
-                >
-                    <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2"><SpellCheck /> Word Completion</CardTitle>
-                        <CardDescription>Guess the word by filling in the blanks.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow flex items-end">
-                        <Link href="/word-completion" passHref>
-                            <Button className="w-full mt-2" variant="secondary">
-                                Play Now <ArrowRight className="ml-2" />
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
-                <Card 
-                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                    style={{ animationDelay: `${150 * (cocData.length + 2)}ms`, animationFillMode: 'backwards' }}
-                >
-                    <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2"><User /> Player Profile</CardTitle>
-                        <CardDescription>View your achievements, badges, and stats.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow flex items-end">
-                        <Link href="/profile" passHref>
-                            <Button className="w-full mt-2" variant="secondary">
-                                View Profile <ArrowRight className="ml-2" />
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
-                 <Card 
-                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                    style={{ animationDelay: `${150 * (cocData.length + 3)}ms`, animationFillMode: 'backwards' }}
-                >
-                    <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2"><Files /> File Storage</CardTitle>
-                        <CardDescription>Manage and share your files.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow flex items-end">
-                        <Link href="/files" passHref>
-                            <Button className="w-full mt-2" variant="secondary">
-                                Open Storage <ArrowRight className="ml-2" />
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
-                <Card 
-                    className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                    style={{ animationDelay: `${150 * (cocData.length + 4)}ms`, animationFillMode: 'backwards' }}
-                >
-                    <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2"><MessageSquare /> Board of Feedback</CardTitle>
-                        <CardDescription>Leave your thoughts and suggestions for the system.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow flex items-end">
-                        <Link href="/feedback" passHref>
-                            <Button className="w-full mt-2" variant="secondary">
-                                Go to Board <ArrowRight className="ml-2" />
-                            </Button>
-                        </Link>
-                    </CardContent>
-                </Card>
+                {filteredOtherCards.map((card, index) => (
+                     <Card 
+                        key={card.href}
+                        className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
+                        style={{ animationDelay: `${150 * (filteredCocData.length + index)}ms`, animationFillMode: 'backwards' }}
+                    >
+                        <CardHeader>
+                            <CardTitle className="font-headline flex items-center gap-2">{card.icon} {card.title}</CardTitle>
+                            <CardDescription>{card.description}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex-grow flex items-end">
+                            <Link href={card.href} passHref>
+                                <Button className="w-full mt-2" variant="secondary">
+                                    {card.buttonText} <ArrowRight className="ml-2" />
+                                </Button>
+                            </Link>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
+
+            {filteredCocData.length === 0 && filteredOtherCards.length === 0 && (
+                <div className="text-center py-16 text-muted-foreground bg-card/50 rounded-lg border-2 border-dashed">
+                    <p className="text-lg font-semibold">No Results Found</p>
+                    <p>No modules or features match your search query.</p>
+                </div>
+            )}
         </div>
     );
 }
