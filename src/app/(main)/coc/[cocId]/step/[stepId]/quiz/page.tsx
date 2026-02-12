@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useContext, useEffect, useRef, useCallback } from 'react';
@@ -13,6 +14,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { Download } from 'lucide-react';
 
 export default function QuizPage() {
   const params = useParams();
@@ -150,6 +154,85 @@ export default function QuizPage() {
     setOutcome(result);
     setShowResult(true);
   };
+
+  const handleDownloadPDF = () => {
+    if (!game.currentUser || !coc || !step) return;
+
+    const doc = new jsPDF();
+    const { player } = game.currentUser;
+    const wrongAnswers = totalQuestions - score;
+    const scorePercentage = (score / totalQuestions) * 100;
+
+    // Header
+    doc.setFontSize(20);
+    doc.text("IT MAZING - Quiz Results", 105, 20, { align: 'center' });
+
+    doc.setFontSize(14);
+    doc.text(`${coc.title} - ${step.title}`, 105, 30, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text(`Completed on: ${new Date().toLocaleDateString()}`, 105, 35, { align: 'center' });
+    
+    // User Info & Score Summary
+    doc.setFontSize(12);
+    doc.text("Agent:", 14, 50);
+    doc.text(`${player.displayName} (@${player.username})`, 50, 50);
+    
+    doc.text("Score:", 14, 60);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${score} / ${totalQuestions} (${scorePercentage.toFixed(1)}%)`, 50, 60);
+    doc.setFont('helvetica', 'normal');
+
+    doc.text("Correct Answers:", 14, 65);
+    doc.text(`${score}`, 50, 65);
+    
+    doc.text("Incorrect Answers:", 14, 70);
+    doc.text(`${wrongAnswers}`, 50, 70);
+
+    // Detailed Results Table
+    const tableData = step.quiz.map((q, index) => {
+        const userAnswer = answers[index] || "No Answer";
+        const isCorrect = userAnswer === q.correctAnswer;
+        return [
+            q.question.replace(/\s+/g, ' ').trim(),
+            userAnswer.replace(/\s+/g, ' ').trim(),
+            q.correctAnswer.replace(/\s+/g, ' ').trim(),
+            isCorrect ? '✅ Correct' : '❌ Incorrect'
+        ];
+    });
+
+    autoTable(doc, {
+        head: [['Question', 'Your Answer', 'Correct Answer', 'Result']],
+        body: tableData,
+        startY: 80,
+        didParseCell: function (data) {
+            if (data.column.index === 3 && data.cell.section === 'body') {
+                if (data.cell.text[0].includes('✅')) {
+                    data.cell.styles.textColor = [0, 128, 0]; // Green
+                } else {
+                    data.cell.styles.textColor = [255, 0, 0]; // Red
+                }
+            }
+        },
+        styles: {
+            cellPadding: 2,
+            fontSize: 8,
+        },
+        headStyles: {
+            fillColor: [41, 128, 185],
+            textColor: 255,
+            fontStyle: 'bold',
+        }
+    });
+
+    // Footer
+    const finalY = (doc as any).lastAutoTable.finalY;
+    doc.setFontSize(10);
+    doc.text("Note: Review the incorrect answers to improve your knowledge for the next attempt.", 14, finalY + 10);
+    
+    // Save PDF
+    doc.save(`IT_MAZING_Quiz_Results_${coc.id}_${step.id}.pdf`);
+  };
   
   const handleDialogClose = () => {
     setShowResult(false);
@@ -248,8 +331,17 @@ export default function QuizPage() {
                 </>
               )}
           </div>
-          <DialogFooter>
-            <Button onClick={handleDialogClose} className="w-full">Continue</Button>
+          <DialogFooter className="flex-col sm:flex-row sm:justify-center gap-2">
+            <Button
+              variant="outline"
+              onClick={handleDownloadPDF}
+              disabled={focusLost}
+              className="w-full sm:w-auto"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download Results
+            </Button>
+            <Button onClick={handleDialogClose} className="w-full sm:w-auto">Continue</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
