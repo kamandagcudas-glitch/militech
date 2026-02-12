@@ -1,5 +1,3 @@
-import data from './placeholder-images.json';
-
 export type ImagePlaceholder = {
   id: string;
   description: string;
@@ -7,4 +5,383 @@ export type ImagePlaceholder = {
   imageHint: string;
 };
 
-export const PlaceHolderImages: ImagePlaceholder[] = data.placeholderImages;
+export const PlaceHolderImages: ImagePlaceholder[] = [
+    {
+      "id": "coc1-step1",
+      "description": "PC components spread out on a workbench.",
+      "imageUrl": "https://images.unsplash.com/photo-1768796372362-05c256e61d8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb21wdXRlciUyMGFzc2VtYmx5fGVufDB8fHx8MTc3MDE5NzY4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer assembly"
+    },
+    {
+      "id": "coc1-step2",
+      "description": "A person's finger pointing to a BIOS/UEFI screen on a monitor.",
+      "imageUrl": "https://images.unsplash.com/photo-1561140676-3726fdac9bed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxiaW9zJTIwc2V0dXB8ZW58MHx8fHwxNzcwMTkwNTYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bios setup"
+    },
+    {
+      "id": "coc1-step3",
+      "description": "A person plugging a bootable USB drive into a laptop.",
+      "imageUrl": "https://images.unsplash.com/photo-1614741118884-62ac1e8992f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx1c2IlMjBkcml2ZXxlbnwwfHx8fDE3NzEyNTAyNDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bootable usb"
+    },
+    {
+      "id": "coc1-step4",
+      "description": "A Windows installation screen on a computer monitor.",
+      "imageUrl": "https://images.unsplash.com/photo-1593431806399-91842c679b36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aW5kb3dzJTIwaW5zdGFsbHxlbnwwfHx8fDE3NzE0NTg3MjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "os installation"
+    },
+    {
+      "id": "coc1-step5",
+      "description": "The Windows Device Manager open on a screen, showing a list of hardware.",
+      "imageUrl": "https://images.unsplash.com/photo-1629854743288-4171e228d447?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTQ1ODc4Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "device manager"
+    },
+    {
+      "id": "coc2-step1",
+      "description": "A coiled bundle of blue ethernet network cables.",
+      "imageUrl": "https://images.unsplash.com/photo-1683322499436-f4383dd59f5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MDE2NDY2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network cables"
+    },
+    {
+      "id": "coc2-step2",
+      "description": "A hand using a crimping tool on an ethernet cable with RJ-45 connectors nearby.",
+      "imageUrl": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYWJsZSUyMGNyaW1waW5nfGVufDB8fHx8MTc3MTQ1ODg0NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cable crimping"
+    },
+    {
+      "id": "coc2-step3",
+      "description": "A computer screen showing the network configuration settings.",
+      "imageUrl": "https://images.unsplash.com/photo-1548544027-1a96c4c24c7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxuZXR3b3JrJTIwY29uZmlndXJhdGlvbnxlbnwwfHx8fDE3NzAxOTc2OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network configuration"
+    },
+    {
+      "id": "coc2-step4",
+      "description": "A modern Wi-Fi router on a desk with glowing lights.",
+      "imageUrl": "https://images.unsplash.com/photo-1733810763720-4c83af0668ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wifi router"
+    },
+    {
+      "id": "coc2-step5",
+      "description": "The command prompt open on a computer screen, showing the output of a network ping test.",
+      "imageUrl": "https://images.unsplash.com/photo-1581093452418-55b80b7d41d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwcGluZyUyMHRlc3R8ZW58MHx8fHwxNzcxNDU4ODk5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network testing"
+    },
+    {
+      "id": "coc3-step1",
+      "description": "A server rack in a data center with blinking lights.",
+      "imageUrl": "https://images.unsplash.com/flagged/photo-1579274216947-86eaa4b00475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzZXJ2ZXIlMjByYWNrfGVufDB8fHx8MTc3MDI0NTQzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server rack"
+    },
+    {
+      "id": "coc3-step2",
+      "description": "A person using a laptop to remotely connect to another computer.",
+      "imageUrl": "https://images.unsplash.com/photo-1611095790444-9c5f8b9e6c4c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyZW1vdGUlMjBkZXNrdG9wJTIwc2Vzc2lvbnxlbnwwfHx8fDE3NzE0NTkwMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "remote desktop"
+    },
+    {
+      "id": "coc3-step3",
+      "description": "A computer screen showing firewall rules being configured.",
+      "imageUrl": "https://images.unsplash.com/photo-1624969862293-c359dd594a12?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxmYXJld2FsbCUyMHJ1bGVzfGVufDB8fHx8MTc3MTQ1OTA2Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "firewall rules"
+    },
+    {
+      "id": "coc4-step1",
+      "description": "An external hard drive connected to a laptop, with backup icons on screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1618034100983-e1d78be0dc80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkYXRhJTIwYmFja3VwfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data backup"
+    },
+    {
+      "id": "coc4-step2",
+      "description": "The System Restore window open on a computer screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1629854743288-4171e228d447?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzeXN0ZW0lMjByZXN0b3JlJTIwd2luZG93fGVufDB8fHx8MTc3MTQ1OTEzNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "system restore"
+    },
+    {
+      "id": "coc4-step3",
+      "description": "The Disk Defragmenter and Optimizer tool open on Windows.",
+      "imageUrl": "https://images.unsplash.com/photo-1629854743288-4171e228d447?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvcHRpbWl6ZSUyMGRyaXZlcyUyMHdpbmRvd3N8ZW58MHx8fHwxNzcxNDU5MTg0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "disk defragmentation"
+    },
+    {
+      "id": "coc4-step4",
+      "description": "An antivirus program scanning for threats on a computer screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1576765608360-c3fc79ca9964?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx2aXJ1cyUyMHNjYW5uaW5nfGVufDB8fHx8MTc3MDE5NzY4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "virus scanning"
+    },
+    {
+      "id": "system-unit-main",
+      "description": "An open computer case with all components visible and glowing with RGB lighting.",
+      "imageUrl": "https://images.unsplash.com/photo-1756576630222-c75cdcc48948?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxvcGVuJTIwY29tcHV0ZXIlMjBjYXNlfGVufDB8fHx8MTc3MDE5NzY4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "open computer case"
+    },
+    {
+      "id": "minigame1-pic1",
+      "description": "A sleek, modern computer mouse on a mousepad.",
+      "imageUrl": "https://images.unsplash.com/photo-1658070429465-848c0796abf3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29tcHV0ZXIlMjBtb3VzZXxlbnwwfHx8fDE3NzAyNTU3MTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer mouse"
+    },
+    {
+      "id": "minigame1-pic2",
+      "description": "A mechanical gaming keyboard with RGB lighting.",
+      "imageUrl": "https://images.unsplash.com/photo-1520092352425-9699926a9b0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnYW1pbmclMjBrZXlib2FyZHxlbnwwfHx8fDE3NzAxNzQ5MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming keyboard"
+    },
+    {
+      "id": "minigame1-pic3",
+      "description": "A high-resolution computer monitor displaying a vibrant image.",
+      "imageUrl": "https://images.unsplash.com/photo-1579765754037-5bfef757251a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb21wdXRlciUyMG1vbml0b3J8ZW58MHx8fHwxNzcwMjU1NzE1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer monitor"
+    },
+    {
+      "id": "minigame1-pic4",
+      "description": "A pair of headphones resting on a desk.",
+      "imageUrl": "https://images.unsplash.com/photo-1628202926206-c63a34b1618f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxoZWFkcGhvbmVzfGVufDB8fHx8MTc3MDIzMjU3NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "headphones"
+    },
+    {
+      "id": "minigame2-pic1",
+      "description": "Close-up of an ethernet port with a cable plugged in.",
+      "imageUrl": "https://images.unsplash.com/photo-1606421753414-8d165c9d48e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxldGhlcm5ldCUyMHBvcnR8ZW58MHx8fHwxNzcwMTk3Njg5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ethernet port"
+    },
+    {
+      "id": "minigame2-pic2",
+      "description": "The Wi-Fi symbol glowing on a dark background.",
+      "imageUrl": "https://images.unsplash.com/photo-1583474884909-230dac058b63?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aWZpJTIwc3ltYm9sfGVufDB8fHx8MTc3MDE5MDU2MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wifi symbol"
+    },
+    {
+      "id": "minigame2-pic3",
+      "description": "A network switch with multiple ethernet cables connected.",
+      "imageUrl": "https://images.unsplash.com/photo-1624965439943-09e0238644e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bmV0d29yayUyMHN3aXRjaHxlbnwwfHx8fDE3NzAxOTc2ODl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network switch"
+    },
+    {
+      "id": "minigame2-pic4",
+      "description": "A network diagram showing interconnected devices in a network.",
+      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhJTIwY2VudGVyfGVufDB8fHx8MTc3MTI1MDk0NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dns server"
+    },
+    {
+      "id": "minigame3-pic1",
+      "description": "A technician working on a server in a data center.",
+      "imageUrl": "https://images.unsplash.com/photo-1667984390553-7f439e6ae401?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbG91ZCUyMHNlcnZlcnxlbnwwfHx8fDE3NzAyNTU3MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cloud server"
+    },
+    {
+      "id": "minigame3-pic2",
+      "description": "A DHCP server configuration screen in Windows Server.",
+      "imageUrl": "https://images.unsplash.com/photo-1612270882052-545746432ae6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3aW5kb3dzJTIwc2VydmVyfGVufDB8fHx8MTc3MDE5NzY5MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "windows server"
+    },
+    {
+      "id": "minigame3-pic3",
+      "description": "A hologram of a server rack representing DNS services.",
+      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkYXRhJTIwY2VudGVyfGVufDB8fHx8MTc3MTI1MDk0NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dns server"
+    },
+    {
+      "id": "minigame3-pic4",
+      "description": "A folder icon representing a file share on a network.",
+      "imageUrl": "https://images.unsplash.com/photo-1736953072477-bd26e3073d02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmaWxlJTIwc2hhcmluZ3xlbnwwfHx8fDE3NzAxOTc2OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "file sharing"
+    },
+    {
+      "id": "minigame4-pic1",
+      "description": "An icon of a hard drive with a circular arrow, representing backup.",
+      "imageUrl": "https://images.unsplash.com/photo-1738603110877-d924484f2142?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YmFja3VwJTIwaWNvbnxlbnwwfHx8fDE3NzAxOTc2OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "backup icon"
+    },
+    {
+      "id": "minigame4-pic2",
+      "description": "A skull and crossbones icon on a computer screen, representing a virus.",
+      "imageUrl": "https://images.unsplash.com/photo-1610337673044-720471f83677?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb21wdXRlciUyMHZpcnVzfGVufDB8fHx8MTc3MDE5MDU2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer virus"
+    },
+    {
+      "id": "minigame4-pic3",
+      "description": "A cleaning spray bottle and cloth next to a dusty computer.",
+      "imageUrl": "https://images.unsplash.com/photo-1560131930-485758fc17b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjb21wdXRlciUyMGNsZWFuaW5nfGVufDB8fHx8MTc3MDE5NzY4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer cleaning"
+    },
+    {
+      "id": "minigame4-pic4",
+      "description": "A calendar with a wrench icon, symbolizing scheduled maintenance.",
+      "imageUrl": "https://images.unsplash.com/photo-1738918935719-398c6cc3c51a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzY2hlZHVsZWQlMjBtYWludGVuYW5jZXxlbnwwfHx8fDE3NzAxOTc2ODl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "scheduled maintenance"
+    },
+    {
+      "id": "minigame5-pic1",
+      "description": "A close-up of a RAM stick being installed on a motherboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1724506381599-2a9aa489366f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxyYW0lMjBtb2R1bGV8ZW58MHx8fHwxNzcwMTk3Njg5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ram module"
+    },
+    {
+      "id": "minigame5-pic2",
+      "description": "A macro shot of a CPU processor's pins.",
+      "imageUrl": "https://images.unsplash.com/photo-1749006590475-4592a5dbf99f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjcHUlMjBjaGlwfGVufDB8fHx8MTc3MDE5NzY4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cpu chip"
+    },
+    {
+      "id": "minigame5-pic3",
+      "description": "The intricate circuits and components on a motherboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1580584126903-c17d41830450?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzAxOTYyNjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "motherboard"
+    },
+    {
+      "id": "minigame5-pic4",
+      "description": "A solid state drive (SSD) being held in a hand.",
+      "imageUrl": "https://images.unsplash.com/photo-1610415221895-eae9db54b497?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzb2xpZCUyMHN0YXRlJTIwZHJpdmV8ZW58MHx8fHwxNzcwMTY5MDU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "solid state drive"
+    },
+    {
+      "id": "profile-bg-cyberpunk-red",
+      "description": "A futuristic city skyline with red neon lights.",
+      "imageUrl": "https://images.unsplash.com/photo-1514439827219-9137a0b99245?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjeWJlcnB1bmslMjBjaXR5fGVufDB8fHx8MTc3MDIyMDE0N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cyberpunk city"
+    },
+    {
+      "id": "profile-bg-neon-grid",
+      "description": "A classic 80s style neon grid receding into the distance.",
+      "imageUrl": "https://images.unsplash.com/photo-1768330187168-8acee7753983?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxuZW9uJTIwZ3JpZHxlbnwwfHx8fDE3NzAyNTU3MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "neon grid"
+    },
+    {
+      "id": "profile-bg-dark-tech",
+      "description": "A dark background with faint, glowing blue circuit board patterns.",
+      "imageUrl": "https://images.unsplash.com/photo-1606162555134-6b625614d5c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0ZWNoJTIwcGF0dGVybnxlbnwwfHx8fDE3NzAyNTU3MTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tech pattern"
+    },
+    {
+      "id": "profile-bg-glitch-red",
+      "description": "An abstract digital art piece with red and black glitch effects.",
+      "imageUrl": "https://images.unsplash.com/photo-1614192373549-638971bfb138?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnbGl0Y2glMjBhcnR8ZW58MHx8fHwxNzcwMTUxNzEwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "glitch art"
+    },
+    {
+      "id": "gaming-cpu",
+      "description": "Intel Core i9 processor for gaming.",
+      "imageUrl": "https://picsum.photos/seed/cpu1/600/400",
+      "imageHint": "intel i9"
+    },
+    {
+      "id": "gaming-gpu",
+      "description": "NVIDIA GeForce RTX 4090 graphics card.",
+      "imageUrl": "https://picsum.photos/seed/gpu1/600/400",
+      "imageHint": "rtx 4090"
+    },
+    {
+      "id": "gaming-ram",
+      "description": "Corsair Dominator Platinum RGB RAM.",
+      "imageUrl": "https://picsum.photos/seed/ram1/600/400",
+      "imageHint": "gaming ram"
+    },
+    {
+      "id": "gaming-storage",
+      "description": "Samsung 980 Pro NVMe SSD.",
+      "imageUrl": "https://picsum.photos/seed/ssd1/600/400",
+      "imageHint": "gaming ssd"
+    },
+    {
+      "id": "gaming-motherboard",
+      "description": "ASUS ROG gaming motherboard.",
+      "imageUrl": "https://picsum.photos/seed/mobo1/600/400",
+      "imageHint": "gaming motherboard"
+    },
+    {
+      "id": "gaming-psu",
+      "description": "Corsair 1000W power supply unit.",
+      "imageUrl": "https://picsum.photos/seed/psu1/600/400",
+      "imageHint": "gaming psu"
+    },
+    {
+      "id": "gaming-case",
+      "description": "Lian Li gaming PC case.",
+      "imageUrl": "https://picsum.photos/seed/case1/600/400",
+      "imageHint": "gaming case"
+    },
+    {
+      "id": "working-cpu",
+      "description": "AMD Ryzen 9 processor.",
+      "imageUrl": "https://picsum.photos/seed/cpu2/600/400",
+      "imageHint": "amd ryzen 9"
+    },
+    {
+      "id": "working-gpu",
+      "description": "NVIDIA GeForce RTX 4070 graphics card.",
+      "imageUrl": "https://picsum.photos/seed/gpu2/600/400",
+      "imageHint": "rtx 4070"
+    },
+    {
+      "id": "working-ram",
+      "description": "Crucial Pro RAM module.",
+      "imageUrl": "https://picsum.photos/seed/ram2/600/400",
+      "imageHint": "pro ram"
+    },
+    {
+      "id": "working-storage",
+      "description": "WD Black NVMe SSD.",
+      "imageUrl": "https://picsum.photos/seed/ssd2/600/400",
+      "imageHint": "nvme ssd"
+    },
+    {
+      "id": "working-motherboard",
+      "description": "Gigabyte motherboard.",
+      "imageUrl": "https://picsum.photos/seed/mobo2/600/400",
+      "imageHint": "gigabyte motherboard"
+    },
+    {
+      "id": "working-psu",
+      "description": "Seasonic Focus power supply unit.",
+      "imageUrl": "https://picsum.photos/seed/psu2/600/400",
+      "imageHint": "seasonic psu"
+    },
+    {
+      "id": "working-case",
+      "description": "Fractal Design PC case.",
+      "imageUrl": "https://picsum.photos/seed/case2/600/400",
+      "imageHint": "fractal case"
+    },
+    {
+      "id": "coding-cpu",
+      "description": "AMD Ryzen 7 processor.",
+      "imageUrl": "https://picsum.photos/seed/cpu3/600/400",
+      "imageHint": "amd ryzen 7"
+    },
+    {
+      "id": "coding-gpu",
+      "description": "NVIDIA GeForce RTX 3050 graphics card.",
+      "imageUrl": "https://images.unsplash.com/photo-1545557969-b52df0dd8527?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxydHglMjAzMDUwfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rtx 3050"
+    },
+    {
+      "id": "coding-ram",
+      "description": "G.Skill Ripjaws RAM module.",
+      "imageUrl": "https://picsum.photos/seed/ram3/600/400",
+      "imageHint": "gskill ram"
+    },
+    {
+      "id": "coding-storage",
+      "description": "A Crucial brand SATA SSD drive.",
+      "imageUrl": "https://images.unsplash.com/photo-1591799264318-7e6244154de7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxTU0R8ZW58MHx8fHwxNzcxMjUyNTUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "crucial ssd"
+    },
+    {
+      "id": "coding-motherboard",
+      "description": "MSI motherboard.",
+      "imageUrl": "https://picsum.photos/seed/mobo3/600/400",
+      "imageHint": "msi motherboard"
+    },
+    {
+      "id": "coding-psu",
+      "description": "An EVGA brand computer power supply unit.",
+      "imageUrl": "https://images.unsplash.com/photo-1627824132474-754d8244017c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwYyUyMHBvd2VyJTIwc3VwcGx5fGVufDB8fHx8MTc3MTI1Mjg1N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "evga psu"
+    },
+    {
+      "id": "coding-case",
+      "description": "NZXT H510 PC case.",
+      "imageUrl": "https://picsum.photos/seed/case3/600/400",
+      "imageHint": "nzxt case"
+    }
+  ];
