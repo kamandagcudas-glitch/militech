@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
@@ -6,13 +7,13 @@ import { Player, UserAccount } from '@/lib/types';
 import { cocData } from '@/lib/data';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 
-type BorderType = 'bronze' | 'silver' | 'gold' | 'creator' | 'black-flame' | 'default';
+type BorderType = 'bronze' | 'silver' | 'gold' | 'diamond' | 'black-flame' | 'default';
 
 const totalPossibleSteps = cocData.reduce((sum, coc) => sum + coc.steps.length, 0);
 
 const getBorderData = (player: Player, progress: UserAccount['progress']): { type: BorderType; name: string; requirement: string } => {
     if (player.isCreator) {
-        return { type: 'creator', name: 'Creator Border', requirement: 'Be the creator of the system.' };
+        return { type: 'diamond', name: 'Diamond Border', requirement: 'An exclusive border for the system architect.' };
     }
     if (player.specialInsignia === 'black-flame') {
         return { type: 'black-flame', name: 'Black Flame Border', requirement: 'Master the dark arts.' };

@@ -418,6 +418,13 @@
   }
 }
 
+@keyframes diamond-shine {
+  50% {
+    box-shadow: 0 0 14px 3px hsl(var(--border-color)), inset 0 0 10px 1px hsl(var(--border-color) / 0.7);
+    opacity: 1;
+  }
+}
+
 
 @layer components {
   .special-bg-container {
@@ -566,10 +573,11 @@
     animation: border-pulse 3s infinite ease-in-out;
     box-shadow: 0 0 8px 2px hsl(var(--border-color) / 0.9);
   }
-  .avatar-border-wrapper[data-border="creator"] .avatar-border {
-    --border-color: var(--primary);
-    animation: border-pulse 2s infinite ease-in-out;
-    box-shadow: 0 0 10px 2px hsl(var(--border-color));
+  .avatar-border-wrapper[data-border="diamond"] .avatar-border {
+    --border-color: 200 100% 85%; /* Icy Blue/White */
+    animation: diamond-shine 2.5s infinite ease-in-out;
+    box-shadow: 0 0 10px 2px hsl(var(--border-color) / 0.8);
+    opacity: 0.9;
   }
   .avatar-border-wrapper[data-border="black-flame"] .avatar-border {
     --border-color: var(--destructive);
