@@ -7,7 +7,7 @@ import { GameContext, GameContextType } from '@/context/GameContext';
 import { UserAccount } from '@/lib/types';
 import { cocData } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Trophy } from 'lucide-react';
@@ -101,34 +101,34 @@ export default function LeaderboardPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {rankedUsers.map(user => {
-                                const displayTitle = getDisplayTitle(user.player);
-                                const isCurrentUser = user.player.username === game.currentUser?.player.username;
+                            {rankedUsers.map(rankedUser => {
+                                const userAccount = game.accounts.find(acc => acc.player.username === rankedUser.player.username);
+                                if (!userAccount) return null;
+
+                                const displayTitle = getDisplayTitle(rankedUser.player);
+                                const isCurrentUser = rankedUser.player.username === game.currentUser?.player.username;
                                 
                                 return (
-                                    <TableRow key={user.player.username} className={cn(isCurrentUser && 'bg-primary/20 hover:bg-primary/30')}>
+                                    <TableRow key={rankedUser.player.username} className={cn(isCurrentUser && 'bg-primary/20 hover:bg-primary/30')}>
                                         <TableCell className="text-center">
                                             <div className="text-2xl font-bold">
-                                                {user.rank === 1 && '🥇'}
-                                                {user.rank === 2 && '🥈'}
-                                                {user.rank === 3 && '🥉'}
-                                                {user.rank > 3 && user.rank}
+                                                {rankedUser.rank === 1 && '🥇'}
+                                                {rankedUser.rank === 2 && '🥈'}
+                                                {rankedUser.rank === 3 && '🥉'}
+                                                {rankedUser.rank > 3 && rankedUser.rank}
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Link href={`/users/${user.player.username}`} className="flex items-center gap-4 group hover:cursor-pointer">
-                                                <Avatar>
-                                                    <AvatarImage src={user.player.avatar} alt={user.player.username} />
-                                                    <AvatarFallback>{user.player.displayName.charAt(0)}</AvatarFallback>
-                                                </Avatar>
+                                            <Link href={`/users/${rankedUser.player.username}`} className="flex items-center gap-4 group hover:cursor-pointer">
+                                                <GamifiedAvatar account={userAccount} />
                                                 <div>
-                                                    <p className="font-semibold text-base group-hover:underline group-hover:text-primary">{user.player.displayName}</p>
+                                                    <p className="font-semibold text-base group-hover:underline group-hover:text-primary">{rankedUser.player.displayName}</p>
                                                      {displayTitle && <Badge variant="destructive" className="mt-1">{displayTitle}</Badge>}
                                                 </div>
                                             </Link>
                                         </TableCell>
-                                        <TableCell className="text-right font-mono text-lg">{user.totalScore.toLocaleString()}</TableCell>
-                                        <TableCell className="text-right font-mono text-lg">{user.completionPercentage.toFixed(1)}%</TableCell>
+                                        <TableCell className="text-right font-mono text-lg">{rankedUser.totalScore.toLocaleString()}</TableCell>
+                                        <TableCell className="text-right font-mono text-lg">{rankedUser.completionPercentage.toFixed(1)}%</TableCell>
                                     </TableRow>
                                 );
                             })}

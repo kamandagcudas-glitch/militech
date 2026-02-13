@@ -6,7 +6,7 @@ import { GameContext, GameContextType } from '@/context/GameContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { MessageSquare, Send } from 'lucide-react';
 import { BlackFlameIcon } from '@/components/icons';
 
@@ -73,7 +73,11 @@ export default function FeedbackPage() {
                         <h2 className="font-headline text-2xl font-bold mb-4 text-white" style={{ textShadow: '0 0 5px hsl(var(--primary))' }}>Latest Transmissions</h2>
                         <div className="space-y-6">
                             {game.feedbackPosts.length > 0 ? (
-                                game.feedbackPosts.map((post, index) => (
+                                game.feedbackPosts.map((post, index) => {
+                                    const userAccount = game.accounts.find(acc => acc.player.username === post.username);
+                                    if (!userAccount) return null;
+
+                                    return (
                                     <div 
                                         key={post.id} 
                                         className="p-4 border rounded-lg bg-background/75 backdrop-blur-[6px] flex flex-col gap-4 justify-between transition-all duration-300 border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
@@ -81,10 +85,7 @@ export default function FeedbackPage() {
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-center gap-3">
-                                                <Avatar>
-                                                    <AvatarImage src={post.avatar} />
-                                                    <AvatarFallback>{post.displayName.charAt(0)}</AvatarFallback>
-                                                </Avatar>
+                                                <GamifiedAvatar account={userAccount} />
                                                 <div>
                                                     <p className="font-semibold text-primary flex items-center gap-1.5">
                                                         {post.displayName}
@@ -101,7 +102,7 @@ export default function FeedbackPage() {
                                             {post.message}
                                         </p>
                                     </div>
-                                ))
+                                )})
                             ) : (
                                 <div className="text-center py-16 text-muted-foreground border-2 border-dashed rounded-lg bg-background/75 backdrop-blur-[6px]">
                                     <p className="text-lg font-semibold mb-2">The board is silent.</p>

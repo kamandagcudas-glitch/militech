@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { Button } from '@/components/ui/button';
 import { UserPlus, Users, Check, Send } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -73,10 +73,7 @@ export default function UsersPage() {
                              <Card key={user.player.username} className="text-center bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all flex flex-col">
                                 <CardContent className="pt-6 flex-grow flex flex-col items-center gap-4">
                                     <Link href={`/users/${user.player.username}`} className="flex flex-col items-center gap-2 text-foreground hover:text-foreground">
-                                        <Avatar className="w-24 h-24 border-4 border-primary/50">
-                                            <AvatarImage src={user.player.avatar} alt={user.player.username} />
-                                            <AvatarFallback>{user.player.displayName.charAt(0)}</AvatarFallback>
-                                        </Avatar>
+                                        <GamifiedAvatar account={user} imageClassName="w-24 h-24" />
                                         <div className="hover:underline">
                                             <h3 className="text-xl font-bold">{user.player.displayName}</h3>
                                             <p className="text-sm text-muted-foreground">@{user.player.username}</p>

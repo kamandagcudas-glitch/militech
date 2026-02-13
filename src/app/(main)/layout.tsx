@@ -36,7 +36,7 @@ import {
   Cog,
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { GamifiedAvatar } from "@/components/ui/gamified-avatar";
 import { CreatorBadgeIcon, GamepadIcon } from "@/components/icons";
 
 export default function MainAppLayout({
@@ -184,10 +184,7 @@ export default function MainAppLayout({
               <span className="font-medium">{player.displayName}</span>
               <span className="text-xs text-muted-foreground">@{player.username}</span>
             </div>
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={player.avatar} alt={player.username} />
-              <AvatarFallback>{player.displayName.charAt(0)}</AvatarFallback>
-            </Avatar>
+            <GamifiedAvatar account={currentUser} imageClassName="h-8 w-8" />
           </div>
         </header>
         <main className="relative flex-1 overflow-auto p-4 md:p-6">{children}</main>

@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import { SpecialBackground } from '@/components/special-background';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Pencil, UserX, Users, Mail, Send, CheckCircle, Image as ImageIcon, Sparkles, X, Check } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 
 export default function ProfilePage() {
@@ -258,10 +259,7 @@ export default function ProfilePage() {
                         <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader className="items-center text-center">
                                 <div className="relative group">
-                                    <Avatar className="w-32 h-32 mb-4 border-4 border-primary/50 shadow-lg shadow-primary/20">
-                                        <AvatarImage src={player.avatar} alt={player.username} />
-                                        <AvatarFallback className="text-4xl">{player.displayName.charAt(0)}</AvatarFallback>
-                                    </Avatar>
+                                    <GamifiedAvatar account={currentUser} imageClassName="w-32 h-32 mb-4 border-4 border-primary/50 shadow-lg shadow-primary/20" />
                                     <Button
                                         onClick={() => setIsAvatarDialogOpen(true)}
                                         variant="outline"
@@ -380,10 +378,7 @@ export default function ProfilePage() {
                                         {friendRequests.map(requestingUser => (
                                             <div key={requestingUser.player.username} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border">
                                                 <div className="flex items-center gap-3">
-                                                    <Avatar>
-                                                        <AvatarImage src={requestingUser.player.avatar} alt={requestingUser.player.username} />
-                                                        <AvatarFallback>{requestingUser.player.displayName.charAt(0)}</AvatarFallback>
-                                                    </Avatar>
+                                                    <GamifiedAvatar account={requestingUser} />
                                                     <div>
                                                         <p className="font-semibold">{requestingUser.player.displayName}</p>
                                                         <p className="text-sm text-muted-foreground">@{requestingUser.player.username}</p>
@@ -413,10 +408,7 @@ export default function ProfilePage() {
                                             return (
                                                 <div key={friend.player.username} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border border-white/10">
                                                     <Link href={`/users/${friend.player.username}`} className="flex items-center gap-3 group">
-                                                        <Avatar>
-                                                            <AvatarImage src={friend.player.avatar} alt={friend.player.username} />
-                                                            <AvatarFallback>{friend.player.displayName.charAt(0)}</AvatarFallback>
-                                                        </Avatar>
+                                                        <GamifiedAvatar account={friend} />
                                                         <div>
                                                             <p className="font-semibold group-hover:underline">{friend.player.displayName}</p>
                                                             {friendTitle && <p className="text-xs text-muted-foreground">{friendTitle}</p>}

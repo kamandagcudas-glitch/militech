@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Upload, FileText, FileImage, FileVideo, File, Trash2, Download, Share2, FolderOpen, AlertCircle, Send, Check } from 'lucide-react';
@@ -48,10 +48,7 @@ function ShareDialog({ file, friends, onShare }: { file: UserFile; friends: User
                     return (
                         <div key={friend.player.username} className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <Avatar>
-                                    <AvatarImage src={friend.player.avatar} />
-                                    <AvatarFallback>{friend.player.displayName.charAt(0)}</AvatarFallback>
-                                </Avatar>
+                                <GamifiedAvatar account={friend} />
                                 <div>
                                     <p className="font-semibold">{friend.player.displayName}</p>
                                     <p className="text-sm text-muted-foreground">@{friend.player.username}</p>

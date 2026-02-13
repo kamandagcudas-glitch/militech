@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { SpecialBackground } from '@/components/special-background';
 
 import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -148,10 +148,7 @@ export default function PublicProfilePage() {
                     <div className="lg:col-span-1 space-y-8">
                         <Card className="bg-card/75 backdrop-blur-sm">
                             <CardHeader className="items-center text-center">
-                                <Avatar className="w-32 h-32 mb-4 border-4 border-primary/50 shadow-lg shadow-primary/20">
-                                    <AvatarImage src={player.avatar} alt={player.username} />
-                                    <AvatarFallback className="text-4xl">{player.displayName.charAt(0)}</AvatarFallback>
-                                </Avatar>
+                                <GamifiedAvatar account={userAccount} imageClassName="w-32 h-32 mb-4" />
                                 <CardTitle className="font-headline text-3xl flex items-center gap-2">
                                     {player.displayName}
                                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6" title="Creator" />}
