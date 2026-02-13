@@ -351,8 +351,8 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     },
     {
       "id": "coding-gpu",
-      "description": "NVIDIA GeForce RTX 3050 graphics card.",
-      "imageUrl": "https://images.unsplash.com/photo-1545557969-b52df0dd8527?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxydHglMjAzMDUwfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Zotac NVIDIA GeForce RTX 3050 graphics card.",
+      "imageUrl": "https://images.unsplash.com/photo-1677338701198-a6d0c007137b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxydHglMjAzMDUwfGVufDB8fHx8MTcyOTc5MjAwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rtx 3050"
     },
     {
@@ -363,15 +363,15 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     },
     {
       "id": "coding-storage",
-      "description": "A Crucial brand SATA SSD drive.",
-      "imageUrl": "https://images.unsplash.com/photo-1591799264318-7e6244154de7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxTU0R8ZW58MHx8fHwxNzcxMjUyNTUyfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "crucial ssd"
+      "description": "A fast NVMe M.2 solid state drive.",
+      "imageUrl": "https://images.unsplash.com/photo-1631092497486-232152911b58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxudm1lJTIwc3NkfGVufDB8fHx8MTcyOTc5MjA3Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nvme ssd"
     },
     {
       "id": "coding-motherboard",
-      "description": "MSI motherboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-      "imageHint": "msi motherboard"
+      "description": "An ASRock micro-ATX motherboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1627286392544-2207a998b31a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtaWNybyUyMGF0eCUyMG1vdGhlcmJvYXJkfGVufDB8fHx8MTcyOTc5MjE2N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "matx motherboard"
     },
     {
       "id": "coding-psu",
@@ -381,9 +381,9 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     },
     {
       "id": "coding-case",
-      "description": "NZXT H510 PC case.",
-      "imageUrl": "https://images.unsplash.com/photo-1593152077897-2cc2dcbc041f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuenh0JTIwY2FzZXxlbnwwfHx8fDE3NzA4MjYyMTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "nzxt case"
+      "description": "A compact micro-ATX PC case.",
+      "imageUrl": "https://images.unsplash.com/photo-1617365287518-83c4b37340f1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYXR4JTIwY2FzZXxlbnwwfHx8fDE3Mjk3OTIyNzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "matx case"
     }
   ];
 
