@@ -262,91 +262,91 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "gaming-cpu",
       "description": "Intel Core i9 processor for gaming.",
-      "imageUrl": "https://images.unsplash.com/photo-1641861867938-67ab728bb5c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1641861867938-67ab728bb5c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxpbnRlbCUyMGk5fGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "intel i9"
     },
     {
       "id": "gaming-gpu",
       "description": "NVIDIA GeForce RTX 4090 graphics card.",
-      "imageUrl": "https://images.unsplash.com/photo-1716967318503-05b7064afa41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1716967318503-05b7064afa41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxydHglMjA0MDkwfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rtx 4090"
     },
     {
       "id": "gaming-ram",
       "description": "Corsair Dominator Platinum RGB RAM.",
-      "imageUrl": "https://images.unsplash.com/photo-1620050503346-ba7c99ec97ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1620050503346-ba7c99ec97ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnYW1pbmclMjByYW18ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gaming ram"
     },
     {
       "id": "gaming-storage",
       "description": "Samsung 980 Pro NVMe SSD.",
-      "imageUrl": "https://images.unsplash.com/photo-1734605022656-937e1cf0839d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1734605022656-937e1cf0839d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnYW1pbmclMjBzc2R8ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gaming ssd"
     },
     {
       "id": "gaming-motherboard",
       "description": "ASUS ROG gaming motherboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxnYW1pbmclMjBtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzA3NjYzNjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gaming motherboard"
     },
     {
       "id": "gaming-psu",
       "description": "Corsair 1000W power supply unit.",
-      "imageUrl": "https://images.unsplash.com/photo-1630541678699-bb279c3281f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1630541678699-bb279c3281f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnYW1pbmclMjBwc3V8ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gaming psu"
     },
     {
       "id": "gaming-case",
       "description": "Lian Li gaming PC case.",
-      "imageUrl": "https://images.unsplash.com/photo-1640036948080-99d48ca959b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1640036948080-99d48ca959b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsaWFubGklMjBjYXNlfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "lianli case"
     },
     {
       "id": "working-cpu",
       "description": "AMD Ryzen 9 processor.",
-      "imageUrl": "https://images.unsplash.com/photo-1629725413175-396025477a04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1629725413175-396025477a04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhbWQlMjByeXplbiUyMDl8ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "amd ryzen 9"
     },
     {
       "id": "working-gpu",
       "description": "NVIDIA GeForce RTX 4070 graphics card.",
-      "imageUrl": "https://images.unsplash.com/photo-1695499310372-79328365b7cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1695499310372-79328365b7cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxydHglMjA0MDcwfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rtx 4070"
     },
     {
       "id": "working-ram",
       "description": "Crucial Pro RAM module.",
-      "imageUrl": "https://images.unsplash.com/photo-1769085795297-b45cc8c92f5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1769085795297-b45cc8c92f5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwcm8lMjByYW18ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "pro ram"
     },
     {
       "id": "working-storage",
       "description": "WD Black NVMe SSD.",
-      "imageUrl": "https://images.unsplash.com/photo-1760623227551-2eae8f9cb675?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1760623227551-2eae8f9cb675?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxudm1lJTIwc3NkfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "nvme ssd"
     },
     {
       "id": "working-motherboard",
       "description": "Gigabyte motherboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1754928864246-dc4fa729ee1b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1754928864246-dc4fa729ee1b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnaWdhYnl0ZSUyMG1vdGhlcmJvYXJkfGVufDB8fHx8MTc3MDgyNjIxMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gigabyte motherboard"
     },
     {
       "id": "working-psu",
       "description": "Seasonic Focus power supply unit.",
-      "imageUrl": "https://images.unsplash.com/photo-1740133305582-c49f6bb688de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1740133305582-c49f6bb688de?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzZWFzb25pYyUyMHBzdXxlbnwwfHx8fDE3NzA4MjYyMTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "seasonic psu"
     },
     {
       "id": "working-case",
       "description": "Fractal Design PC case.",
-      "imageUrl": "https://images.unsplash.com/photo-1651443040219-ce2e7a36219f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1651443040219-ce2e7a36219f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxmcmFjdGFsJTIwY2FzZXxlbnwwfHx8fDE3NzA4MjYyMTJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "fractal case"
     },
     {
       "id": "coding-cpu",
       "description": "AMD Ryzen 7 processor.",
-      "imageUrl": "https://images.unsplash.com/photo-1611275484976-52812441218a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1611275484976-52812441218a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhbWQlMjByeXplbiUyMDd8ZW58MHx8fHwxNzcwODI2MjEyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "amd ryzen 7"
     },
     {
