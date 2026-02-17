@@ -22,22 +22,19 @@ service cloud.firestore {
       let incomingData = request.resource.data;
       let incomingPlayer = incomingData.player;
 
-      // User must be creating their own document.
+      // User must be creating their own document, and cannot start off banned or muted.
+      // They also cannot grant themselves creator status unless they are the admin.
       return isOwner(userId) &&
-             // The UID in the document must match the auth UID.
-             incomingPlayer.uid == request.auth.uid &&
-             // A user cannot make themselves a creator on signup unless they have the admin email.
-             incomingPlayer.isCreator == (request.auth.token.email == "kamandagcudas@gmail.com") &&
-             // A user cannot start off as banned or muted.
              incomingPlayer.isBanned == false &&
-             incomingPlayer.isMuted == false;
+             incomingPlayer.isMuted == false &&
+             incomingPlayer.isCreator == (request.auth.token.email == "kamandagcudas@gmail.com");
     }
 
     // ========== COLLECTION RULES ==========
 
     // User profiles
     match /users/{userId} {
-      // Any signed-in user can read profiles for user directory & leaderboards, which is required by the app's features.
+      // Any signed-in user can read profiles for user directory & leaderboards.
       allow read, list: if isSignedIn();
       
       // A user can create their own profile, but only with valid initial data.
@@ -46,13 +43,13 @@ service cloud.firestore {
       // A user can update their own document, but cannot change protected fields.
       // An admin can update any document.
       allow update: if (
-                      isOwner(userId) &&
+                      (isOwner(userId) &&
                       request.resource.data.player.uid == resource.data.player.uid &&
                       request.resource.data.player.username == resource.data.player.username &&
                       request.resource.data.player.isCreator == resource.data.player.isCreator &&
                       request.resource.data.player.isBanned == resource.data.player.isBanned &&
                       request.resource.data.player.isMuted == resource.data.player.isMuted
-                    ) || isAdmin();
+                    ) || isAdmin());
 
       // Only admins can delete user profiles.
       allow delete: if isAdmin();
