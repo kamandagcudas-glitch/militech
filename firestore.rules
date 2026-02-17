@@ -38,8 +38,9 @@ service cloud.firestore {
         allow get: if isOwner(uid);
         // No one can list all admins.
         allow list: if false;
-        // Only other admins can grant or revoke admin privileges.
-        allow write: if isAdmin();
+        // Admins can manage other admin documents. A user can create their own admin document
+        // if their authenticated email matches the designated admin email.
+        allow write: if isAdmin() || (request.auth.uid == uid && request.auth.token.email == "kamandagcudas@gmail.com");
     }
 
     // User profiles

@@ -246,7 +246,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
       
       if (isCreator) {
           const adminDocRef = doc(firestore, 'admins', user.uid);
-          batch.set(adminDocRef, { createdAt: new Date().toISOString() });
+          batch.set(adminDocRef, { 
+            email: trimmedEmail,
+            username: trimmedUsername,
+            displayName: displayName.trim(),
+            role: "admin",
+            createdAt: new Date().toISOString() 
+          });
           toast({
               title: <div className="text-4xl text-center w-full">🎉</div>,
               description: <div className="text-center font-bold">Creator Identified! Welcome.</div>,
@@ -279,7 +285,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
         const adminDocRef = doc(firestore, 'admins', user.uid);
         const adminDocSnap = await getDoc(adminDocRef);
         if (!adminDocSnap.exists()) {
-          await setDoc(adminDocRef, { createdAt: new Date().toISOString() });
+          const userDocSnap = await getDoc(doc(firestore, 'users', user.uid));
+          const username = userDocSnap.exists() ? userDocSnap.data().player.username : 'admin';
+          const displayName = userDocSnap.exists() ? userDocSnap.data().player.displayName : 'Admin';
+          await setDoc(adminDocRef, { 
+            email: user.email,
+            username: username,
+            displayName: displayName,
+            role: "admin",
+            createdAt: new Date().toISOString() 
+          });
         }
       }
 
@@ -296,7 +311,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
             return { success: false, message: 'Invalid email or password.' };
       }
-      console.error("Login Error: ", error);
       return { success: false, message: error.message || 'An unexpected error occurred.' };
     }
   };
@@ -308,32 +322,28 @@ export function GameProvider({ children }: { children: ReactNode }) {
         const user = result.user;
 
         const userDocRef = doc(firestore, 'users', user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-
-        if (user.email?.toLowerCase() === ADMIN_EMAIL) {
-            const adminDocRef = doc(firestore, 'admins', user.uid);
-            const adminDocSnap = await getDoc(adminDocRef);
-            if (!adminDocSnap.exists()) {
-                await setDoc(adminDocRef, { createdAt: new Date().toISOString() });
-            }
-        }
+        let userDocSnap = await getDoc(userDocRef);
 
         if (!userDocSnap.exists()) {
             const isCreator = user.email?.toLowerCase() === ADMIN_EMAIL;
             // New user, create profile
             // Generate a unique username
             let username = user.email?.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || `user${Date.now()}`;
-            let isUsernameTaken = true;
-            let attempt = 0;
-            while(isUsernameTaken) {
-                const finalUsername = attempt > 0 ? `${username}${attempt}` : username;
-                const usernameQuery = query(collection(firestore, 'users'), where('player.username', '==', finalUsername));
-                const usernameSnapshot = await getDocs(usernameQuery);
-                if (usernameSnapshot.empty) {
-                    username = finalUsername;
-                    isUsernameTaken = false;
-                } else {
-                    attempt++;
+            if(isCreator) {
+                username = CREATOR_USERNAME;
+            } else {
+                let isUsernameTaken = true;
+                let attempt = 0;
+                while(isUsernameTaken) {
+                    const finalUsername = attempt > 0 ? `${username}${attempt}` : username;
+                    const usernameQuery = query(collection(firestore, 'users'), where('player.username', '==', finalUsername));
+                    const usernameSnapshot = await getDocs(usernameQuery);
+                    if (usernameSnapshot.empty) {
+                        username = finalUsername;
+                        isUsernameTaken = false;
+                    } else {
+                        attempt++;
+                    }
                 }
             }
             
@@ -403,10 +413,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
             const batch = writeBatch(firestore);
             batch.set(userDocRef, newUserAccount);
-            // Redundant check, already handled above, but safe to keep
+            
             if (isCreator) {
                 const adminDocRef = doc(firestore, 'admins', user.uid);
-                batch.set(adminDocRef, { createdAt: new Date().toISOString() });
+                batch.set(adminDocRef, { 
+                  email: user.email,
+                  username: newPlayer.username,
+                  displayName: newPlayer.displayName,
+                  role: "admin",
+                  createdAt: new Date().toISOString() 
+                });
             }
             await batch.commit();
 
@@ -414,6 +430,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 title: 'Account Created!',
                 description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
             });
+            userDocSnap = await getDoc(userDocRef); // Re-fetch the doc after creation
+        } else {
+            // This is an existing user.
+             if (user.email?.toLowerCase() === ADMIN_EMAIL) {
+                const adminDocRef = doc(firestore, 'admins', user.uid);
+                const adminDocSnap = await getDoc(adminDocRef);
+                if (!adminDocSnap.exists()) {
+                    const existingUser = userDocSnap.data() as UserAccount;
+                    await setDoc(adminDocRef, { 
+                        email: user.email,
+                        username: existingUser.player.username,
+                        displayName: existingUser.player.displayName,
+                        role: 'admin',
+                        createdAt: new Date().toISOString() 
+                    });
+                }
+            }
         }
 
         // Log login attempt
@@ -428,6 +461,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         return { success: true, message: 'Login successful' };
     } catch (error: any) {
         if (error.code === 'auth/popup-closed-by-user') {
+            // Do not show an error toast if the user cancelled
             return { success: false, message: 'Sign-in cancelled by user.' };
         }
         console.error("Google Sign-In Error: ", error);
@@ -457,7 +491,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [userDocRef, toast]);
   
   const logActivity = useCallback(async (activity: string, details: string) => {
-    if (!currentUser) return;
+    if (!currentUser || !isAdmin) return;
     const newLog: Omit<ActivityLog, 'id'> = {
         userId: currentUser.player.uid,
         username: currentUser.player.username,
@@ -470,7 +504,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Error logging activity: ", error);
     }
-  }, [currentUser, firestore]);
+  }, [currentUser, isAdmin, firestore]);
   
   const addAchievement = useCallback((achievementId: string) => {
     if (!currentUser || currentUser.achievements.some(a => a.id === achievementId)) {
@@ -583,29 +617,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const sendFriendRequest = async (receiverUsername: string) => {
     if (!currentUser || !userDocRef) return;
-
-    const q = query(collection(firestore, 'users'), where('player.username', '==', receiverUsername));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) {
-      toast({ variant: 'destructive', title: 'User not found' });
-      return;
-    }
-    const receiverDoc = snapshot.docs[0];
-    const receiverData = receiverDoc.data() as UserAccount;
-
-    if (receiverData.player.friendRequests.includes(currentUser.player.username)) {
-      toast({ title: 'Request already sent' });
-      return;
-    }
     
-    // A user cannot write to another user's document.
-    // This action must be redesigned with a separate 'friendRequests' collection
-    // or by using a Cloud Function. For now, this will fail silently
-    // to prevent permission errors, but the request will not be sent.
-    console.error("Friend request logic needs to be refactored to not write to another user's doc.");
+    // A user can only update their own document to mark who a file has been shared with.
+    // This prevents the permission error. The shared file will not automatically appear for the other user.
     toast({
       title: 'Friend Request Failed',
-      description: 'This feature is currently unavailable.'
+      description: 'This feature is currently unavailable due to security rules. The developer must implement a Cloud Function to handle this action.'
     })
   };
 
@@ -625,7 +642,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     toast({
       title: 'Friend Added!',
-      description: `${sender.player.displayName} is now your friend. They will see you as a friend when they log back in.`,
+      description: `${sender.player.displayName} is now your friend. They must also accept your request to see you as a friend.`,
     });
   };
 
@@ -762,13 +779,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!currentUser || !userDocRef) return;
     const fileToShare = currentUser.files.find(f => f.id === fileId);
     if (!fileToShare) return;
-
-    const friendQuery = query(collection(firestore, "users"), where("player.username", "==", friendUsername));
-    const friendSnapshot = await getDocs(friendQuery);
-    if (friendSnapshot.empty) {
-        toast({ variant: "destructive", title: "Friend not found." });
-        return;
-    }
     
     // A user can only update their own document to mark who a file has been shared with.
     // This prevents the permission error. The shared file will not automatically appear for the other user.
@@ -776,7 +786,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const updatedMyFiles = currentUser.files.map(f => f.id === fileId ? { ...f, sharedWith: newSharedWith } : f);
     await updateDoc(userDocRef, { files: updatedMyFiles });
 
-    toast({ title: "File Shared!", description: `You have marked "${fileToShare.name}" as shared with ${friendUsername}. They will not receive a notification.` });
+    toast({ title: "File Shared!", description: `You have marked "${fileToShare.name}" as shared with ${friendUsername}. They will not receive a notification or the file directly.` });
   };
   
   const postFeedback = async (message: string) => {
@@ -800,6 +810,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const updateUserPropertyByUsername = async (username: string, updates: Partial<Player>) => {
+    if (!isAdmin) {
+        toast({ variant: 'destructive', title: 'Permission Denied' });
+        return;
+    }
     const q = query(collection(firestore, 'users'), where('player.username', '==', username));
     const snapshot = await getDocs(q);
     if (snapshot.empty) return;
