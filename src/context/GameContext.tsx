@@ -132,19 +132,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
         return { success: false, message: 'Please enter a valid email address.' };
     }
 
-    // Check if username or email already exists in Firestore
-    const usernameQuery = query(collection(firestore, 'users'), where('player.username', '==', trimmedUsername));
-    const emailQuery = query(collection(firestore, 'users'), where('player.email', '==', trimmedEmail));
-    const usernameSnapshot = await getDocs(usernameQuery);
-    const emailSnapshot = await getDocs(emailQuery);
-
-    if (!usernameSnapshot.empty) {
-      return { success: false, message: 'Username already exists.' };
-    }
-    if (!emailSnapshot.empty) {
-      return { success: false, message: 'Email is already in use.' };
-    }
-
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
       const user = userCredential.user;
