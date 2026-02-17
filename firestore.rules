@@ -19,8 +19,8 @@ service cloud.firestore {
     // ========== COLLECTION RULES ==========
 
     match /users/{userId} {
-      // Any authenticated user can create their own user document.
-      // This simple rule ensures registration is not blocked by complex validation.
+      // Allow a new user to CREATE their own profile document.
+      // This simplified rule ensures registration is not blocked.
       allow create: if isOwner(userId);
 
       // Any signed-in user can read profiles for leaderboards, user directory, etc.
