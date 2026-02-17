@@ -192,7 +192,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
         email: trimmedEmail,
         emailVerified: user.emailVerified,
         activeTitleId,
-        customTitle,
         unlockedTitleIds,
         badgeIds,
         friendUsernames: [],
@@ -201,9 +200,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isBanned: false,
         isMuted: false,
         profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
-        profileBackgroundUrl: undefined,
-        specialBackground,
-        specialInsignia,
+        ...(customTitle && { customTitle }),
+        ...(specialBackground && { specialBackground }),
+        ...(specialInsignia && { specialInsignia }),
       };
       const newStats: PlayerStats = {
         coc1: { attempts: 0, resets: 0 },
@@ -261,12 +260,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       router.push('/dashboard');
       return { success: true, message: 'Login successful' };
     } catch (error: any) {
-       await addDoc(collection(firestore, 'loginHistory'), {
-          userId: 'unknown',
-          username: trimmedEmail,
-          timestamp: new Date().toISOString(),
-          status: 'Failed'
-      });
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
             return { success: false, message: 'Invalid email or password.' };
       }
