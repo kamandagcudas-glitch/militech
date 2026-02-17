@@ -105,19 +105,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const userDocRef = useMemoFirebase(() => authUser ? doc(firestore, 'users', authUser.uid) : null, [firestore, authUser]);
   const { data: currentUser, isLoading: isProfileLoading } = useDoc<UserAccount>(userDocRef);
   
-  const accountsQuery = useMemoFirebase(() => query(collection(firestore, 'users')), [firestore]);
+  const accountsQuery = useMemoFirebase(() => authUser ? query(collection(firestore, 'users')) : null, [firestore, authUser]);
   const { data: accounts, isLoading: areAccountsLoading } = useCollection<UserAccount>(accountsQuery);
 
-  const feedbackQuery = useMemoFirebase(() => query(collection(firestore, 'feedback'), orderBy('timestamp', 'desc'), limit(50)), [firestore]);
+  const feedbackQuery = useMemoFirebase(() => authUser ? query(collection(firestore, 'feedback'), orderBy('timestamp', 'desc'), limit(50)) : null, [firestore, authUser]);
   const { data: feedbackPosts } = useCollection<FeedbackPost>(feedbackQuery);
 
-  const loginHistoryQuery = useMemoFirebase(() => query(collection(firestore, 'loginHistory'), orderBy('timestamp', 'desc'), limit(100)), [firestore]);
+  const isAdmin = useMemo(() => !!(currentUser && currentUser.player.isCreator), [currentUser]);
+
+  const loginHistoryQuery = useMemoFirebase(() => isAdmin ? query(collection(firestore, 'loginHistory'), orderBy('timestamp', 'desc'), limit(100)) : null, [firestore, isAdmin]);
   const { data: loginHistory } = useCollection<LoginAttempt>(loginHistoryQuery);
 
-  const activityLogsQuery = useMemoFirebase(() => query(collection(firestore, 'activityLogs'), orderBy('timestamp', 'desc'), limit(100)), [firestore]);
+  const activityLogsQuery = useMemoFirebase(() => isAdmin ? query(collection(firestore, 'activityLogs'), orderBy('timestamp', 'desc'), limit(100)): null, [firestore, isAdmin]);
   const { data: activityLogs } = useCollection<ActivityLog>(activityLogsQuery);
-
-  const isAdmin = useMemo(() => !!(currentUser && currentUser.player.isCreator), [currentUser]);
   
   const register = async (username: string, displayName: string, email: string, password: string): Promise<{ success: boolean; message: string; }> => {
     const trimmedUsername = username.trim();
@@ -243,12 +243,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<{ success: boolean, message: string }> => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const userDocRef = doc(firestore, 'users', userCredential.user.uid);
-      // We don't need to fetch here, the useDoc hook will do it automatically.
+      // Log the login attempt
+      await addDoc(collection(firestore, 'loginHistory'), {
+          userId: userCredential.user.uid,
+          username: userCredential.user.email, // Or fetch profile to get username
+          timestamp: new Date().toISOString(),
+          status: 'Success'
+      });
       router.push('/dashboard');
       return { success: true, message: 'Login successful' };
     } catch (error: any) {
       console.error("Login Error: ", error);
+       await addDoc(collection(firestore, 'loginHistory'), {
+          userId: 'unknown',
+          username: email,
+          timestamp: new Date().toISOString(),
+          status: 'Failed'
+      });
       return { success: false, message: error.message || 'Invalid email or password.' };
     }
   };
@@ -263,7 +274,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateUserDoc = useCallback(async (updates: Partial<UserAccount>) => {
+  const updateUserDoc = useCallback(async (updates: Partial<UserAccount> | {[key:string]: any}) => {
     if (!userDocRef) return;
     try {
       await updateDoc(userDocRef, updates);
