@@ -118,10 +118,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const isAdmin = useMemo(() => !!(currentUser && currentUser.player.isCreator), [currentUser]);
 
-  const loginHistoryQuery = useMemoFirebase(() => isAdmin ? query(collection(firestore, 'loginHistory'), orderBy('timestamp', 'desc'), limit(100)) : null, [firestore, isAdmin]);
+  const loginHistoryQuery = useMemoFirebase(() => (authUser && isAdmin) ? query(collection(firestore, 'loginHistory'), orderBy('timestamp', 'desc'), limit(100)) : null, [firestore, authUser, isAdmin]);
   const { data: loginHistory } = useCollection<LoginAttempt>(loginHistoryQuery);
 
-  const activityLogsQuery = useMemoFirebase(() => isAdmin ? query(collection(firestore, 'activityLogs'), orderBy('timestamp', 'desc'), limit(100)): null, [firestore, isAdmin]);
+  const activityLogsQuery = useMemoFirebase(() => (authUser && isAdmin) ? query(collection(firestore, 'activityLogs'), orderBy('timestamp', 'desc'), limit(100)): null, [firestore, authUser, isAdmin]);
   const { data: activityLogs } = useCollection<ActivityLog>(activityLogsQuery);
   
   const register = async (username: string, displayName: string, email: string, password: string): Promise<{ success: boolean; message: string; }> => {
@@ -163,42 +163,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
       let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
       let specialInsignia: 'black-flame' | undefined = undefined;
       let initialAchievements: Achievement[] = [];
-      let customTitle: string | undefined = undefined;
-
-      if (isCreator) {
-        activeTitleId = 'creator';
-        unlockedTitleIds = ['creator'];
-        badgeIds = ['creator-badge', 'angelic-power-rune'];
-        specialBackground = 'angelic';
-        const achievement = achievementsData.find(a => a.id === 'creator');
-        if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
-        const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
-        if(runeBadge) initialAchievements.push({ ...runeBadge, timestamp: new Date().toISOString() });
-      } else if (isCabbageThief) {
-        activeTitleId = 'bk-foot-lettuce';
-        unlockedTitleIds = ['bk-foot-lettuce'];
-        specialBackground = 'cabbage';
-        const achievement = achievementsData.find(a => a.id === 'bk-foot-lettuce');
-        if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
-      } else if (isVergil) {
-          customTitle = "motivated gooner";
-      } else if (isRaytheon) {
-          specialInsignia = 'black-flame';
-          const achievement = achievementsData.find(a => a.id === 'black-flame-wanderer');
-          if (achievement) {
-              initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
-              unlockedTitleIds.push(achievement.id);
-              activeTitleId = achievement.id;
-          }
-      }
-
-      const newPlayer: Player = {
-        uid: user.uid,
+      
+      const playerObject: Omit<Player, 'uid' | 'emailVerified'> = {
         username: trimmedUsername,
         displayName: displayName.trim(),
         avatar: ``,
         email: trimmedEmail,
-        emailVerified: user.emailVerified,
         activeTitleId: activeTitleId,
         unlockedTitleIds: unlockedTitleIds,
         badgeIds: badgeIds,
@@ -208,9 +178,39 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isBanned: false,
         isMuted: false,
         profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
-        ...(customTitle && { customTitle }),
-        ...(specialBackground && { specialBackground }),
-        ...(specialInsignia && { specialInsignia }),
+      };
+
+      if (isCreator) {
+        playerObject.activeTitleId = 'creator';
+        playerObject.unlockedTitleIds = ['creator'];
+        playerObject.badgeIds = ['creator-badge', 'angelic-power-rune'];
+        playerObject.specialBackground = 'angelic';
+        const achievement = achievementsData.find(a => a.id === 'creator');
+        if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+        const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
+        if(runeBadge) initialAchievements.push({ ...runeBadge, timestamp: new Date().toISOString() });
+      } else if (isCabbageThief) {
+        playerObject.activeTitleId = 'bk-foot-lettuce';
+        playerObject.unlockedTitleIds = ['bk-foot-lettuce'];
+        playerObject.specialBackground = 'cabbage';
+        const achievement = achievementsData.find(a => a.id === 'bk-foot-lettuce');
+        if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+      } else if (isVergil) {
+          playerObject.customTitle = "motivated gooner";
+      } else if (isRaytheon) {
+          playerObject.specialInsignia = 'black-flame';
+          const achievement = achievementsData.find(a => a.id === 'black-flame-wanderer');
+          if (achievement) {
+              initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+              unlockedTitleIds.push(achievement.id);
+              playerObject.activeTitleId = achievement.id;
+          }
+      }
+
+      const newPlayer: Player = {
+        uid: user.uid,
+        emailVerified: user.emailVerified,
+        ...playerObject,
       };
       
       const newStats: PlayerStats = {
@@ -248,6 +248,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return { success: true, message: 'Registration successful!' };
     } catch (error: any) {
       console.error("Registration Error: ", error);
+      if (error.code === 'auth/email-already-in-use') {
+        return { success: false, message: 'This email is already registered.' };
+      }
       return { success: false, message: error.message || 'Failed to register.' };
     }
   };

@@ -1,32 +1,10 @@
 
-/*
- * Firestore Security Rules for IT MAZING
- *
- * Core Philosophy
- * This ruleset enforces a security model with two distinct zones: a private user-owned data zone and a public, read-only content zone. User data is strictly confined to the user who created it, while global application content (like lessons, quizzes, and badges) is publicly readable but can only be modified by administrators.
- *
- * Data Structure
- * - /users/{userId}/: This is the private zone. All data specific to a user, such as their profile, quiz results, and achievements, is nested under their unique user ID. Access is strictly controlled by matching the requesting user's UID with the {userId} in the path.
- * - Top-Level Collections (e.g., /lessons, /quizzes, /badges): This is the public zone. These collections store global content that is shared across all users. They are publicly readable to ensure the app functions for all users, but write access is restricted to administrators.
- * - /admins/{uid}: A special, non-public collection used for role-based access control. The existence of a document for a user's UID in this collection grants them administrative privileges.
- *
- * Key Security Decisions
- * - Strict Ownership: A user can ONLY read or write data within their own /users/{userId} data tree. They cannot see or modify any other user's data.
- * - No User Listing: Listing the top-level /users collection is explicitly disallowed to protect user privacy and prevent enumeration attacks.
- * - Admin-Managed Content: All global game and educational content is managed by administrators. This prevents users from tampering with course materials, badges, or game rules. The admin role is determined by checking for a document's existence in the /admins collection, which is a robust and secure pattern that avoids mutable role fields on a user's profile.
- * - Flexible Prototyping: In line with the prototyping philosophy, these rules focus on *authorization* (who can access what) rather than strict *data validation* (the exact shape of the data). This allows for rapid iteration on the application's features without needing to update security rules for every schema change. Validation is limited to fields essential for maintaining relational integrity and ownership.
- *
- * Denormalization for Authorization
- * To ensure rules are fast and simple, authorization data is denormalized. For example, a document in /users/{userId}/quizResults/{quizResultId} contains its own userId field. This allows rules to verify ownership directly from the document itself without needing slow and costly get() calls to the parent user profile.
- *
- * Structural Segregation
- * The data model is segregated by security requirements. Private, user-specific data is structurally separated from public, global data by placing them in different collection paths. This makes rules simpler and queries more secure and performant, as a query for a user's private data can never accidentally include public data, and vice-versa.
- */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper functions to improve readability and reuse of logic.
+    // ========== HELPER FUNCTIONS ==========
+
     function isSignedIn() {
       return request.auth != null;
     }
@@ -35,116 +13,75 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
-    }
-
-    /*
-     * Checks if the currently authenticated user is an administrator.
-     * Admin status is granted by the isCreator flag on their user profile.
-     */
     function isAdmin() {
+      // Admin status is determined by the `isCreator` flag in their own user document.
       return isSignedIn() &&
              exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isCreator == true;
     }
-
-    /*
-     * Ensures a new user profile document contains a `uid` field that matches the user's auth UID.
-     */
-    function createsOwnProfile(userId) {
-      return isOwner(userId) && request.resource.data.player.uid == userId;
+    
+    // Validates that a user is updating their own profile without escalating privileges.
+    function isUpdatingOwnValidProfile() {
+        return request.resource.data.player.uid == resource.data.player.uid &&
+               request.resource.data.player.isCreator == resource.data.player.isCreator &&
+               request.resource.data.player.isBanned == resource.data.player.isBanned &&
+               request.resource.data.player.isMuted == resource.data.player.isMuted;
     }
 
-    /*
-     * Ensures the `uid` field of a user profile is immutable upon update.
-     */
-    function updatesOwnProfile() {
-      return request.resource.data.player.uid == resource.data.player.uid;
-    }
+    // ========== COLLECTION RULES ==========
 
-    /*
-     * Ensures a new child document (e.g., quiz result) contains a `userId` field
-     * that matches the user's auth UID, enforcing the ownership link.
-     */
-    function createsOwnChildDocument(userId) {
-      return isOwner(userId) && request.resource.data.userId == userId;
-    }
-
-    /*
-     * Ensures the `userId` field of a child document is immutable upon update.
-     */
-    function updatesOwnChildDocument() {
-      return request.resource.data.userId == resource.data.userId;
-    }
-
-    /*
-     * @description Rules for user profile documents. Allows reads for community features.
-     * @path /users/{userId}
-     * @allow (read) Any signed-in user can read profiles for leaderboards and user pages.
-     * @deny (update) A regular user cannot update another user's profile.
-     */
+    // User profiles
     match /users/{userId} {
+      // GET: A user can get their own profile. An admin can get any profile. Any signed-in user can view profiles for leaderboards/user pages.
       allow get: if isSignedIn();
+
+      // LIST: Any signed-in user can list profiles for user directory & leaderboards.
       allow list: if isSignedIn();
-      allow create: if createsOwnProfile(userId);
-      allow update: if (isOwner(userId) && updatesOwnProfile()) || isAdmin();
-      allow delete: if isOwner(userId) || isAdmin();
+      
+      // CREATE: A user can create their own profile document.
+      allow create: if isOwner(userId);
+      
+      // UPDATE: A user can update their own profile (with restrictions), or an admin can update any profile.
+      allow update: if (isOwner(userId) && isUpdatingOwnValidProfile()) || isAdmin();
+
+      // DELETE: Only admins can delete user profiles.
+      allow delete: if isAdmin();
     }
     
-    /*
-     * @description Rules for a user's private subcollections (not intended for public access).
-     */
+    // User subcollections (e.g., files, achievements)
     match /users/{userId}/{subcollection}/{docId} {
-        allow read, write: if isOwner(userId);
+        // Only the owner or an admin can read/write to a user's subcollections.
+        allow read, write: if isOwner(userId) || isAdmin();
     }
 
-    /*
-     * @description Rules for the public feedback board.
-     * @path /feedback/{feedbackId}
-     * @allow (read) Any signed-in user can read feedback posts.
-     * @allow (create) A signed-in, non-muted user can post feedback.
-     * @deny (update) Regular users cannot edit or delete posts.
-     */
+    // Public feedback board
     match /feedback/{feedbackId} {
+      // READ: Any signed-in user can read feedback posts.
       allow read: if isSignedIn();
-      allow create: if createsOwnChildDocument(request.auth.uid) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isMuted == false;
+
+      // CREATE: Any signed-in user can post feedback.
+      allow create: if isSignedIn();
+
+      // UPDATE/DELETE: Only admins can modify or delete feedback posts.
       allow update, delete: if isAdmin();
     }
 
-    /*
-     * @description Rules for admin-only login history logs.
-     * @path /loginHistory/{logId}
-     * @allow (read) Only admins can read the login history.
-     * @allow (create) Authenticated users can create their own log entries.
-     */
+    // Login History Logs
     match /loginHistory/{logId} {
+      // READ: Only admins can read login history.
       allow read: if isAdmin();
-      allow create: if isSignedIn(); // Allow any signed-in user to log their attempt.
-      allow update, delete: if false; // Logs are immutable
+
+      // CREATE: Any signed-in user can create their own login attempt log.
+      allow create: if isSignedIn(); 
+
+      // UPDATE/DELETE: Logs are immutable.
+      allow update, delete: if false;
     }
 
-    /*
-     * @description Rules for admin-only activity logs.
-     * @path /activityLogs/{logId}
-     * @allow (read) Only admins can read activity logs.
-     * @allow (create) Authenticated users can create their own log entries.
-     */
+    // Activity Logs
     match /activityLogs/{logId} {
-      allow read: if isAdmin();
-      allow create: if createsOwnChildDocument(request.auth.uid);
-      allow update, delete: if false; // Logs are immutable
-    }
-
-    /*
-     * @description Rules for all public, read-only content collections.
-     * @path /badges, /titles, /coursesOfCompetency, etc.
-     * @allow (read) Any user can read all game/course content.
-     * @allow (write) Only admins can modify game/course content.
-     */
-    match /{collection}/{docId} {
-       allow read: if isSignedIn();
-       allow write: if isAdmin();
+      // Only admins can read or write activity logs.
+      allow read, write: if isAdmin();
     }
   }
 }
