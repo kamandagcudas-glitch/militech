@@ -140,6 +140,42 @@
         "isSpecialAchievement"
       ]
     },
+    "ChatMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ChatMessage",
+      "type": "object",
+      "description": "Represents a single message within a chat session between two users.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the message."
+        },
+        "chatId": {
+          "type": "string",
+          "description": "Identifier for the chat session this message belongs to."
+        },
+        "senderId": {
+          "type": "string",
+          "description": "The UID of the user who sent the message."
+        },
+        "message": {
+          "type": "string",
+          "description": "The text content of the message."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The server timestamp indicating when the message was sent.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "chatId",
+        "senderId",
+        "message",
+        "timestamp"
+      ]
+    },
     "Badge": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Badge",
@@ -619,6 +655,26 @@
             {
               "name": "quizResultId",
               "description": "The unique identifier for a quiz result entry."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/chats/{chatId}/messages/{messageId}",
+        "definition": {
+          "entityName": "ChatMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ChatMessage"
+          },
+          "description": "Stores a single message within a chat. The chatId is a composite key of the two participants' UIDs, sorted alphabetically and joined by an underscore.",
+          "params": [
+            {
+              "name": "chatId",
+              "description": "The unique identifier for the chat session."
+            },
+            {
+              "name": "messageId",
+              "description": "The unique identifier for the message."
             }
           ]
         }

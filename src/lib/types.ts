@@ -1,4 +1,5 @@
 
+
 export interface Player {
   uid: string; // Firebase Auth User ID
   username: string;
@@ -85,6 +86,13 @@ export interface ActivityLog {
   details: string;
 }
 
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  message: string;
+  timestamp: any; // Use 'any' for Firestore ServerTimestamp
+}
+
 // This is the main data structure for a user account, stored in a Firestore document.
 // It combines all user-related data into a single object.
 export interface UserAccount {
@@ -158,3 +166,4 @@ export interface PcBuild {
   description: string;
   parts: Record<PcPartCategory, PcPart>;
 }
+

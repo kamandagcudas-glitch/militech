@@ -33,6 +33,7 @@ import {
   SpellCheck,
   Shield,
   Cog,
+  MessageCircle,
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { GamifiedAvatar } from "@/components/ui/gamified-avatar";
@@ -82,6 +83,7 @@ export default function MainAppLayout({
 
   const navItems = [
     { href: "/dashboard", icon: <LayoutGrid />, label: "Dashboard" },
+    { href: "/chat", icon: <MessageCircle />, label: "Chat" },
     { href: "/system-viewer", icon: <Cpu />, label: "System Viewer" },
     { href: "/pc-builder", icon: <Wrench />, label: "PC Builder" },
     { href: "/files", icon: <Files />, label: "File Storage" },
@@ -182,3 +184,4 @@ export default function MainAppLayout({
     </SidebarProvider>
   );
 }
+
