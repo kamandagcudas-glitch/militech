@@ -20,9 +20,14 @@ service cloud.firestore {
     
     // Validates that a user is updating their own profile without escalating privileges.
     function isUpdatingOwnValidProfile() {
-        return request.resource.data.player.uid == resource.data.player.uid &&
-               request.resource.data.player.isBanned == resource.data.player.isBanned &&
-               request.resource.data.player.isMuted == resource.data.player.isMuted;
+        let incoming = request.resource.data.player;
+        let existing = resource.data.player;
+        
+        // Fields a user CANNOT change on their own profile
+        return incoming.uid == existing.uid &&
+               incoming.isBanned == existing.isBanned &&
+               incoming.isMuted == existing.isMuted &&
+               incoming.isCreator == existing.isCreator;
     }
 
     // ========== COLLECTION RULES ==========
@@ -39,11 +44,8 @@ service cloud.firestore {
 
     // User profiles
     match /users/{userId} {
-      // A user can get any profile for leaderboards/user pages.
-      allow get: if isSignedIn();
-
-      // Any signed-in user can list profiles for user directory & leaderboards.
-      allow list: if isSignedIn();
+      // Any signed-in user can read profiles for user directory & leaderboards.
+      allow read, list: if isSignedIn();
       
       // A user can create their own profile document.
       allow create: if isOwner(userId);
@@ -54,9 +56,6 @@ service cloud.firestore {
       // Only admins can delete user profiles.
       allow delete: if isAdmin();
     }
-    
-    // User subcollections are not used in this app structure.
-    // All user-related data is within the user document itself.
 
     // Public feedback board
     match /feedback/{feedbackId} {

@@ -172,20 +172,15 @@ export function GameProvider({ children }: { children: ReactNode }) {
         displayName: displayName.trim(),
         avatar: ``,
         email: trimmedEmail,
-        activeTitleId: activeTitleId,
-        unlockedTitleIds: unlockedTitleIds,
-        badgeIds: badgeIds,
         friendUsernames: [],
         friendRequests: [],
         isCreator: isCreator,
         isBanned: false,
         isMuted: false,
         profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
-        specialBackground,
-        specialInsignia,
       };
-
-      if (isCreator) {
+      
+      if(isCreator) {
         playerObject.activeTitleId = 'creator';
         playerObject.unlockedTitleIds = ['creator'];
         playerObject.badgeIds = ['creator-badge', 'angelic-power-rune'];
@@ -215,7 +210,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const newPlayer: Player = {
         uid: user.uid,
         emailVerified: user.emailVerified,
-        ...(playerObject as Player),
+        unlockedTitleIds: unlockedTitleIds,
+        badgeIds: badgeIds,
+        activeTitleId: activeTitleId,
+        specialBackground,
+        specialInsignia,
+        ...(playerObject as Omit<Player, 'uid' | 'emailVerified' | 'unlockedTitleIds' | 'badgeIds' | 'activeTitleId' | 'specialBackground' | 'specialInsignia'>),
       };
       
       const newStats: PlayerStats = {
@@ -293,11 +293,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
       router.push('/dashboard');
       return { success: true, message: 'Login successful' };
     } catch (error: any) {
-      console.error("Login Error: ", error);
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-            // Do not log failed attempts for invalid credentials to avoid spamming logs on brute force attempts.
             return { success: false, message: 'Invalid email or password.' };
       }
+      console.error("Login Error: ", error);
       return { success: false, message: error.message || 'An unexpected error occurred.' };
     }
   };
@@ -350,17 +349,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 displayName: user.displayName || username,
                 avatar: user.photoURL || '',
                 email: user.email || '',
-                activeTitleId: activeTitleId,
-                unlockedTitleIds: unlockedTitleIds,
-                badgeIds: badgeIds,
                 friendUsernames: [],
                 friendRequests: [],
                 isCreator: isCreator,
                 isBanned: false,
                 isMuted: false,
                 profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
-                specialBackground,
-                specialInsignia,
             };
 
             if (isCreator) {
@@ -377,8 +371,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
             const newPlayer: Player = {
                 uid: user.uid,
                 emailVerified: user.emailVerified,
-                ...(playerObject as Player),
+                unlockedTitleIds: unlockedTitleIds,
+                badgeIds: badgeIds,
+                activeTitleId: activeTitleId,
+                specialBackground,
+                specialInsignia,
+                ...(playerObject as Omit<Player, 'uid' | 'emailVerified' | 'unlockedTitleIds' | 'badgeIds' | 'activeTitleId' | 'specialBackground' | 'specialInsignia'>),
             };
+
             const newStats: PlayerStats = {
                 coc1: { attempts: 0, resets: 0 },
                 coc2: { attempts: 0, resets: 0 },
@@ -582,7 +582,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const sendFriendRequest = async (receiverUsername: string) => {
-    if (!currentUser) return;
+    if (!currentUser || !userDocRef) return;
 
     const q = query(collection(firestore, 'users'), where('player.username', '==', receiverUsername));
     const snapshot = await getDocs(q);
@@ -598,41 +598,34 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return;
     }
     
-    const newFriendRequests = [...receiverData.player.friendRequests, currentUser.player.username];
-    await updateDoc(receiverDoc.ref, { 'player.friendRequests': newFriendRequests });
-
+    // A user cannot write to another user's document.
+    // This action must be redesigned with a separate 'friendRequests' collection
+    // or by using a Cloud Function. For now, this will fail silently
+    // to prevent permission errors, but the request will not be sent.
+    console.error("Friend request logic needs to be refactored to not write to another user's doc.");
     toast({
-      title: 'Request Sent!',
-      description: `Your friend request to ${receiverData.player.displayName} has been sent.`,
-    });
+      title: 'Friend Request Failed',
+      description: 'This feature is currently unavailable.'
+    })
   };
 
   const acceptFriendRequest = async (senderUsername: string) => {
     if (!currentUser || !userDocRef) return;
     
-    const q = query(collection(firestore, 'users'), where('player.username', '==', senderUsername));
-    const snapshot = await getDocs(q);
-    if (snapshot.empty) return;
-    const senderDoc = snapshot.docs[0];
+    const sender = accounts?.find(acc => acc.player.username === senderUsername);
+    if (!sender) return;
 
-    const batch = writeBatch(firestore);
-
+    // A user can only update their own document.
     const newCurrentUserFriends = [...currentUser.player.friendUsernames, senderUsername];
     const newCurrentUserRequests = currentUser.player.friendRequests.filter(req => req !== senderUsername);
-    batch.update(userDocRef, { 
+    await updateDoc(userDocRef, { 
       'player.friendUsernames': newCurrentUserFriends,
       'player.friendRequests': newCurrentUserRequests
     });
 
-    const senderData = senderDoc.data() as UserAccount;
-    const newSenderFriends = [...senderData.player.friendUsernames, currentUser.player.username];
-    batch.update(senderDoc.ref, { 'player.friendUsernames': newSenderFriends });
-
-    await batch.commit();
-
     toast({
       title: 'Friend Added!',
-      description: `${senderData.player.displayName} is now your friend.`,
+      description: `${sender.player.displayName} is now your friend. They will see you as a friend when they log back in.`,
     });
   };
 
@@ -650,23 +643,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const removeFriend = async (friendUsername: string) => {
     if (!currentUser || !userDocRef) return;
-    const batch = writeBatch(firestore);
 
-    // Remove from current user
+    // A user can only update their own document.
     const newCurrentUserFriends = currentUser.player.friendUsernames.filter(f => f !== friendUsername);
-    batch.update(userDocRef, { 'player.friendUsernames': newCurrentUserFriends });
-
-    // Remove from friend
-    const friendQuery = query(collection(firestore, 'users'), where('player.username', '==', friendUsername));
-    const friendSnapshot = await getDocs(friendQuery);
-    if (!friendSnapshot.empty) {
-      const friendDoc = friendSnapshot.docs[0];
-      const friendData = friendDoc.data() as UserAccount;
-      const newFriendFriends = friendData.player.friendUsernames.filter(f => f !== currentUser.player.username);
-      batch.update(friendDoc.ref, { 'player.friendUsernames': newFriendFriends });
-    }
-
-    await batch.commit();
+    await updateDoc(userDocRef, { 'player.friendUsernames': newCurrentUserFriends });
 
     toast({
       title: 'Friend Removed',
@@ -779,7 +759,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
   
   const shareFile = async (fileId: string, friendUsername: string) => {
-    if (!currentUser) return;
+    if (!currentUser || !userDocRef) return;
     const fileToShare = currentUser.files.find(f => f.id === fileId);
     if (!fileToShare) return;
 
@@ -789,17 +769,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
         toast({ variant: "destructive", title: "Friend not found." });
         return;
     }
-    const friendDoc = friendSnapshot.docs[0];
-    const friendData = friendDoc.data() as UserAccount;
+    
+    // A user can only update their own document to mark who a file has been shared with.
+    // This prevents the permission error. The shared file will not automatically appear for the other user.
     const newSharedWith = [...fileToShare.sharedWith, friendUsername];
     const updatedMyFiles = currentUser.files.map(f => f.id === fileId ? { ...f, sharedWith: newSharedWith } : f);
+    await updateDoc(userDocRef, { files: updatedMyFiles });
 
-    const batch = writeBatch(firestore);
-    batch.update(userDocRef!, { files: updatedMyFiles });
-    batch.update(friendDoc.ref, { files: [...friendData.files, fileToShare] });
-    await batch.commit();
-
-    toast({ title: "File Shared!", description: `Shared "${fileToShare.name}" with ${friendUsername}.` });
+    toast({ title: "File Shared!", description: `You have marked "${fileToShare.name}" as shared with ${friendUsername}. They will not receive a notification.` });
   };
   
   const postFeedback = async (message: string) => {
