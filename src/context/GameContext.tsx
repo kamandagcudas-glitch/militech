@@ -110,13 +110,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const userDocRef = useMemoFirebase(() => authUser ? doc(firestore, 'users', authUser.uid) : null, [firestore, authUser]);
   const { data: currentUser, isLoading: isProfileLoading } = useDoc<UserAccount>(userDocRef);
   
+  const adminDocRef = useMemoFirebase(() => authUser ? doc(firestore, 'admins', authUser.uid) : null, [firestore, authUser]);
+  const { data: adminDoc } = useDoc(adminDocRef);
+
   const accountsQuery = useMemoFirebase(() => authUser ? query(collection(firestore, 'users')) : null, [firestore, authUser]);
   const { data: accounts, isLoading: areAccountsLoading } = useCollection<UserAccount>(accountsQuery);
 
   const feedbackQuery = useMemoFirebase(() => authUser ? query(collection(firestore, 'feedback'), orderBy('timestamp', 'desc'), limit(50)) : null, [firestore, authUser]);
   const { data: feedbackPosts } = useCollection<FeedbackPost>(feedbackQuery);
 
-  const isAdmin = useMemo(() => !!(currentUser && currentUser.player.isCreator), [currentUser]);
+  const isAdmin = useMemo(() => !!adminDoc, [adminDoc]);
 
   const loginHistoryQuery = useMemoFirebase(() => (authUser && isAdmin) ? query(collection(firestore, 'loginHistory'), orderBy('timestamp', 'desc'), limit(100)) : null, [firestore, authUser, isAdmin]);
   const { data: loginHistory } = useCollection<LoginAttempt>(loginHistoryQuery);
@@ -291,13 +294,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return { success: true, message: 'Login successful' };
     } catch (error: any) {
       console.error("Login Error: ", error);
-      // Log failed login attempt
-      await addDoc(collection(firestore, 'loginHistory'), {
-          username: trimmedEmail,
-          timestamp: new Date().toISOString(),
-          status: 'Failed'
-      });
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            // Do not log failed attempts for invalid credentials to avoid spamming logs on brute force attempts.
             return { success: false, message: 'Invalid email or password.' };
       }
       return { success: false, message: error.message || 'An unexpected error occurred.' };
@@ -313,9 +311,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
         const userDocRef = doc(firestore, 'users', user.uid);
         const userDocSnap = await getDoc(userDocRef);
 
-        const isCreator = user.email?.toLowerCase() === ADMIN_EMAIL;
+        if (user.email?.toLowerCase() === ADMIN_EMAIL) {
+            const adminDocRef = doc(firestore, 'admins', user.uid);
+            const adminDocSnap = await getDoc(adminDocRef);
+            if (!adminDocSnap.exists()) {
+                await setDoc(adminDocRef, { createdAt: new Date().toISOString() });
+            }
+        }
 
         if (!userDocSnap.exists()) {
+            const isCreator = user.email?.toLowerCase() === ADMIN_EMAIL;
             // New user, create profile
             // Generate a unique username
             let username = user.email?.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || `user${Date.now()}`;
@@ -396,6 +401,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
             const batch = writeBatch(firestore);
             batch.set(userDocRef, newUserAccount);
+            // Redundant check, already handled above, but safe to keep
             if (isCreator) {
                 const adminDocRef = doc(firestore, 'admins', user.uid);
                 batch.set(adminDocRef, { createdAt: new Date().toISOString() });
@@ -406,12 +412,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 title: 'Account Created!',
                 description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
             });
-        } else if (isCreator) {
-            const adminDocRef = doc(firestore, 'admins', user.uid);
-            const adminDocSnap = await getDoc(adminDocRef);
-            if (!adminDocSnap.exists()) {
-                await setDoc(adminDocRef, { createdAt: new Date().toISOString() });
-            }
         }
 
         // Log login attempt

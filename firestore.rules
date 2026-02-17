@@ -21,7 +21,6 @@ service cloud.firestore {
     // Validates that a user is updating their own profile without escalating privileges.
     function isUpdatingOwnValidProfile() {
         return request.resource.data.player.uid == resource.data.player.uid &&
-               request.resource.data.player.isCreator == resource.data.player.isCreator &&
                request.resource.data.player.isBanned == resource.data.player.isBanned &&
                request.resource.data.player.isMuted == resource.data.player.isMuted;
     }
