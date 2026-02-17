@@ -32,21 +32,6 @@ service cloud.firestore {
              incomingPlayer.isBanned == false &&
              incomingPlayer.isMuted == false;
     }
-    
-    // Validates incoming data for an EXISTING user profile update
-    function isUpdatingOwnValidProfile(userId) {
-        let incomingPlayer = request.resource.data.player;
-        let existingPlayer = resource.data.player;
-        
-        // A user can only update their own profile.
-        return isOwner(userId) &&
-               // These fields are immutable or admin-only.
-               incomingPlayer.uid == existingPlayer.uid &&
-               incomingPlayer.email == existingPlayer.email &&
-               incomingPlayer.isCreator == existingPlayer.isCreator &&
-               incomingPlayer.isBanned == existingPlayer.isBanned &&
-               incomingPlayer.isMuted == existingPlayer.isMuted;
-    }
 
     // ========== COLLECTION RULES ==========
 
@@ -58,8 +43,16 @@ service cloud.firestore {
       // A user can create their own profile, but only with valid initial data.
       allow create: if isCreatingOwnValidProfile(userId);
       
-      // A user can update their own profile (with restrictions), or an admin can update any profile.
-      allow update: if isUpdatingOwnValidProfile(userId) || isAdmin();
+      // A user can update their own document, but cannot change protected fields.
+      // An admin can update any document.
+      allow update: if (
+                      isOwner(userId) &&
+                      request.resource.data.player.uid == resource.data.player.uid &&
+                      request.resource.data.player.username == resource.data.player.username &&
+                      request.resource.data.player.isCreator == resource.data.player.isCreator &&
+                      request.resource.data.player.isBanned == resource.data.player.isBanned &&
+                      request.resource.data.player.isMuted == resource.data.player.isMuted
+                    ) || isAdmin();
 
       // Only admins can delete user profiles.
       allow delete: if isAdmin();
