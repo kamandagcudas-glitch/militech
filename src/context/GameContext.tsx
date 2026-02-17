@@ -160,13 +160,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const isVergil = trimmedUsername.toLowerCase() === 'vergil';
       const isRaytheon = trimmedUsername === RAYTHEON_USERNAME;
 
-      let activeTitleId: string | null = null;
-      let unlockedTitleIds: string[] = [];
-      let badgeIds: string[] = [];
-      let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
-      let specialInsignia: 'black-flame' | undefined = undefined;
-      let initialAchievements: Achievement[] = [];
-      
       const playerObject: Partial<Player> = {
         username: trimmedUsername,
         displayName: displayName.trim(),
@@ -178,7 +171,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isBanned: false,
         isMuted: false,
         profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+        unlockedTitleIds: [],
+        badgeIds: [],
+        activeTitleId: null
       };
+      
+      let initialAchievements: Achievement[] = [];
       
       if(isCreator) {
         playerObject.activeTitleId = 'creator';
@@ -202,7 +200,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           const achievement = achievementsData.find(a => a.id === 'black-flame-wanderer');
           if (achievement) {
               initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
-              unlockedTitleIds.push(achievement.id);
+              playerObject.unlockedTitleIds!.push(achievement.id);
               playerObject.activeTitleId = achievement.id;
           }
       }
@@ -210,12 +208,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const newPlayer: Player = {
         uid: user.uid,
         emailVerified: user.emailVerified,
-        unlockedTitleIds: unlockedTitleIds,
-        badgeIds: badgeIds,
-        activeTitleId: activeTitleId,
-        specialBackground,
-        specialInsignia,
-        ...(playerObject as Omit<Player, 'uid' | 'emailVerified' | 'unlockedTitleIds' | 'badgeIds' | 'activeTitleId' | 'specialBackground' | 'specialInsignia'>),
+        username: playerObject.username!,
+        displayName: playerObject.displayName!,
+        avatar: playerObject.avatar!,
+        email: playerObject.email,
+        activeTitleId: playerObject.activeTitleId!,
+        isBanned: playerObject.isBanned!,
+        isMuted: playerObject.isMuted!,
+        unlockedTitleIds: playerObject.unlockedTitleIds!,
+        badgeIds: playerObject.badgeIds!,
+        friendUsernames: playerObject.friendUsernames!,
+        friendRequests: playerObject.friendRequests!,
+        isCreator: playerObject.isCreator!,
+        profileBackgroundId: playerObject.profileBackgroundId,
+        ...(playerObject.customTitle && { customTitle: playerObject.customTitle }),
+        ...(playerObject.specialBackground && { specialBackground: playerObject.specialBackground }),
+        ...(playerObject.specialInsignia && { specialInsignia: playerObject.specialInsignia }),
       };
       
       const newStats: PlayerStats = {
@@ -347,13 +355,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 }
             }
             
-            let activeTitleId: string | null = null;
-            let unlockedTitleIds: string[] = [];
-            let badgeIds: string[] = [];
-            let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
-            let specialInsignia: 'black-flame' | undefined = undefined;
-            let initialAchievements: Achievement[] = [];
-
             const playerObject: Partial<Player> = {
                 username: username,
                 displayName: user.displayName || username,
@@ -365,7 +366,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 isBanned: false,
                 isMuted: false,
                 profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+                unlockedTitleIds: [],
+                badgeIds: [],
+                activeTitleId: null,
             };
+
+            let initialAchievements: Achievement[] = [];
 
             if (isCreator) {
                 playerObject.activeTitleId = 'creator';
@@ -381,14 +387,24 @@ export function GameProvider({ children }: { children: ReactNode }) {
             const newPlayer: Player = {
                 uid: user.uid,
                 emailVerified: user.emailVerified,
-                unlockedTitleIds: unlockedTitleIds,
-                badgeIds: badgeIds,
-                activeTitleId: activeTitleId,
-                specialBackground,
-                specialInsignia,
-                ...(playerObject as Omit<Player, 'uid' | 'emailVerified' | 'unlockedTitleIds' | 'badgeIds' | 'activeTitleId' | 'specialBackground' | 'specialInsignia'>),
+                username: playerObject.username!,
+                displayName: playerObject.displayName!,
+                avatar: playerObject.avatar!,
+                email: playerObject.email,
+                activeTitleId: playerObject.activeTitleId!,
+                isBanned: playerObject.isBanned!,
+                isMuted: playerObject.isMuted!,
+                unlockedTitleIds: playerObject.unlockedTitleIds!,
+                badgeIds: playerObject.badgeIds!,
+                friendUsernames: playerObject.friendUsernames!,
+                friendRequests: playerObject.friendRequests!,
+                isCreator: playerObject.isCreator!,
+                profileBackgroundId: playerObject.profileBackgroundId,
+                ...(playerObject.customTitle && { customTitle: playerObject.customTitle }),
+                ...(playerObject.specialBackground && { specialBackground: playerObject.specialBackground }),
+                ...(playerObject.specialInsignia && { specialInsignia: playerObject.specialInsignia }),
             };
-
+            
             const newStats: PlayerStats = {
                 coc1: { attempts: 0, resets: 0 },
                 coc2: { attempts: 0, resets: 0 },
