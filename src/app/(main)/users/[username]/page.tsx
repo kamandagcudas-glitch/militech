@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -10,6 +11,7 @@ import { achievementsData } from '@/lib/data';
 import { predefinedBackgrounds } from '@/lib/backgrounds-data';
 import { cn } from '@/lib/utils';
 import { SpecialBackground } from '@/components/special-background';
+import { Loader2 } from 'lucide-react';
 
 import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
@@ -35,7 +37,7 @@ export default function PublicProfilePage() {
     const { accounts, currentUser, sendFriendRequest, removeFriend } = game;
 
     const userAccount = useMemo(() => {
-        if (!username) return null;
+        if (!username || !accounts) return null;
         const decodedUsername = decodeURIComponent(username);
         return accounts.find(acc => acc.player.username.toLowerCase() === decodedUsername.toLowerCase());
     }, [accounts, username]);
@@ -46,29 +48,14 @@ export default function PublicProfilePage() {
     }, [currentUser, userAccount]);
     
     useEffect(() => {
-        // If the user is viewing their own public profile, redirect them to their editable profile page.
         if (isCurrentUser) {
             router.replace('/profile');
         }
     }, [isCurrentUser, router]);
 
-    useEffect(() => {
-        if (userAccount?.player.specialBackground) {
-            console.log(`Public Profile Background: User ${userAccount.player.username} has special background '${userAccount.player.specialBackground}' applied.`);
-        }
-    }, [userAccount]);
-
-    /**
-     * Public Profile Background Logic:
-     * Reads the selected background from the viewed user's data.
-     * This allows each user's profile to have its own customized look.
-     * Falls back to a default if no specific background is set.
-     */
     const currentBackgroundUrl = useMemo(() => {
         if (!userAccount?.player) return predefinedBackgrounds[0]?.imageUrl || '';
         const { player } = userAccount;
-        
-        console.log(`Loading background for ${player.username}: id=${player.profileBackgroundId}`);
 
         if (player.profileBackgroundId === 'custom' && player.profileBackgroundUrl) {
             return player.profileBackgroundUrl;
@@ -77,8 +64,16 @@ export default function PublicProfilePage() {
         return predefined ? predefined.imageUrl : (predefinedBackgrounds[0]?.imageUrl || '');
     }, [userAccount]);
 
+    if (game.isUserLoading) {
+      return (
+        <div className="flex h-full w-full items-center justify-center">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        </div>
+      )
+    }
+
     if (isCurrentUser) {
-        return null; // Return null while redirecting
+        return null;
     }
 
     if (!userAccount) {
@@ -102,15 +97,6 @@ export default function PublicProfilePage() {
     const requestSent = player.friendRequests?.includes(currentUser?.player.username || '');
     const requestReceived = currentUser?.player.friendRequests.includes(player.username);
 
-    /**
-     * Achievement Rendering Logic:
-     * This component displays a list of all possible achievements from `achievementsData`.
-     * For each possible achievement, it checks if the `id` exists in the currently viewed
-     * user's `achievements` array.
-     * - If it exists, the achievement is marked as "Unlocked".
-     * - If it does not exist, it is marked as "Locked" and visually greyed out.
-     * This provides a clear, read-only view of another user's accomplishments.
-     */
     return (
         <div className="relative -m-4 md:-m-6 h-full">
              {hasSpecialBg ? (

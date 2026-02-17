@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useContext, useEffect, useState } from "react";
@@ -13,39 +14,36 @@ import { Label } from "@/components/ui/label";
 import { useTheme } from "@/context/ThemeContext";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isClientLoading, setIsClientLoading] = useState(true);
   const router = useRouter();
   const game = useContext(GameContext) as GameContextType;
   const { toast } = useToast();
   const { theme } = useTheme();
 
   useEffect(() => {
-    // If the user is already logged in, redirect to the dashboard.
-    // The loading state handles the initial check.
-    if (game.currentUser) {
+    if (game.currentUser && !game.isUserLoading) {
       router.replace("/dashboard");
-    } else {
-      setIsLoading(false);
+    } else if (!game.isUserLoading) {
+      setIsClientLoading(false);
     }
-  }, [game.currentUser, router]);
+  }, [game.currentUser, game.isUserLoading, router]);
 
   const handleLogin = async () => {
-    if (username.trim() && password.trim()) {
-      const success = await game.login(username.trim(), password.trim());
-      if (!success) {
+    if (email.trim() && password.trim()) {
+      const result = await game.login(email.trim(), password.trim());
+      if (!result.success) {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Invalid username or password.",
+          description: result.message || "Invalid email or password.",
         });
       }
     }
   };
 
-  // While checking for an existing session, show a loader.
-  if (isLoading || game.currentUser) {
+  if (isClientLoading || game.isUserLoading || game.currentUser) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -68,12 +66,13 @@ export default function LoginPage() {
         <CardContent>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Callsign</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                placeholder="Enter your callsign"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleLogin()}
               />
             </div>
@@ -92,7 +91,7 @@ export default function LoginPage() {
                 <button
                     onClick={handleLogin}
                     className="btn-futuristic w-full"
-                    disabled={!username.trim() || !password.trim()}
+                    disabled={!email.trim() || !password.trim()}
                 >
                     Access Terminal
                 </button>
@@ -100,7 +99,7 @@ export default function LoginPage() {
                 <Button
                     onClick={handleLogin}
                     className="w-full h-12 text-lg font-bold"
-                    disabled={!username.trim() || !password.trim()}
+                    disabled={!email.trim() || !password.trim()}
                 >
                     Access Terminal
                 </Button>

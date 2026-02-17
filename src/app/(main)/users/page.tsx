@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useContext, useMemo } from 'react';
@@ -7,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { Button } from '@/components/ui/button';
-import { UserPlus, Users, Check, Send } from 'lucide-react';
+import { UserPlus, Users, Check, Send, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { achievementsData } from '@/lib/data';
 import { UserAccount } from '@/lib/types';
@@ -18,19 +19,13 @@ export default function UsersPage() {
 
     const { currentUser, accounts, sendFriendRequest } = game;
 
-    // User Listing Logic:
-    // Memoize the list of other users to prevent recalculation on every render.
     const otherUsers = useMemo(() => {
-        if (!currentUser) return [];
-        // Filter out the current user from the list of all accounts.
+        if (!currentUser || !accounts) return [];
         return accounts.filter(acc => acc.player.username !== currentUser.player.username);
     }, [accounts, currentUser]);
 
-    // Search Logic:
-    // Memoize the filtered user list based on the search query.
     const filteredUsers = useMemo(() => {
         if (!searchQuery) return otherUsers;
-        // Perform a case-insensitive search on the username or display name.
         const lowerCaseQuery = searchQuery.toLowerCase();
         return otherUsers.filter(acc =>
             acc.player.username.toLowerCase().includes(lowerCaseQuery) ||
@@ -38,11 +33,18 @@ export default function UsersPage() {
         );
     }, [otherUsers, searchQuery]);
     
-    // Helper function to find a user's active title from achievementsData.
     const getActiveTitle = (user: UserAccount) => {
         if (!user.player.activeTitleId) return null;
         return achievementsData.find(a => a.id === user.player.activeTitleId);
     };
+    
+    if (game.isUserLoading) {
+        return (
+            <div className="flex h-full w-full items-center justify-center">
+                <Loader2 className="h-16 w-16 animate-spin text-primary" />
+            </div>
+        )
+    }
 
     if (!currentUser) return null;
 

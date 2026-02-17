@@ -3,6 +3,7 @@
 
 import { GameProvider } from "@/context/GameContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
+import { FirebaseClientProvider } from "@/firebase";
 import type { ReactNode } from "react";
 import GlobalAngelicBackground from "@/components/GlobalAngelicBackground";
 
@@ -18,10 +19,12 @@ function AppWithTheme({ children }: { children: React.ReactNode }) {
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider>
-      <GameProvider>
-        <AppWithTheme>{children}</AppWithTheme>
-      </GameProvider>
-    </ThemeProvider>
+    <FirebaseClientProvider>
+      <ThemeProvider>
+        <GameProvider>
+          <AppWithTheme>{children}</AppWithTheme>
+        </GameProvider>
+      </ThemeProvider>
+    </FirebaseClientProvider>
   );
 }

@@ -3,7 +3,6 @@
 
 import { useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import {
   SidebarProvider,
@@ -44,23 +43,19 @@ export default function MainAppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { currentUser, isAdmin, logout, addAchievement } = useContext(GameContext) as GameContextType;
+  const { currentUser, isUserLoading, isAdmin, logout, addAchievement } = useContext(GameContext) as GameContextType;
   const router = useRouter();
   const pathname = usePathname();
-  const [isClient, setIsClient] = useState(false);
   const [profileClickTimestamps, setProfileClickTimestamps] = useState<number[]>([]);
 
-  // Easter Egg: Award an achievement for rapid clicking on the profile link.
   const handleProfileClick = () => {
     if (!addAchievement) return;
 
     const now = Date.now();
-    // Clicks within the last 5 seconds
     const fiveSecondsAgo = now - 5000;
     const recentClicks = [...profileClickTimestamps.filter(ts => ts > fiveSecondsAgo), now];
     
     if (recentClicks.length >= 10) {
-      // Award achievement and reset the counter
       addAchievement('rapid-click');
       setProfileClickTimestamps([]);
     } else {
@@ -68,18 +63,13 @@ export default function MainAppLayout({
     }
   };
 
-
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (isClient && !currentUser) {
+    if (!isUserLoading && !currentUser) {
       router.replace("/login");
     }
-  }, [currentUser, router, isClient]);
+  }, [currentUser, isUserLoading, router]);
 
-  if (!isClient || !currentUser) {
+  if (isUserLoading || !currentUser) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />

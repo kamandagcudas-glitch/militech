@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useContext } from 'react';
@@ -51,13 +52,12 @@ export default function RegisterPage() {
             setError('Passwords do not match.');
             return;
         }
-        // Optional Email Validation: Only validate if the user has typed something.
-        if (email && !/^[^\s@]+@gmail\.com$/i.test(email)) {
-            setError('Please enter a valid Gmail address or leave it blank.');
+        if (!email || !/^[^\s@]+@gmail\.com$/i.test(email)) {
+            setError('Please enter a valid Gmail address.');
             return;
         }
 
-        const result = await game.register(username, displayName, password, email);
+        const result = await game.register(username, displayName, email, password);
 
         if (result.success) {
             toast({
@@ -70,7 +70,7 @@ export default function RegisterPage() {
         }
     };
 
-    const isButtonDisabled = !username.trim() || !displayName.trim() || !password.trim() || !confirmPassword.trim();
+    const isButtonDisabled = !username.trim() || !displayName.trim() || !email.trim() || !password.trim() || !confirmPassword.trim();
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -102,11 +102,11 @@ export default function RegisterPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email (Optional, Gmail only)</Label>
+                            <Label htmlFor="email">Email (Gmail only)</Label>
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="For optional account verification"
+                                placeholder="Used for login and recovery"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />

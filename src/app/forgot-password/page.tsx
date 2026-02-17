@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useContext } from 'react';
@@ -13,14 +14,10 @@ import { ArrowLeft } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
 export default function ForgotPasswordPage() {
-    const [step, setStep] = useState(1); // 1: Enter email, 2: Enter code and new password
-    const [usernameOrEmail, setUsernameOrEmail] = useState('');
-    const [usernameForReset, setUsernameForReset] = useState('');
-    const [code, setCode] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [email, setEmail] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [emailSent, setEmailSent] = useState(false);
 
     const router = useRouter();
     const game = useContext(GameContext) as GameContextType;
@@ -30,48 +27,11 @@ export default function ForgotPasswordPage() {
     const handleSendCode = async () => {
         setError(null);
         setIsLoading(true);
-        // This is a simulation. In a real app, the code would be emailed, not returned.
-        const result = await game.sendPasswordResetCode(usernameOrEmail);
+        const result = await game.sendPasswordResetCode(email);
         setIsLoading(false);
 
         if (result.success) {
-            // Find the actual username to pass to the reset function later
-            const account = game.accounts.find(acc => 
-                acc.player.username.toLowerCase() === usernameOrEmail.toLowerCase() || 
-                (acc.player.email && acc.player.email.toLowerCase() === usernameOrEmail.toLowerCase())
-            );
-            if (account) {
-                setUsernameForReset(account.player.username);
-                setStep(2);
-            } else {
-                 setError("An unexpected error occurred retrieving user information.");
-            }
-        } else {
-            setError(result.message);
-        }
-    };
-
-    const handleResetPassword = async () => {
-        setError(null);
-        if (newPassword.length < 6) {
-            setError('Password must be at least 6 characters long.');
-            return;
-        }
-        if (newPassword !== confirmPassword) {
-            setError('Passwords do not match.');
-            return;
-        }
-
-        setIsLoading(true);
-        const result = await game.resetPassword(usernameForReset, code, newPassword);
-        setIsLoading(false);
-        
-        if (result.success) {
-            toast({
-                title: 'Password Reset Successful!',
-                description: 'Please log in with your new password.',
-            });
-            router.push('/login');
+            setEmailSent(true);
         } else {
             setError(result.message);
         }
@@ -84,76 +44,39 @@ export default function ForgotPasswordPage() {
                     <CardTitle className="font-headline text-4xl font-bold text-primary">Reset Password</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    {step === 1 && (
+                    {emailSent ? (
+                        <div className="space-y-4 text-center">
+                             <CardDescription>
+                                A password reset link has been sent to <strong>{email}</strong>. Please check your inbox.
+                            </CardDescription>
+                            <Button onClick={() => router.push('/login')} className="w-full">
+                                Back to Login
+                            </Button>
+                        </div>
+                    ) : (
                         <div className="space-y-4">
                             <CardDescription className="text-center">
-                                Enter your username or verified email to receive a recovery code.
+                                Enter your account's email address and we will send you a password reset link.
                             </CardDescription>
                             <div className="space-y-2">
-                                <Label htmlFor="usernameOrEmail">Username or Email</Label>
+                                <Label htmlFor="email">Email</Label>
                                 <Input
-                                    id="usernameOrEmail"
-                                    placeholder="your_username or your.email@gmail.com"
-                                    value={usernameOrEmail}
-                                    onChange={(e) => setUsernameOrEmail(e.target.value)}
+                                    id="email"
+                                    type="email"
+                                    placeholder="your.email@gmail.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSendCode()}
                                 />
                             </div>
                             {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
                             {theme === 'cyberpunk' ? (
-                                <button onClick={handleSendCode} className="btn-futuristic w-full" disabled={isLoading || !usernameOrEmail.trim()}>
-                                    {isLoading ? 'Sending...' : 'Send Recovery Code'}
+                                <button onClick={handleSendCode} className="btn-futuristic w-full" disabled={isLoading || !email.trim()}>
+                                    {isLoading ? 'Sending...' : 'Send Reset Link'}
                                 </button>
                             ) : (
-                                <Button onClick={handleSendCode} className="w-full" disabled={isLoading || !usernameOrEmail.trim()}>
-                                    {isLoading ? 'Sending...' : 'Send Recovery Code'}
-                                </Button>
-                            )}
-                        </div>
-                    )}
-                    {step === 2 && (
-                        <div className="space-y-4">
-                             <CardDescription className="text-center">
-                                A code has been sent to the verified email for user <strong>{usernameForReset}</strong>.
-                            </CardDescription>
-                             <div className="space-y-2">
-                                <Label htmlFor="code">Verification Code</Label>
-                                <Input
-                                    id="code"
-                                    placeholder="6-digit code"
-                                    value={code}
-                                    onChange={(e) => setCode(e.target.value)}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="newPassword">New Password</Label>
-                                <Input
-                                    id="newPassword"
-                                    type="password"
-                                    placeholder="Minimum 6 characters"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                />
-                            </div>
-                             <div className="space-y-2">
-                                <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                                <Input
-                                    id="confirmPassword"
-                                    type="password"
-                                    placeholder="Re-enter your new password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleResetPassword()}
-                                />
-                            </div>
-                            {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
-                             {theme === 'cyberpunk' ? (
-                                <button onClick={handleResetPassword} className="btn-futuristic w-full" disabled={isLoading || !code.trim() || !newPassword.trim()}>
-                                    {isLoading ? 'Resetting...' : 'Reset Password'}
-                                </button>
-                            ) : (
-                                <Button onClick={handleResetPassword} className="w-full" disabled={isLoading || !code.trim() || !newPassword.trim()}>
-                                    {isLoading ? 'Resetting...' : 'Reset Password'}
+                                <Button onClick={handleSendCode} className="w-full" disabled={isLoading || !email.trim()}>
+                                    {isLoading ? 'Sending...' : 'Send Reset Link'}
                                 </Button>
                             )}
                         </div>
