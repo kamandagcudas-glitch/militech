@@ -123,6 +123,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const trimmedUsername = username.trim();
     const trimmedEmail = email.trim();
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        return { success: false, message: 'Please enter a valid email address.' };
+    }
+
     // Check if username or email already exists in Firestore
     const usernameQuery = query(collection(firestore, 'users'), where('player.username', '==', trimmedUsername));
     const emailQuery = query(collection(firestore, 'users'), where('player.email', '==', trimmedEmail));
@@ -241,8 +245,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string): Promise<{ success: boolean, message: string }> => {
+    const trimmedEmail = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        return { success: false, message: 'Invalid email format. Please use your email to log in.' };
+    }
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
       // Log the login attempt
       await addDoc(collection(firestore, 'loginHistory'), {
           userId: userCredential.user.uid,
@@ -256,11 +264,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
       console.error("Login Error: ", error);
        await addDoc(collection(firestore, 'loginHistory'), {
           userId: 'unknown',
-          username: email,
+          username: trimmedEmail,
           timestamp: new Date().toISOString(),
           status: 'Failed'
       });
-      return { success: false, message: error.message || 'Invalid email or password.' };
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+            return { success: false, message: 'Invalid email or password.' };
+      }
+      return { success: false, message: error.message || 'An unexpected error occurred.' };
     }
   };
 
@@ -535,7 +546,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!authUser || !userDocRef) return { success: false, message: "Not logged in." };
     
     const trimmedEmail = newEmail.trim();
-    if (!/^[^\s@]+@gmail\.com$/i.test(trimmedEmail)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(trimmedEmail)) {
         return { success: false, message: 'Please enter a valid Gmail address.' };
     }
     const emailQuery = query(collection(firestore, "users"), where("player.email", "==", trimmedEmail));

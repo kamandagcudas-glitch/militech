@@ -52,8 +52,8 @@ export default function RegisterPage() {
             setError('Passwords do not match.');
             return;
         }
-        if (!email || !/^[^\s@]+@gmail\.com$/i.test(email)) {
-            setError('Please enter a valid Gmail address.');
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError('Please enter a valid email address.');
             return;
         }
 
@@ -102,7 +102,7 @@ export default function RegisterPage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="email">Email (Gmail only)</Label>
+                            <Label htmlFor="email">Email</Label>
                             <Input
                                 id="email"
                                 type="email"
