@@ -110,16 +110,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const userDocRef = useMemoFirebase(() => authUser ? doc(firestore, 'users', authUser.uid) : null, [firestore, authUser]);
   const { data: currentUser, isLoading: isProfileLoading } = useDoc<UserAccount>(userDocRef);
   
-  const adminDocRef = useMemoFirebase(() => authUser ? doc(firestore, 'admins', authUser.uid) : null, [firestore, authUser]);
-  const { data: adminDoc } = useDoc(adminDocRef);
+  const isAdmin = useMemo(() => currentUser?.player.email === ADMIN_EMAIL, [currentUser]);
 
   const accountsQuery = useMemoFirebase(() => authUser ? query(collection(firestore, 'users')) : null, [firestore, authUser]);
   const { data: accounts, isLoading: areAccountsLoading } = useCollection<UserAccount>(accountsQuery);
 
   const feedbackQuery = useMemoFirebase(() => authUser ? query(collection(firestore, 'feedback'), orderBy('timestamp', 'desc'), limit(50)) : null, [firestore, authUser]);
   const { data: feedbackPosts } = useCollection<FeedbackPost>(feedbackQuery);
-
-  const isAdmin = useMemo(() => !!adminDoc, [adminDoc]);
 
   const loginHistoryQuery = useMemoFirebase(() => (authUser && isAdmin) ? query(collection(firestore, 'loginHistory'), orderBy('timestamp', 'desc'), limit(100)) : null, [firestore, authUser, isAdmin]);
   const { data: loginHistory } = useCollection<LoginAttempt>(loginHistoryQuery);
@@ -253,14 +250,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       batch.set(newUserDocRef, newUserAccount);
       
       if (isCreator) {
-          const adminDocRef = doc(firestore, 'admins', user.uid);
-          batch.set(adminDocRef, { 
-            email: trimmedEmail,
-            username: trimmedUsername,
-            displayName: displayName.trim(),
-            role: "admin",
-            createdAt: new Date().toISOString() 
-          });
           toast({
               title: <div className="text-4xl text-center w-full">🎉</div>,
               description: <div className="text-center font-bold">Creator Identified! Welcome.</div>,
@@ -288,23 +277,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
       const user = userCredential.user;
-      
-      if (user.email === ADMIN_EMAIL) {
-        const adminDocRef = doc(firestore, 'admins', user.uid);
-        const adminDocSnap = await getDoc(adminDocRef);
-        if (!adminDocSnap.exists()) {
-          const userDocSnap = await getDoc(doc(firestore, 'users', user.uid));
-          const username = userDocSnap.exists() ? userDocSnap.data().player.username : 'admin';
-          const displayName = userDocSnap.exists() ? userDocSnap.data().player.displayName : 'Admin';
-          await setDoc(adminDocRef, { 
-            email: user.email,
-            username: username,
-            displayName: displayName,
-            role: "admin",
-            createdAt: new Date().toISOString() 
-          });
-        }
-      }
 
       // Log the login attempt
       await addDoc(collection(firestore, 'loginHistory'), {
@@ -430,16 +402,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
             const batch = writeBatch(firestore);
             batch.set(userDocRef, newUserAccount);
             
-            if (isCreator) {
-                const adminDocRef = doc(firestore, 'admins', user.uid);
-                batch.set(adminDocRef, { 
-                  email: user.email,
-                  username: newPlayer.username,
-                  displayName: newPlayer.displayName,
-                  role: "admin",
-                  createdAt: new Date().toISOString() 
-                });
-            }
             await batch.commit();
 
             toast({
@@ -447,22 +409,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
             });
             userDocSnap = await getDoc(userDocRef); // Re-fetch the doc after creation
-        } else {
-            // This is an existing user.
-             if (user.email?.toLowerCase() === ADMIN_EMAIL) {
-                const adminDocRef = doc(firestore, 'admins', user.uid);
-                const adminDocSnap = await getDoc(adminDocRef);
-                if (!adminDocSnap.exists()) {
-                    const existingUser = userDocSnap.data() as UserAccount;
-                    await setDoc(adminDocRef, { 
-                        email: user.email,
-                        username: existingUser.player.username,
-                        displayName: existingUser.player.displayName,
-                        role: 'admin',
-                        createdAt: new Date().toISOString() 
-                    });
-                }
-            }
         }
 
         // Log login attempt

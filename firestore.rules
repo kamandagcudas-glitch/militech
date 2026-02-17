@@ -14,11 +14,8 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      // Admin status is determined by email or the existence of a document in the /admins collection.
-      return isSignedIn() && (
-        request.auth.token.email == "kamandagcudas@gmail.com" ||
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
-      );
+      // Admin status is determined by the authenticated user's email address.
+      return isSignedIn() && request.auth.token.email == "kamandagcudas@gmail.com";
     }
     
     // Validates that a user is updating their own profile without escalating privileges.
@@ -34,17 +31,6 @@ service cloud.firestore {
     }
 
     // ========== COLLECTION RULES ==========
-    
-    // Admin roles collection
-    match /admins/{uid} {
-        // An admin can check their own status by reading their own document.
-        allow get: if isOwner(uid);
-        // No one can list all admins.
-        allow list: if false;
-        // Admins can manage other admin documents. A user can create their own admin document
-        // if their authenticated email matches the designated admin email.
-        allow write: if isAdmin() || (request.auth.uid == uid && request.auth.token.email == "kamandagcudas@gmail.com");
-    }
 
     // User profiles
     match /users/{userId} {
@@ -64,7 +50,7 @@ service cloud.firestore {
     // Public feedback board
     match /feedback/{feedbackId} {
       // Any signed-in user can read feedback posts.
-      allow read: if isSignedIn();
+      allow read, list: if isSignedIn();
 
       // Any signed-in user can post feedback.
       allow create: if isSignedIn();
@@ -76,7 +62,7 @@ service cloud.firestore {
     // Login History Logs
     match /loginHistory/{logId} {
       // Only admins can read login history.
-      allow read: if isAdmin();
+      allow read, list: if isAdmin();
 
       // Any signed-in user can create their own login attempt log.
       allow create: if isSignedIn(); 
@@ -88,7 +74,7 @@ service cloud.firestore {
     // Activity Logs
     match /activityLogs/{logId} {
       // Only admins can read or write activity logs.
-      allow read, write: if isAdmin();
+      allow read, write, list: if isAdmin();
     }
   }
 }
