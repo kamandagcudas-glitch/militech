@@ -261,7 +261,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       router.push('/dashboard');
       return { success: true, message: 'Login successful' };
     } catch (error: any) {
-      console.error("Login Error: ", error);
        await addDoc(collection(firestore, 'loginHistory'), {
           userId: 'unknown',
           username: trimmedEmail,
@@ -542,7 +541,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateEmail = async (newEmail: string): Promise<{ success: boolean, message: string }> => {
+  const updateEmail = async (newEmail: string): Promise<{ success: boolean; message: string }> => {
     if (!authUser || !userDocRef) return { success: false, message: "Not logged in." };
     
     const trimmedEmail = newEmail.trim();
