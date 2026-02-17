@@ -16,6 +16,69 @@ service cloud.firestore {
       return isSignedIn() && request.auth.token.email == "kamandagcudas@gmail.com";
     }
 
+    // ========== FRIENDSHIP MANAGEMENT FUNCTIONS ==========
+
+    // Checks if the only field being changed is 'friendRequests'
+    function isOnlyChangingFriendRequests() {
+      return request.resource.data.diff(resource.data).affectedKeys.hasOnly(['player.friendRequests']);
+    }
+
+    // Checks if the only field being changed is 'friendUsernames'
+    function isOnlyChangingFriendUsernames() {
+      return request.resource.data.diff(resource.data).affectedKeys.hasOnly(['player.friendUsernames']);
+    }
+
+    // This function allows a user (the sender) to add their username to another user's (the receiver's) friend request list.
+    function isSendingFriendRequest() {
+        let senderUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
+        let existingRequests = resource.data.player.friendRequests;
+        let incomingRequests = request.resource.data.player.friendRequests;
+
+        // The change is valid if:
+        // 1. Only the friendRequests field is being changed.
+        // 2. The new list is exactly one item larger than the old list.
+        // 3. The new list contains all the items from the old list.
+        // 4. The sender's username is in the new list.
+        return isOnlyChangingFriendRequests() &&
+               incomingRequests.size() == existingRequests.size() + 1 &&
+               incomingRequests.hasAll(existingRequests) &&
+               senderUsername in incomingRequests;
+    }
+
+    // This function allows a user (the receiver) to add their username to the sender's friend list after accepting a request.
+    function isAcceptingFriendship() {
+        let receiverUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
+        let existingFriends = resource.data.player.friendUsernames;
+        let incomingFriends = request.resource.data.player.friendUsernames;
+
+        // The change is valid if:
+        // 1. Only the friendUsernames field is being changed.
+        // 2. The new list is one item larger.
+        // 3. The new list contains all previous friends.
+        // 4. The receiver's username is now in the list.
+        return isOnlyChangingFriendUsernames() &&
+               incomingFriends.size() == existingFriends.size() + 1 &&
+               incomingFriends.hasAll(existingFriends) &&
+               receiverUsername in incomingFriends;
+    }
+
+    // This function allows a user to remove their username from another user's friend list.
+    function isRemovingFriendship() {
+        let removerUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
+        let existingFriends = resource.data.player.friendUsernames;
+        let incomingFriends = request.resource.data.player.friendUsernames;
+
+        // The change is valid if:
+        // 1. Only the friendUsernames field is being changed.
+        // 2. The new list is one item smaller.
+        // 3. The old list contained all items from the new list.
+        // 4. The remover's username is NOT in the new list.
+        return isOnlyChangingFriendUsernames() &&
+               incomingFriends.size() == existingFriends.size() - 1 &&
+               existingFriends.hasAll(incomingFriends) &&
+               !(removerUsername in incomingFriends);
+    }
+
     // ========== COLLECTION RULES ==========
 
     match /users/{userId} {
@@ -23,12 +86,11 @@ service cloud.firestore {
       allow create: if request.auth.uid == userId;
       
       // Allow any signed-in user to read user profiles to enable social features.
-      // NOTE: This exposes all fields in user documents. For stricter security,
-      // consider separating public and private data into different collections.
       allow list, read: if isSignedIn();
       
-      // Allow users to update their own profile, or allow an admin to update any profile.
-      allow update: if isOwner(userId) || isAdmin();
+      // Allow users to update their own profile, or an admin to update any profile.
+      // Also allows for the specific actions of sending/accepting/removing friends.
+      allow update: if isOwner(userId) || isAdmin() || isSendingFriendRequest() || isAcceptingFriendship() || isRemovingFriendship();
       
       // Allow users to delete their own account, or allow an admin to delete any account.
       allow delete: if isOwner(userId) || isAdmin();
@@ -38,10 +100,13 @@ service cloud.firestore {
     match /feedback/{feedbackId} {
       allow read, list: if isSignedIn();
 
+      // Users can post feedback if they are not banned or muted.
+      // This rule requires a 'get' call, which has billing implications.
       allow create: if isSignedIn() &&
                        !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isBanned &&
                        !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isMuted;
 
+      // Only admins can modify or delete feedback posts.
       allow update, delete: if isAdmin();
     }
 
@@ -60,6 +125,7 @@ service cloud.firestore {
     // Chat Messages
     match /chats/{chatId}/messages/{messageId} {
       // Only participants in the chat can read or write messages.
+      // The chatId is a composite of the two user UIDs, so we can check if the user's UID is part of the chat ID.
       allow read, write: if isSignedIn() && request.auth.uid in chatId.split('_');
 
       // Additional validation on message creation.
