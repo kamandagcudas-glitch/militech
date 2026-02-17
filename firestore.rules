@@ -18,20 +18,28 @@ service cloud.firestore {
 
     // ========== FRIENDSHIP MANAGEMENT FUNCTIONS ==========
 
-    // Checks if the only field being changed is 'friendRequests'
+    // Checks if the only field being changed is 'player.friendRequests'
     function isOnlyChangingFriendRequests() {
       return request.resource.data.diff(resource.data).affectedKeys.hasOnly(['player.friendRequests']);
     }
 
-    // Checks if the only field being changed is 'friendUsernames'
+    // Checks if the only field being changed is 'player.friendUsernames'
     function isOnlyChangingFriendUsernames() {
       return request.resource.data.diff(resource.data).affectedKeys.hasOnly(['player.friendUsernames']);
     }
 
     // This function allows a user (the sender) to add their username to another user's (the receiver's) friend request list.
     function isSendingFriendRequest() {
+        // Ensure the player object and friendRequests list exist before trying to access them
+        if (!('player' in resource.data) || !('player' in request.resource.data) || !('friendRequests' in request.resource.data.player)) {
+          return false;
+        }
+
+        // Get sender's username from their own document
         let senderUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
-        let existingRequests = resource.data.player.friendRequests;
+        
+        // Handle cases where lists might not exist on the document yet
+        let existingRequests = 'friendRequests' in resource.data.player ? resource.data.player.friendRequests : [];
         let incomingRequests = request.resource.data.player.friendRequests;
 
         // The change is valid if:
@@ -47,8 +55,14 @@ service cloud.firestore {
 
     // This function allows a user (the receiver) to add their username to the sender's friend list after accepting a request.
     function isAcceptingFriendship() {
+        // Ensure the player object and friendUsernames list exist
+        if (!('player' in resource.data) || !('player' in request.resource.data) || !('friendUsernames' in request.resource.data.player)) {
+          return false;
+        }
+
         let receiverUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
-        let existingFriends = resource.data.player.friendUsernames;
+
+        let existingFriends = 'friendUsernames' in resource.data.player ? resource.data.player.friendUsernames : [];
         let incomingFriends = request.resource.data.player.friendUsernames;
 
         // The change is valid if:
@@ -64,8 +78,14 @@ service cloud.firestore {
 
     // This function allows a user to remove their username from another user's friend list.
     function isRemovingFriendship() {
+        // Ensure the player object and friendUsernames list exist
+        if (!('player' in resource.data) || !('player' in request.resource.data) || !('friendUsernames' in request.resource.data.player)) {
+          return false;
+        }
+
         let removerUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
-        let existingFriends = resource.data.player.friendUsernames;
+        
+        let existingFriends = 'friendUsernames' in resource.data.player ? resource.data.player.friendUsernames : [];
         let incomingFriends = request.resource.data.player.friendUsernames;
 
         // The change is valid if:
