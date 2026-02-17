@@ -14,34 +14,52 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      // Admin status is determined by the authenticated user's email address.
       return isSignedIn() && request.auth.token.email == "kamandagcudas@gmail.com";
     }
     
-    // Validates that a user is updating their own profile without escalating privileges.
-    function isUpdatingOwnValidProfile() {
-        let incoming = request.resource.data.player;
-        let existing = resource.data.player;
+    // Validates incoming data for a NEW user profile
+    function isCreatingOwnValidProfile(userId) {
+      let incomingData = request.resource.data;
+      let incomingPlayer = incomingData.player;
+
+      // User must be creating their own document.
+      return isOwner(userId) &&
+             // The UID in the document must match the auth UID.
+             incomingPlayer.uid == request.auth.uid &&
+             // A user cannot make themselves a creator on signup unless they have the admin email.
+             incomingPlayer.isCreator == (request.auth.token.email == "kamandagcudas@gmail.com") &&
+             // A user cannot start off as banned or muted.
+             incomingPlayer.isBanned == false &&
+             incomingPlayer.isMuted == false;
+    }
+    
+    // Validates incoming data for an EXISTING user profile update
+    function isUpdatingOwnValidProfile(userId) {
+        let incomingPlayer = request.resource.data.player;
+        let existingPlayer = resource.data.player;
         
-        // Fields a user CANNOT change on their own profile
-        return incoming.uid == existing.uid &&
-               incoming.isBanned == existing.isBanned &&
-               incoming.isMuted == existing.isMuted &&
-               incoming.isCreator == existing.isCreator;
+        // A user can only update their own profile.
+        return isOwner(userId) &&
+               // These fields are immutable or admin-only.
+               incomingPlayer.uid == existingPlayer.uid &&
+               incomingPlayer.email == existingPlayer.email &&
+               incomingPlayer.isCreator == existingPlayer.isCreator &&
+               incomingPlayer.isBanned == existingPlayer.isBanned &&
+               incomingPlayer.isMuted == existingPlayer.isMuted;
     }
 
     // ========== COLLECTION RULES ==========
 
     // User profiles
     match /users/{userId} {
-      // Any signed-in user can read profiles for user directory & leaderboards.
+      // Any signed-in user can read profiles for user directory & leaderboards, which is required by the app's features.
       allow read, list: if isSignedIn();
       
-      // A user can create their own profile document.
-      allow create: if isOwner(userId);
+      // A user can create their own profile, but only with valid initial data.
+      allow create: if isCreatingOwnValidProfile(userId);
       
       // A user can update their own profile (with restrictions), or an admin can update any profile.
-      allow update: if (isOwner(userId) && isUpdatingOwnValidProfile()) || isAdmin();
+      allow update: if isUpdatingOwnValidProfile(userId) || isAdmin();
 
       // Only admins can delete user profiles.
       allow delete: if isAdmin();
