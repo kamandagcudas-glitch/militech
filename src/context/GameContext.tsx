@@ -178,6 +178,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isBanned: false,
         isMuted: false,
         profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+        specialBackground,
+        specialInsignia,
       };
 
       if (isCreator) {
@@ -262,22 +264,39 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string): Promise<{ success: boolean, message: string }> => {
-    const trimmedEmail = email.trim();
+    const trimmedEmail = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
         return { success: false, message: 'Invalid email format. Please use your email to log in.' };
     }
     try {
       const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
+      const user = userCredential.user;
+      
+      if (user.email === ADMIN_EMAIL) {
+        const adminDocRef = doc(firestore, 'admins', user.uid);
+        const adminDocSnap = await getDoc(adminDocRef);
+        if (!adminDocSnap.exists()) {
+          await setDoc(adminDocRef, { createdAt: new Date().toISOString() });
+        }
+      }
+
       // Log the login attempt
       await addDoc(collection(firestore, 'loginHistory'), {
-          userId: userCredential.user.uid,
-          username: userCredential.user.email, // Or fetch profile to get username
+          userId: user.uid,
+          username: user.email,
           timestamp: new Date().toISOString(),
           status: 'Success'
       });
       router.push('/dashboard');
       return { success: true, message: 'Login successful' };
     } catch (error: any) {
+      console.error("Login Error: ", error);
+      // Log failed login attempt
+      await addDoc(collection(firestore, 'loginHistory'), {
+          username: trimmedEmail,
+          timestamp: new Date().toISOString(),
+          status: 'Failed'
+      });
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
             return { success: false, message: 'Invalid email or password.' };
       }
@@ -294,10 +313,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
         const userDocRef = doc(firestore, 'users', user.uid);
         const userDocSnap = await getDoc(userDocRef);
 
+        const isCreator = user.email?.toLowerCase() === ADMIN_EMAIL;
+
         if (!userDocSnap.exists()) {
             // New user, create profile
-            const isAdminByEmail = user.email?.toLowerCase() === ADMIN_EMAIL;
-
             // Generate a unique username
             let username = user.email?.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || `user${Date.now()}`;
             let isUsernameTaken = true;
@@ -314,8 +333,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 }
             }
             
-            const isCreator = isAdminByEmail;
-
             let activeTitleId: string | null = null;
             let unlockedTitleIds: string[] = [];
             let badgeIds: string[] = [];
@@ -336,6 +353,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 isBanned: false,
                 isMuted: false,
                 profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+                specialBackground,
             };
 
             if (isCreator) {
@@ -388,6 +406,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 title: 'Account Created!',
                 description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
             });
+        } else if (isCreator) {
+            const adminDocRef = doc(firestore, 'admins', user.uid);
+            const adminDocSnap = await getDoc(adminDocRef);
+            if (!adminDocSnap.exists()) {
+                await setDoc(adminDocRef, { createdAt: new Date().toISOString() });
+            }
         }
 
         // Log login attempt
