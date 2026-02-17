@@ -44,7 +44,9 @@ service cloud.firestore {
      * Admin status is granted by the isCreator flag on their user profile.
      */
     function isAdmin() {
-      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isCreator == true;
+      return isSignedIn() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isCreator == true;
     }
 
     /*
@@ -141,7 +143,7 @@ service cloud.firestore {
      * @allow (write) Only admins can modify game/course content.
      */
     match /{collection}/{docId} {
-       allow read: if true;
+       allow read: if isSignedIn();
        allow write: if isAdmin();
     }
   }

@@ -40,6 +40,7 @@ import {
   where,
   getDocs,
   writeBatch,
+  getDoc,
 } from 'firebase/firestore';
 import {
   createUserWithEmailAndPassword,
@@ -47,11 +48,14 @@ import {
   signOut,
   sendEmailVerification,
   sendPasswordResetEmail,
-  updateEmail as updateAuthEmail
+  updateEmail as updateAuthEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
 
 
 const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
+const ADMIN_EMAIL = "kamandagcudas@gmail.com";
 const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
 const RAYTHEON_USERNAME = "Raytheon";
 
@@ -65,6 +69,7 @@ export interface GameContextType {
   logActivity: (activity: string, details: string) => void;
   register: (username: string, displayName: string, email: string, password: string) => Promise<{ success: boolean; message: string; }>;
   login: (email: string, password: string) => Promise<{ success: boolean, message: string }>;
+  signInWithGoogle: () => Promise<{ success: boolean; message: string; }>;
   logout: () => void;
   completeQuiz: (cocId: string, stepId: string, score: number) => 'pass' | 'retry' | 'reset';
   addAchievement: (achievementId: string) => void;
@@ -121,7 +126,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   
   const register = async (username: string, displayName: string, email: string, password: string): Promise<{ success: boolean; message: string; }> => {
     const trimmedUsername = username.trim();
-    const trimmedEmail = email.trim();
+    const trimmedEmail = email.trim().toLowerCase();
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
         return { success: false, message: 'Please enter a valid email address.' };
@@ -144,7 +149,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
       const user = userCredential.user;
 
-      const isCreator = trimmedUsername === CREATOR_USERNAME;
+      const isAdminByEmail = trimmedEmail === ADMIN_EMAIL;
+      const isCreatorByUsername = trimmedUsername === CREATOR_USERNAME;
+      const isCreator = isAdminByEmail || isCreatorByUsername;
+      
       const isCabbageThief = trimmedUsername === CABBAGE_THIEF_USERNAME;
       const isVergil = trimmedUsername.toLowerCase() === 'vergil';
       const isRaytheon = trimmedUsername === RAYTHEON_USERNAME;
@@ -191,12 +199,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         avatar: ``,
         email: trimmedEmail,
         emailVerified: user.emailVerified,
-        activeTitleId,
-        unlockedTitleIds,
-        badgeIds,
+        activeTitleId: activeTitleId,
+        unlockedTitleIds: unlockedTitleIds,
+        badgeIds: badgeIds,
         friendUsernames: [],
         friendRequests: [],
-        isCreator,
+        isCreator: isCreator,
         isBanned: false,
         isMuted: false,
         profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
@@ -204,6 +212,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         ...(specialBackground && { specialBackground }),
         ...(specialInsignia && { specialInsignia }),
       };
+      
       const newStats: PlayerStats = {
         coc1: { attempts: 0, resets: 0 },
         coc2: { attempts: 0, resets: 0 },
@@ -266,6 +275,118 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return { success: false, message: error.message || 'An unexpected error occurred.' };
     }
   };
+
+  const signInWithGoogle = async (): Promise<{ success: boolean; message: string; }> => {
+    const provider = new GoogleAuthProvider();
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        const userDocRef = doc(firestore, 'users', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (!userDocSnap.exists()) {
+            // New user, create profile
+            const isAdminByEmail = user.email?.toLowerCase() === ADMIN_EMAIL;
+
+            // Generate a unique username
+            let username = user.email?.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || `user${Date.now()}`;
+            let isUsernameTaken = true;
+            let attempt = 0;
+            while(isUsernameTaken) {
+                const finalUsername = attempt > 0 ? `${username}${attempt}` : username;
+                const usernameQuery = query(collection(firestore, 'users'), where('player.username', '==', finalUsername));
+                const usernameSnapshot = await getDocs(usernameQuery);
+                if (usernameSnapshot.empty) {
+                    username = finalUsername;
+                    isUsernameTaken = false;
+                } else {
+                    attempt++;
+                }
+            }
+            
+            const isCreator = isAdminByEmail;
+
+            let activeTitleId: string | null = null;
+            let unlockedTitleIds: string[] = [];
+            let badgeIds: string[] = [];
+            let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
+            let initialAchievements: Achievement[] = [];
+
+            if (isCreator) {
+                activeTitleId = 'creator';
+                unlockedTitleIds = ['creator'];
+                badgeIds = ['creator-badge', 'angelic-power-rune'];
+                specialBackground = 'angelic';
+                const achievement = achievementsData.find(a => a.id === 'creator');
+                if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+                const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
+                if(runeBadge) initialAchievements.push({ ...runeBadge, timestamp: new Date().toISOString() });
+            }
+
+            const newPlayer: Player = {
+                uid: user.uid,
+                username: username,
+                displayName: user.displayName || username,
+                avatar: user.photoURL || '',
+                email: user.email || '',
+                emailVerified: user.emailVerified,
+                activeTitleId: activeTitleId,
+                unlockedTitleIds: unlockedTitleIds,
+                badgeIds: badgeIds,
+                friendUsernames: [],
+                friendRequests: [],
+                isCreator: isCreator,
+                isBanned: false,
+                isMuted: false,
+                profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+                ...(specialBackground && { specialBackground }),
+            };
+            const newStats: PlayerStats = {
+                coc1: { attempts: 0, resets: 0 },
+                coc2: { attempts: 0, resets: 0 },
+                coc3: { attempts: 0, resets: 0 },
+                coc4: { attempts: 0, resets: 0 },
+                totalResets: 0,
+            };
+            const newProgress: PlayerProgress = {
+                coc1: { completedSteps: [], scores: {} },
+                coc2: { completedSteps: [], scores: {} },
+                coc3: { completedSteps: [], scores: {} },
+                coc4: { completedSteps: [], scores: {} },
+            };
+
+            const newUserAccount: UserAccount = {
+                player: newPlayer,
+                stats: newStats,
+                progress: newProgress,
+                achievements: initialAchievements,
+                files: [],
+            };
+
+            await setDoc(userDocRef, newUserAccount);
+            toast({
+                title: 'Account Created!',
+                description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
+            });
+        }
+
+        // Log login attempt
+        await addDoc(collection(firestore, 'loginHistory'), {
+            userId: user.uid,
+            username: user.email,
+            timestamp: new Date().toISOString(),
+            status: 'Success'
+        });
+        
+        router.push('/dashboard');
+        return { success: true, message: 'Login successful' };
+    } catch (error: any) {
+        console.error("Google Sign-In Error: ", error);
+        return { success: false, message: error.message || 'Failed to sign in with Google.' };
+    }
+  };
+
 
   const logout = async () => {
     try {
@@ -537,9 +658,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const updateEmail = async (newEmail: string): Promise<{ success: boolean; message: string }> => {
     if (!authUser || !userDocRef) return { success: false, message: "Not logged in." };
     
-    const trimmedEmail = newEmail.trim();
+    const trimmedEmail = newEmail.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(trimmedEmail)) {
-        return { success: false, message: 'Please enter a valid Gmail address.' };
+        return { success: false, message: 'Please enter a valid email address.' };
     }
     const emailQuery = query(collection(firestore, "users"), where("player.email", "==", trimmedEmail));
     const snapshot = await getDocs(emailQuery);
@@ -710,7 +831,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       loginHistory: loginHistory || [],
       activityLogs: activityLogs || [],
       feedbackPosts: feedbackPosts || [],
-      logActivity, register, login, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle
+      logActivity, register, login, signInWithGoogle, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle
     }}>
       {children}
     </GameContext.Provider>
