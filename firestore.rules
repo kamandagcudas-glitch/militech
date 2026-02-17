@@ -19,8 +19,19 @@ service cloud.firestore {
     // ========== COLLECTION RULES ==========
 
     match /users/{userId} {
+      // Allow users to create their own profile document upon registration.
       allow create: if request.auth.uid == userId;
-      allow read, update, delete: if isOwner(userId) || isAdmin();
+      
+      // Allow any signed-in user to read user profiles to enable social features.
+      // NOTE: This exposes all fields in user documents. For stricter security,
+      // consider separating public and private data into different collections.
+      allow list, read: if isSignedIn();
+      
+      // Allow users to update their own profile, or allow an admin to update any profile.
+      allow update: if isOwner(userId) || isAdmin();
+      
+      // Allow users to delete their own account, or allow an admin to delete any account.
+      allow delete: if isOwner(userId) || isAdmin();
     }
     
     // Public feedback board
@@ -61,4 +72,3 @@ service cloud.firestore {
     }
   }
 }
-
