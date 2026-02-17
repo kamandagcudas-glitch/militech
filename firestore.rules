@@ -1,0 +1,278 @@
+/*
+ * Firestore Security Rules for IT MAZING
+ *
+ * Core Philosophy
+ * This ruleset enforces a security model with two distinct zones: a private user-owned data zone and a public, read-only content zone. User data is strictly confined to the user who created it, while global application content (like lessons, quizzes, and badges) is publicly readable but can only be modified by administrators.
+ *
+ * Data Structure
+ * - /users/{userId}/: This is the private zone. All data specific to a user, such as their profile, quiz results, and achievements, is nested under their unique user ID. Access is strictly controlled by matching the requesting user's UID with the {userId} in the path.
+ * - Top-Level Collections (e.g., /lessons, /quizzes, /badges): This is the public zone. These collections store global content that is shared across all users. They are publicly readable to ensure the app functions for all users, but write access is restricted to administrators.
+ * - /admins/{uid}: A special, non-public collection used for role-based access control. The existence of a document for a user's UID in this collection grants them administrative privileges.
+ *
+ * Key Security Decisions
+ * - Strict Ownership: A user can ONLY read or write data within their own /users/{userId} data tree. They cannot see or modify any other user's data.
+ * - No User Listing: Listing the top-level /users collection is explicitly disallowed to protect user privacy and prevent enumeration attacks.
+ * - Admin-Managed Content: All global game and educational content is managed by administrators. This prevents users from tampering with course materials, badges, or game rules. The admin role is determined by checking for a document's existence in the /admins collection, which is a robust and secure pattern that avoids mutable role fields on a user's profile.
+ * - Flexible Prototyping: In line with the prototyping philosophy, these rules focus on *authorization* (who can access what) rather than strict *data validation* (the exact shape of the data). This allows for rapid iteration on the application's features without needing to update security rules for every schema change. Validation is limited to fields essential for maintaining relational integrity and ownership.
+ *
+ * Denormalization for Authorization
+ * To ensure rules are fast and simple, authorization data is denormalized. For example, a document in /users/{userId}/quizResults/{quizResultId} contains its own userId field. This allows rules to verify ownership directly from the document itself without needing slow and costly get() calls to the parent user profile.
+ *
+ * Structural Segregation
+ * The data model is segregated by security requirements. Private, user-specific data is structurally separated from public, global data by placing them in different collection paths. This makes rules simpler and queries more secure and performant, as a query for a user's private data can never accidentally include public data, and vice-versa.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions to improve readability and reuse of logic.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /*
+     * Checks if the currently authenticated user is an administrator.
+     * Admin status is granted by the existence of a document in the /admins collection
+     * with an ID matching the user's UID. This is a secure 'Existence over Content' pattern.
+     */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    /*
+     * Ensures a new user profile document contains a `id` field that matches the user's auth UID.
+     * This enforces relational integrity between the auth system and Firestore at creation.
+     */
+    function createsOwnProfile(userId) {
+      return isOwner(userId) && request.resource.data.id == userId;
+    }
+
+    /*
+     * Ensures the `id` field of a user profile is immutable upon update.
+     * This prevents re-assigning a profile to a different user.
+     */
+    function updatesOwnProfile() {
+      return request.resource.data.id == resource.data.id;
+    }
+
+    /*
+     * Ensures a new child document (e.g., quiz result) contains a `userId` field
+     * that matches the user's auth UID, enforcing the ownership link.
+     */
+    function createsOwnChildDocument(userId) {
+      return isOwner(userId) && request.resource.data.userId == userId;
+    }
+
+    /*
+     * Ensures the `userId` field of a child document is immutable upon update.
+     * This prevents re-assigning the document to another user.
+     */
+    function updatesOwnChildDocument() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+    /*
+     * @description Rules for a user's own profile document.
+     * @path /users/{userId}
+     * @allow (get) A user can read their own profile. auth.uid: "user_abc", path: /users/user_abc
+     * @deny (list) A user cannot list all other user profiles. auth.uid: "user_abc", path: /users
+     * @deny (update) A user cannot update another user's profile. auth.uid: "user_abc", path: /users/user_xyz
+     * @principle Restricts access to a user's own data tree and prevents user enumeration.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if createsOwnProfile(userId);
+      allow update: if isExistingOwner(userId) && updatesOwnProfile();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /*
+     * @description Rules for a user's achievement log subcollection.
+     * @path /users/{userId}/achievementLogs/{achievementLogId}
+     * @allow (create) A user can create a new achievement log for themselves. auth.uid: "user_abc", path: /users/user_abc/achievementLogs/log_123
+     * @deny (get) A user cannot read achievement logs belonging to another user. auth.uid: "user_abc", path: /users/user_xyz/achievementLogs/log_123
+     * @principle Enforces strict data ownership within a user's private subcollection.
+     */
+    match /users/{userId}/achievementLogs/{achievementLogId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if createsOwnChildDocument(userId);
+      allow update: if isExistingOwner(userId) && updatesOwnChildDocument();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /*
+     * @description Rules for a user's quiz result subcollection.
+     * @path /users/{userId}/quizResults/{quizResultId}
+     * @allow (create) A user can create a new quiz result for themselves. auth.uid: "user_abc", path: /users/user_abc/quizResults/result_123
+     * @deny (list) A user cannot list the quiz results of another user. auth.uid: "user_abc", path: /users/user_xyz/quizResults
+     * @principle Enforces strict data ownership for sensitive progression data.
+     */
+    match /users/{userId}/quizResults/{quizResultId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if createsOwnChildDocument(userId);
+      allow update: if isExistingOwner(userId) && updatesOwnChildDocument();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /*
+     * @description Rules for the collection of game badges. Publicly readable, admin-only writes.
+     * @path /badges/{badgeId}
+     * @allow (get) Any user, signed-in or not, can read badge definitions. auth: null, path: /badges/badge_123
+     * @deny (create) A regular user cannot create a new badge. auth.uid: "user_abc", path: /badges/new_badge
+     * @principle Segregates public read-only data from private data and protects it with role-based write access.
+     */
+    match /badges/{badgeId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for the collection of unlockable titles. Publicly readable, admin-only writes.
+     * @path /titles/{titleId}
+     * @allow (list) Any user, signed-in or not, can list all title definitions. auth: null, path: /titles
+     * @deny (update) A regular user cannot modify an existing title. auth.uid: "user_abc", path: /titles/title_123
+     * @principle Segregates public read-only data from private data and protects it with role-based write access.
+     */
+    match /titles/{titleId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for the Courses of Competency (COCs). Publicly readable, admin-only writes.
+     * @path /coursesOfCompetency/{cocId}
+     * @allow (get) Any user, signed-in or not, can read course definitions. auth: null, path: /coursesOfCompetency/COC1
+     * @deny (delete) A regular user cannot delete a course. auth.uid: "user_abc", path: /coursesOfCompetency/COC1
+     * @principle Segregates public read-only data from private data and protects it with role-based write access.
+     */
+    match /coursesOfCompetency/{cocId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for individual learning steps within a COC. Publicly readable, admin-only writes.
+     * @path /coursesOfCompetency/{cocId}/steps/{stepId}
+     * @allow (list) Any user, signed-in or not, can list all steps within a course. auth: null, path: /coursesOfCompetency/COC1/steps
+     * @deny (create) A regular user cannot add a new step to a course. auth.uid: "user_abc", path: /coursesOfCompetency/COC1/steps/new_step
+     * @principle Secures nested public content with role-based write access.
+     */
+    match /coursesOfCompetency/{cocId}/steps/{stepId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for lesson content. Publicly readable, admin-only writes.
+     * @path /lessons/{lessonId}
+     * @allow (get) Any user can read the content of a lesson. auth: null, path: /lessons/lesson_123
+     * @deny (update) A regular user cannot change lesson content. auth.uid: "user_abc", path: /lessons/lesson_123
+     * @principle Segregates public read-only data from private data and protects it with role-based write access.
+     */
+    match /lessons/{lessonId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for quiz definitions. Publicly readable, admin-only writes.
+     * @path /quizzes/{quizId}
+     * @allow (get) Any user can read the structure of a quiz. auth: null, path: /quizzes/quiz_123
+     * @deny (delete) A regular user cannot delete a quiz. auth.uid: "user_abc", path: /quizzes/quiz_123
+     * @principle Segregates public read-only data from private data and protects it with role-based write access.
+     */
+    match /quizzes/{quizId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for quiz questions. Publicly readable, admin-only writes.
+     * @path /questions/{questionId}
+     * @allow (list) Any user can list all available questions. auth: null, path: /questions
+     * @deny (create) A regular user cannot create new questions. auth.uid: "user_abc", path: /questions/new_question
+     * @principle Segregates public read-only data from private data and protects it with role-based write access.
+     */
+    match /questions/{questionId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for the '4 Pics 1 Word' game definitions. Publicly readable, admin-only writes.
+     * @path /fourPicsOneWordGames/{gameId}
+     * @allow (get) Any user can read the game definition. auth: null, path: /fourPicsOneWordGames/game_1
+     * @deny (update) A regular user cannot modify a game definition. auth.uid: "user_abc", path: /fourPicsOneWordGames/game_1
+     * @principle Segregates public read-only data from private data and protects it with role-based write access.
+     */
+    match /fourPicsOneWordGames/{gameId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for the rounds within a '4 Pics 1 Word' game. Publicly readable, admin-only writes.
+     * @path /fourPicsOneWordGames/{gameId}/rounds/{roundId}
+     * @allow (list) Any user can list the rounds for a specific game. auth: null, path: /fourPicsOneWordGames/game_1/rounds
+     * @deny (create) A regular user cannot add new rounds to a game. auth.uid: "user_abc", path: /fourPicsOneWordGames/game_1/rounds/new_round
+     * @principle Secures nested public content with role-based write access.
+     */
+    match /fourPicsOneWordGames/{gameId}/rounds/{roundId} {
+      allow get: if true;
+      allow list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /*
+     * @description Rules for the admin role collection. This collection is used as a lookup for the isAdmin() function.
+     * @path /admins/{uid}
+     * @allow (any) No client-side operations are permitted.
+     * @deny (any) All direct reads and writes are blocked for security.
+     * @principle This collection follows the 'Existence over Content' pattern and should only be managed by a trusted server environment (e.g., Cloud Functions with the Admin SDK).
+     */
+    match /admins/{uid} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

@@ -1,0 +1,796 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile, including their identity, learning progression, and gamified statistics. This replaces `localStorage` user data.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity, corresponding to the Firebase Authentication User ID (UID)."
+        },
+        "username": {
+          "type": "string",
+          "description": "The user-chosen username for display within the application."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address, primarily used for Firebase Authentication.",
+          "format": "email"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "URL or local path to the user's selected avatar image."
+        },
+        "activeTitleId": {
+          "type": "string",
+          "description": "Reference to the ID of the Title entity currently selected and displayed by the user. (Relationship: Title 1:N UserProfile)"
+        },
+        "earnedBadgeIds": {
+          "type": "array",
+          "description": "An array of IDs referencing Badge entities that the user has earned. (Relationship: Badge N:N UserProfile)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unlockedTitleIds": {
+          "type": "array",
+          "description": "An array of IDs referencing Title entities that the user has unlocked. (Relationship: Title N:N UserProfile)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "currentCocId": {
+          "type": "string",
+          "description": "Reference to the ID of the CourseOfCompetency entity the user is currently working through. (Relationship: CourseOfCompetency 1:N UserProfile)"
+        },
+        "currentStepId": {
+          "type": "string",
+          "description": "Reference to the ID of the Step entity the user is currently attempting within their current COC. (Relationship: Step 1:N UserProfile)"
+        },
+        "totalQuizAttempts": {
+          "type": "array",
+          "description": "A list of objects, each tracking the total attempts for a specific quiz by its ID.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "totalFullResets": {
+          "type": "number",
+          "description": "The cumulative count of times the user has been reset to the first step of COC 1 due to progression rules (e.g., low quiz scores).",
+          "format": "integer"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user's profile was initially created.",
+          "format": "date-time"
+        },
+        "role": {
+          "type": "string",
+          "description": "The access role assigned to the user, such as 'user' or 'admin'.",
+          "format": "enum"
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "email",
+        "avatar",
+        "activeTitleId",
+        "earnedBadgeIds",
+        "unlockedTitleIds",
+        "currentCocId",
+        "currentStepId",
+        "totalQuizAttempts",
+        "totalFullResets",
+        "createdAt",
+        "role"
+      ]
+    },
+    "AchievementLog": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AchievementLog",
+      "type": "object",
+      "description": "Records individual instances of badges or titles earned by a user, including when they were achieved and their significance.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AchievementLog entry."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the ID of the UserProfile who earned this achievement. (Relationship: UserProfile 1:N AchievementLog)"
+        },
+        "type": {
+          "type": "string",
+          "description": "Specifies whether the achievement is a 'badge' or a 'title'.",
+          "format": "enum"
+        },
+        "entityId": {
+          "type": "string",
+          "description": "Reference to the ID of the Badge or Title entity that was earned. (Relationship: Badge/Title 1:N AchievementLog)"
+        },
+        "entityName": {
+          "type": "string",
+          "description": "The display name of the earned badge or title, for quick display without needing to lookup the entity."
+        },
+        "earnedAt": {
+          "type": "string",
+          "description": "Timestamp indicating the exact date and time the achievement was earned.",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string",
+          "description": "A contextual description of the achievement, e.g., 'Achieved Perfect Score on COC 1 Step 2 Quiz'."
+        },
+        "isSpecialAchievement": {
+          "type": "boolean",
+          "description": "Indicates if this recorded achievement is one of the special, highlightable achievements (e.g., 'Perfect Score', 'The Greatest Reset')."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "type",
+        "entityId",
+        "entityName",
+        "earnedAt",
+        "description",
+        "isSpecialAchievement"
+      ]
+    },
+    "Badge": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Badge",
+      "type": "object",
+      "description": "Defines the characteristics of a collectible badge that users can earn within the game.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Badge entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The official name of the badge (e.g., 'Perfect Score')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed explanation of how to earn the badge or what it represents."
+        },
+        "iconUrl": {
+          "type": "string",
+          "description": "URL or local path to the graphic icon representing the badge."
+        },
+        "isSpecial": {
+          "type": "boolean",
+          "description": "Indicates if this badge is a special or hidden achievement, often with unique unlock conditions (e.g., 'Creator' badge)."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "iconUrl",
+        "isSpecial"
+      ]
+    },
+    "Title": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Title",
+      "type": "object",
+      "description": "Defines the characteristics of a title that users can unlock and display on their profile.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Title entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The official name of the title (e.g., 'The Greatest Reset', 'CREATOR')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed explanation of the title and its prestige or meaning."
+        },
+        "condition": {
+          "type": "string",
+          "description": "The specific conditions or achievements required for a user to unlock this title."
+        },
+        "isSpecial": {
+          "type": "boolean",
+          "description": "Indicates if this title is a special or hidden achievement with unique unlock conditions."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "condition",
+        "isSpecial"
+      ]
+    },
+    "CourseOfCompetency": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CourseOfCompetency",
+      "type": "object",
+      "description": "Represents a major learning module (COC) in the IT MAZING system, structured as a sequence of steps.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CourseOfCompetency entity (e.g., 'COC1', 'COC2')."
+        },
+        "name": {
+          "type": "string",
+          "description": "The display name of the COC (e.g., 'COC 1: PC Hardware Basics')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief summary of the primary topics and skills covered in this COC."
+        },
+        "stepIds": {
+          "type": "array",
+          "description": "An ordered array of IDs referencing the Step entities that make up this COC. (Relationship: Step N:1 CourseOfCompetency)",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "stepIds"
+      ]
+    },
+    "Step": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Step",
+      "type": "object",
+      "description": "Represents a single granular learning unit within a Course of Competency, consisting of a lesson and an associated quiz.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Step entity."
+        },
+        "cocId": {
+          "type": "string",
+          "description": "Reference to the ID of the CourseOfCompetency entity this step belongs to. (Relationship: CourseOfCompetency 1:N Step)"
+        },
+        "stepNumber": {
+          "type": "number",
+          "description": "The sequential number of this step within its respective COC.",
+          "format": "integer",
+          "items": {
+            "type": "number"
+          }
+        },
+        "title": {
+          "type": "string",
+          "description": "The concise title or main topic of this specific learning step."
+        },
+        "lessonId": {
+          "type": "string",
+          "description": "Reference to the ID of the Lesson entity that provides instructional content for this step. (Relationship: Lesson 1:1 Step)"
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to the ID of the Quiz entity used to assess understanding for this step. (Relationship: Quiz 1:1 Step)"
+        }
+      },
+      "required": [
+        "id",
+        "cocId",
+        "stepNumber",
+        "title",
+        "lessonId",
+        "quizId"
+      ]
+    },
+    "Lesson": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Lesson",
+      "type": "object",
+      "description": "Contains the detailed educational content, including text and images, for a specific learning step.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Lesson entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the lesson."
+        },
+        "textContent": {
+          "type": "string",
+          "description": "The primary textual content of the lesson, which can include formatted text or simple HTML."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL or local path to an illustrative image that accompanies the lesson content."
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "textContent",
+        "imageUrl"
+      ]
+    },
+    "Quiz": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Quiz",
+      "type": "object",
+      "description": "Defines an official assessment (quiz) associated with a learning step, including its questions and progression rules.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Quiz entity."
+        },
+        "stepId": {
+          "type": "string",
+          "description": "Reference to the ID of the Step entity that this quiz is designed to assess. (Relationship: Step 1:1 Quiz)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The display title of the quiz (e.g., 'COC 1 Step 1 Quiz')."
+        },
+        "questionIds": {
+          "type": "array",
+          "description": "An array of IDs referencing the Question entities that comprise this quiz. (Relationship: Question N:N Quiz)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "passingScore": {
+          "type": "number",
+          "description": "The minimum score (number of correct answers) required to pass this quiz.",
+          "format": "integer",
+          "items": {
+            "type": "number"
+          }
+        },
+        "totalQuestions": {
+          "type": "number",
+          "description": "The total number of questions presented in this quiz.",
+          "format": "integer",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "stepId",
+        "title",
+        "questionIds",
+        "passingScore",
+        "totalQuestions"
+      ]
+    },
+    "Question": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Question",
+      "type": "object",
+      "description": "Defines a single multiple-choice question, including its text, possible answers, the correct answer, and an explanation.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Question entity."
+        },
+        "questionText": {
+          "type": "string",
+          "description": "The main text or prompt of the question."
+        },
+        "options": {
+          "type": "array",
+          "description": "An array of strings, where each string is a possible answer choice for the question.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "correctAnswer": {
+          "type": "string",
+          "description": "The string value of the correct answer from the 'options' array."
+        },
+        "explanation": {
+          "type": "string",
+          "description": "An explanatory text detailing why the correct answer is correct, used in practice mode."
+        },
+        "relatedCocId": {
+          "type": "string",
+          "description": "Reference to the ID of the CourseOfCompetency entity that this question is broadly associated with. (Relationship: CourseOfCompetency 1:N Question)"
+        },
+        "relatedTopic": {
+          "type": "string",
+          "description": "A specific keyword or phrase describing the topic of the question (e.g., 'Dismantle PC', 'Network Configuration')."
+        }
+      },
+      "required": [
+        "id",
+        "questionText",
+        "options",
+        "correctAnswer",
+        "explanation",
+        "relatedCocId",
+        "relatedTopic"
+      ]
+    },
+    "QuizResult": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "QuizResult",
+      "type": "object",
+      "description": "Records the outcome and details of a single attempt a user makes on an official quiz. This is crucial for tracking progression and achievements.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the QuizResult entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the ID of the UserProfile who submitted this quiz attempt. (Relationship: UserProfile 1:N QuizResult)"
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to the ID of the Quiz entity that was attempted. (Relationship: Quiz 1:N QuizResult)"
+        },
+        "cocId": {
+          "type": "string",
+          "description": "Reference to the ID of the CourseOfCompetency entity associated with the quiz. (Relationship: CourseOfCompetency 1:N QuizResult)"
+        },
+        "stepId": {
+          "type": "string",
+          "description": "Reference to the ID of the Step entity associated with the quiz. (Relationship: Step 1:N QuizResult)"
+        },
+        "score": {
+          "type": "number",
+          "description": "The numeric score achieved by the user in this specific quiz attempt.",
+          "format": "integer",
+          "items": {
+            "type": "number"
+          }
+        },
+        "passed": {
+          "type": "boolean",
+          "description": "A boolean indicating whether the user achieved the passing score for this quiz in this attempt."
+        },
+        "attemptedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when this particular quiz attempt was completed.",
+          "format": "date-time"
+        },
+        "outcome": {
+          "type": "string",
+          "description": "The progression outcome resulting from this quiz attempt (e.g., 'PASS', 'RETRY', 'RESET').",
+          "format": "enum"
+        },
+        "wasPerfectScore": {
+          "type": "boolean",
+          "description": "A boolean indicating if the user achieved a perfect score (100%) on this quiz attempt."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "quizId",
+        "cocId",
+        "stepId",
+        "score",
+        "passed",
+        "attemptedAt",
+        "outcome",
+        "wasPerfectScore"
+      ]
+    },
+    "FourPicsOneWordGame": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FourPicsOneWordGame",
+      "type": "object",
+      "description": "Defines the '4 Pics 1 Word' mini-game, including its structure, rounds, and the badge awarded upon completion.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the FourPicsOneWordGame entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The display name of the mini-game (e.g., '4 Pics 1 Word Challenge')."
+        },
+        "roundIds": {
+          "type": "array",
+          "description": "An ordered array of IDs referencing the MiniGameRound entities that constitute this game. (Relationship: MiniGameRound N:1 FourPicsOneWordGame)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "completionBadgeId": {
+          "type": "string",
+          "description": "Reference to the ID of the Badge entity awarded to a user upon successful completion of this mini-game. (Relationship: Badge 1:1 FourPicsOneWordGame)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "roundIds",
+        "completionBadgeId"
+      ]
+    },
+    "MiniGameRound": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MiniGameRound",
+      "type": "object",
+      "description": "Defines the content for a single round within the '4 Pics 1 Word' mini-game, including its images, correct answer, and an optional hint.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the MiniGameRound entity."
+        },
+        "gameId": {
+          "type": "string",
+          "description": "Reference to the ID of the FourPicsOneWordGame entity this round belongs to. (Relationship: FourPicsOneWordGame 1:N MiniGameRound)"
+        },
+        "imageUrls": {
+          "type": "array",
+          "description": "An array of four URLs or local paths to the images displayed for this round.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "correctAnswer": {
+          "type": "string",
+          "description": "The single word that is the correct solution for this round's puzzle."
+        },
+        "hint": {
+          "type": "string",
+          "description": "An optional text hint to assist players in guessing the correct answer."
+        },
+        "topic": {
+          "type": "string",
+          "description": "A categorization tag indicating the subject matter this round relates to (e.g., 'Networking', 'Hardware')."
+        }
+      },
+      "required": [
+        "id",
+        "gameId",
+        "imageUrls",
+        "correctAnswer",
+        "topic"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores a user's profile data, including identity, progress, and gamified statistics. Authorization is path-based; 'request.auth.uid' must match 'userId'. This replaces localStorage-based user data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Authentication UID of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/achievementLogs/{achievementLogId}",
+        "definition": {
+          "entityName": "AchievementLog",
+          "schema": {
+            "$ref": "#/backend/entities/AchievementLog"
+          },
+          "description": "Stores individual achievement records (badges, titles) for a specific user. Includes denormalized 'userId' for robust authorization independence and simple rule validation.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Authentication UID of the user who earned the achievement."
+            },
+            {
+              "name": "achievementLogId",
+              "description": "The unique identifier for an achievement log entry."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/quizResults/{quizResultId}",
+        "definition": {
+          "entityName": "QuizResult",
+          "schema": {
+            "$ref": "#/backend/entities/QuizResult"
+          },
+          "description": "Stores individual quiz attempt results for a specific user. Crucial for tracking progression. Includes denormalized 'userId' for robust authorization independence and simple rule validation.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Authentication UID of the user who attempted the quiz."
+            },
+            {
+              "name": "quizResultId",
+              "description": "The unique identifier for a quiz result entry."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/badges/{badgeId}",
+        "definition": {
+          "entityName": "Badge",
+          "schema": {
+            "$ref": "#/backend/entities/Badge"
+          },
+          "description": "Stores definitions of all collectible badges available in the game. This is public, read-only data for all users, with write access restricted to administrators.",
+          "params": [
+            {
+              "name": "badgeId",
+              "description": "The unique identifier for the badge definition."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/titles/{titleId}",
+        "definition": {
+          "entityName": "Title",
+          "schema": {
+            "$ref": "#/backend/entities/Title"
+          },
+          "description": "Stores definitions of all unlockable titles available to users. This is public, read-only data for all users, with write access restricted to administrators.",
+          "params": [
+            {
+              "name": "titleId",
+              "description": "The unique identifier for the title definition."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/coursesOfCompetency/{cocId}",
+        "definition": {
+          "entityName": "CourseOfCompetency",
+          "schema": {
+            "$ref": "#/backend/entities/CourseOfCompetency"
+          },
+          "description": "Stores definitions of all major learning modules (COCs 1-4). This is public, read-only data for all users, with write access restricted to administrators.",
+          "params": [
+            {
+              "name": "cocId",
+              "description": "The unique identifier for the Course of Competency (e.g., 'COC1')."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/coursesOfCompetency/{cocId}/steps/{stepId}",
+        "definition": {
+          "entityName": "Step",
+          "schema": {
+            "$ref": "#/backend/entities/Step"
+          },
+          "description": "Stores definitions of individual learning steps within each Course of Competency. Publicly readable, admin-writeable. Includes denormalized 'cocId' for context and efficient queries.",
+          "params": [
+            {
+              "name": "cocId",
+              "description": "The unique identifier for the parent Course of Competency."
+            },
+            {
+              "name": "stepId",
+              "description": "The unique identifier for the step within the COC."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/lessons/{lessonId}",
+        "definition": {
+          "entityName": "Lesson",
+          "schema": {
+            "$ref": "#/backend/entities/Lesson"
+          },
+          "description": "Stores detailed educational content for lessons. This is public, read-only data for all users, with write access restricted to administrators. A flat structure allows for easier global caching.",
+          "params": [
+            {
+              "name": "lessonId",
+              "description": "The unique identifier for the lesson content."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quizzes/{quizId}",
+        "definition": {
+          "entityName": "Quiz",
+          "schema": {
+            "$ref": "#/backend/entities/Quiz"
+          },
+          "description": "Stores definitions of official quizzes associated with learning steps. This is public, read-only data for all users, with write access restricted to administrators. A flat structure allows for easier global caching.",
+          "params": [
+            {
+              "name": "quizId",
+              "description": "The unique identifier for the quiz."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/questions/{questionId}",
+        "definition": {
+          "entityName": "Question",
+          "schema": {
+            "$ref": "#/backend/entities/Question"
+          },
+          "description": "Stores definitions of all multiple-choice questions used in quizzes. This is public, read-only data for all users, with write access restricted to administrators. A flat structure supports reusability across quizzes and global caching.",
+          "params": [
+            {
+              "name": "questionId",
+              "description": "The unique identifier for the question."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/fourPicsOneWordGames/{gameId}",
+        "definition": {
+          "entityName": "FourPicsOneWordGame",
+          "schema": {
+            "$ref": "#/backend/entities/FourPicsOneWordGame"
+          },
+          "description": "Stores definitions of the '4 Pics 1 Word' mini-game. This is public, read-only data for all users, with write access restricted to administrators.",
+          "params": [
+            {
+              "name": "gameId",
+              "description": "The unique identifier for the '4 Pics 1 Word' game."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/fourPicsOneWordGames/{gameId}/rounds/{roundId}",
+        "definition": {
+          "entityName": "MiniGameRound",
+          "schema": {
+            "$ref": "#/backend/entities/MiniGameRound"
+          },
+          "description": "Stores definitions of individual rounds within the '4 Pics 1 Word' mini-game. Publicly readable, admin-writeable. Includes denormalized 'gameId' for context and efficient queries.",
+          "params": [
+            {
+              "name": "gameId",
+              "description": "The unique identifier for the parent '4 Pics 1 Word' game."
+            },
+            {
+              "name": "roundId",
+              "description": "The unique identifier for the round within the game."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/admins/{uid}",
+        "definition": {
+          "entityName": "AdminRole",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Dedicated collection to store UIDs of users with administrative privileges. The existence of a document at `/admins/{uid}` grants admin status. This collection is for authorization checks only, with no public read/write access. This follows the 'Existence over Content' principle for DBAC.",
+          "params": [
+            {
+              "name": "uid",
+              "description": "The Firebase Authentication UID of an administrator."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure for 'IT MAZING' prioritizes robust security, scalability, and ease of debugging by strictly adhering to the core design principles, especially Authorization Independence and Structural Segregation.\n\n**Authorization Independence via Denormalization:**\n\n1.  **User-Owned Data:** All data directly associated with a specific user's progression or profile (UserProfile, AchievementLog, QuizResult) is stored within a hierarchical path `/users/{userId}/...`. The `userId` path parameter directly corresponds to `request.auth.uid`, ensuring that authorization for these documents is determined solely by the path and the authenticated user's ID. For subcollections like `/users/{userId}/achievementLogs` and `/users/{userId}/quizResults`, the `userId` field is explicitly included (denormalized) within each `AchievementLog` and `QuizResult` document. This allows security rules to validate `request.auth.uid == userId` and `resource.data.userId == request.auth.uid` without requiring `get()` calls to a parent `UserProfile` document, thus maintaining atomic operations and preventing complex, hard-to-debug rule dependencies.\n\n2.  **Global Static Data:** Core curriculum content (Badges, Titles, CoursesOfCompetency, Steps, Lessons, Quizzes, Questions, FourPicsOneWordGame, MiniGameRound) is stored in top-level, globally accessible collections (e.g., `/badges/{badgeId}`, `/coursesOfCompetency/{cocId}/steps/{stepId}`). These collections are designed to be publicly readable by all users, eliminating the need for complex authorization checks. Subcollection documents (e.g., MiniGameRound within FourPicsOneWordGame, or Steps within CoursesOfCompetency) include a denormalized reference to their parent's ID (e.g., `gameId` in `MiniGameRound`, `cocId` in `Step`). This is primarily for data integrity and querying context, not for authorization, as the entire structure is read-only for public access.\n\n3.  **Admin Roles:** To manage administrative permissions without relying on `UserProfile` attributes for critical security checks, a dedicated top-level collection `/admins/{uid}` is introduced. The *existence* of a document at `/admins/{request.auth.uid}` grants administrative privileges. This pattern adheres to the 'Existence over Content' principle, allowing security rules to check `exists(/databases/$(database)/documents/admins/$(request.auth.uid))` without needing to `get()` the user's profile document or rely on potentially mutable fields within it for authorization. This is a robust form of authorization independence for meta-authorization roles.\n\n**QAPs (Rules are not Filters):**\n\n1.  **Structural Segregation:** The application's data is segregated based on its security posture. User-specific data is isolated under `/users/{userId}`, where `list` operations are implicitly secured by the `userId` in the path matching `request.auth.uid`. This ensures that a user can only list their own data, fulfilling QAP by not requiring the rules to filter results. Similarly, all global curriculum data is placed in collections that are entirely publicly readable. A `list` operation on `/badges` or `/lessons` will return all documents, which is the intended public access, again requiring no server-side filtering by rules.\n\n2.  **Explicit Intent:** The collection names and document fields clearly express their purpose and access requirements. For instance, `/users/{userId}/achievementLogs` explicitly conveys that these are logs owned by `{userId}`, making it clear that rules for this path should enforce `userId == request.auth.uid`. This clarity simplifies rule writing and debugging.\n\nBy implementing these strategies, the Firestore structure enables simple, robust security rules that are easy to understand, debug, and maintain, while fully supporting the application's features and scalability requirements. All client-side data persistence for offline functionality will leverage Firebase's built-in offline capabilities, with Firestore serving as the single source of truth."
+  }
+}
