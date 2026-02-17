@@ -342,6 +342,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
             let unlockedTitleIds: string[] = [];
             let badgeIds: string[] = [];
             let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
+            let specialInsignia: 'black-flame' | undefined = undefined;
             let initialAchievements: Achievement[] = [];
 
             const playerObject: Partial<Player> = {
@@ -359,6 +360,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 isMuted: false,
                 profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
                 specialBackground,
+                specialInsignia,
             };
 
             if (isCreator) {
@@ -425,6 +427,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
         router.push('/dashboard');
         return { success: true, message: 'Login successful' };
     } catch (error: any) {
+        if (error.code === 'auth/popup-closed-by-user') {
+            return { success: false, message: 'Sign-in cancelled by user.' };
+        }
         console.error("Google Sign-In Error: ", error);
         return { success: false, message: error.message || 'Failed to sign in with Google.' };
     }

@@ -46,6 +46,10 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     const result = await game.signInWithGoogle();
     if (!result.success) {
+       if (result.message === 'Sign-in cancelled by user.') {
+          // Don't show an error toast if the user cancelled
+          return;
+      }
       toast({
         variant: "destructive",
         title: "Google Sign-In Failed",
