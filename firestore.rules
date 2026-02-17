@@ -13,6 +13,8 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    // Admin status is determined SOLELY by the user's email address.
+    // This is the single source of truth for admin privileges.
     function isAdmin() {
       return isSignedIn() && request.auth.token.email == "kamandagcudas@gmail.com";
     }
@@ -22,19 +24,17 @@ service cloud.firestore {
       let incomingData = request.resource.data;
       let incomingPlayer = incomingData.player;
 
-      // User must be creating their own document, and cannot start off banned or muted.
-      // They also cannot grant themselves creator status unless they are the admin.
+      // User must be creating their own document.
+      // They cannot grant themselves creator status unless they are the admin.
       return isOwner(userId) &&
-             incomingPlayer.isBanned == false &&
-             incomingPlayer.isMuted == false &&
-             incomingPlayer.isCreator == (request.auth.token.email == "kamandagcudas@gmail.com");
+             incomingPlayer.isCreator == isAdmin();
     }
 
     // ========== COLLECTION RULES ==========
 
     // User profiles
     match /users/{userId} {
-      // Any signed-in user can read profiles for user directory & leaderboards.
+      // Any signed-in user can read/list profiles for user directory & leaderboards.
       allow read, list: if isSignedIn();
       
       // A user can create their own profile, but only with valid initial data.
@@ -60,8 +60,10 @@ service cloud.firestore {
       // Any signed-in user can read feedback posts.
       allow read, list: if isSignedIn();
 
-      // Any signed-in user can post feedback.
-      allow create: if isSignedIn();
+      // Any signed-in user can post feedback, unless they are banned or muted.
+      allow create: if isSignedIn() &&
+                       !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isBanned &&
+                       !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isMuted;
 
       // Only admins can modify or delete feedback posts.
       allow update, delete: if isAdmin();

@@ -110,7 +110,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const userDocRef = useMemoFirebase(() => authUser ? doc(firestore, 'users', authUser.uid) : null, [firestore, authUser]);
   const { data: currentUser, isLoading: isProfileLoading } = useDoc<UserAccount>(userDocRef);
   
-  const isAdmin = useMemo(() => currentUser?.player.email === ADMIN_EMAIL, [currentUser]);
+  const isAdmin = useMemo(() => authUser?.email === ADMIN_EMAIL, [authUser]);
 
   const accountsQuery = useMemoFirebase(() => authUser ? query(collection(firestore, 'users')) : null, [firestore, authUser]);
   const { data: accounts, isLoading: areAccountsLoading } = useCollection<UserAccount>(accountsQuery);
@@ -208,7 +208,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         username: playerObject.username!,
         displayName: playerObject.displayName!,
         avatar: playerObject.avatar!,
-        email: playerObject.email,
+        email: playerObject.email!,
         activeTitleId: playerObject.activeTitleId!,
         isBanned: playerObject.isBanned!,
         isMuted: playerObject.isMuted!,
@@ -245,10 +245,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
         files: [],
       };
       
-      const batch = writeBatch(firestore);
       const newUserDocRef = doc(firestore, 'users', user.uid);
-      batch.set(newUserDocRef, newUserAccount);
-      
+      await setDoc(newUserDocRef, newUserAccount);
+
       if (isCreator) {
           toast({
               title: <div className="text-4xl text-center w-full">🎉</div>,
@@ -256,8 +255,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
               duration: 3000,
           });
       }
-
-      await batch.commit();
 
       return { success: true, message: 'Registration successful!' };
     } catch (error: any) {
@@ -362,7 +359,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 username: playerObject.username!,
                 displayName: playerObject.displayName!,
                 avatar: playerObject.avatar!,
-                email: playerObject.email,
+                email: playerObject.email!,
                 activeTitleId: playerObject.activeTitleId!,
                 isBanned: playerObject.isBanned!,
                 isMuted: playerObject.isMuted!,
@@ -399,10 +396,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 files: [],
             };
 
-            const batch = writeBatch(firestore);
-            batch.set(userDocRef, newUserAccount);
-            
-            await batch.commit();
+            await setDoc(userDocRef, newUserAccount);
 
             toast({
                 title: 'Account Created!',
