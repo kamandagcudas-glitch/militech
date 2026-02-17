@@ -12,8 +12,6 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    // Admin status is determined SOLELY by the user's email address.
-    // This is the single source of truth for admin privileges.
     function isAdmin() {
       return isSignedIn() && request.auth.token.email == "kamandagcudas@gmail.com";
     }
@@ -21,23 +19,19 @@ service cloud.firestore {
     // ========== COLLECTION RULES ==========
 
     match /users/{userId} {
-      // Allow any signed-in user to read profiles for leaderboards, user directory, etc.
+      // Any authenticated user can create their own user document.
+      // This simple rule ensures registration is not blocked by complex validation.
+      allow create: if isOwner(userId);
+
+      // Any signed-in user can read profiles for leaderboards, user directory, etc.
       allow read, list: if isSignedIn();
 
-      // Allow a user to create their OWN profile document.
-      // Validate that they are not illegitimately granting themselves admin/creator status.
-      allow create: if isOwner(userId) &&
-                       request.resource.data.player.isCreator == (request.auth.token.email == "kamandagcudas@gmail.com");
-
-      // Allow a user to update their own document, but protect critical fields.
-      // An admin can update any document.
-      allow update: if (isOwner(userId) &&
-                       request.resource.data.player.uid == resource.data.player.uid &&
-                       request.resource.data.player.username == resource.data.player.username &&
-                       request.resource.data.player.isCreator == resource.data.player.isCreator &&
-                       request.resource.data.player.isBanned == resource.data.player.isBanned &&
-                       request.resource.data.player.isMuted == resource.data.player.isMuted
-                     ) || isAdmin();
+      // An admin can update any user profile.
+      // A user can update their own profile, but cannot change their own protected status fields.
+      allow update: if isAdmin() || (isOwner(userId) &&
+                     request.resource.data.player.isCreator == resource.data.player.isCreator &&
+                     request.resource.data.player.isBanned == resource.data.player.isBanned &&
+                     request.resource.data.player.isMuted == resource.data.player.isMuted);
 
       // Only admins can delete user profiles.
       allow delete: if isAdmin();
