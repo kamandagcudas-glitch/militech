@@ -132,6 +132,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
         return { success: false, message: 'Please enter a valid email address.' };
     }
 
+    // This query is now allowed for signed-out users, but it's best to avoid it
+    // if possible to prevent unnecessary reads. We'll handle uniqueness via Firestore rules on create.
+    // const usernameQuery = query(collection(firestore, 'users'), where('player.username', '==', trimmedUsername));
+    // const usernameSnapshot = await getDocs(usernameQuery);
+    // if (!usernameSnapshot.empty) {
+    //   return { success: false, message: 'This callsign is already taken.' };
+    // }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
       const user = userCredential.user;
@@ -248,6 +256,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
       console.error("Registration Error: ", error);
       if (error.code === 'auth/email-already-in-use') {
         return { success: false, message: 'This email is already registered.' };
+      }
+       if (error.code === 'permission-denied') {
+        return { success: false, message: 'This callsign is already taken.' };
       }
       return { success: false, message: error.message || 'Failed to register.' };
     }
@@ -559,20 +570,55 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const sendFriendRequest = async (receiverUsername: string) => {
-    if (!currentUser || !userDocRef) return;
-    
-    // A user can only update their own document to mark who a file has been shared with.
-    // This prevents the permission error. The shared file will not automatically appear for the other user.
-    toast({
-      title: 'Friend Request Failed',
-      description: 'This feature is currently unavailable due to security rules. The developer must implement a Cloud Function to handle this action.'
-    })
+    if (!currentUser || !accounts) return;
+    if (currentUser.player.username === receiverUsername) {
+      toast({ variant: 'destructive', title: 'You cannot send a friend request to yourself.' });
+      return;
+    }
+  
+    const receiverAccount = accounts.find(acc => acc.player.username === receiverUsername);
+    if (!receiverAccount) {
+      toast({ variant: 'destructive', title: 'User not found' });
+      return;
+    }
+  
+    // Check if a request was already sent or if they are already friends
+    if (receiverAccount.player.friendRequests?.includes(currentUser.player.username)) {
+      toast({ title: 'A request has already been sent.' });
+      return;
+    }
+    if (receiverAccount.player.friendUsernames?.includes(currentUser.player.username)) {
+      toast({ title: 'You are already friends with this user.' });
+      return;
+    }
+  
+    const receiverDocRef = doc(firestore, 'users', receiverAccount.player.uid);
+  
+    const newFriendRequests = [...(receiverAccount.player.friendRequests || []), currentUser.player.username];
+  
+    try {
+      await updateDoc(receiverDocRef, {
+        'player.friendRequests': newFriendRequests
+      });
+      toast({
+        title: 'Friend Request Sent!',
+        description: `Your friend request has been sent to ${receiverAccount.player.displayName}.`
+      });
+      logActivity('Friend Request Sent', `To: ${receiverUsername}`);
+    } catch (error: any) {
+      console.error('Error sending friend request:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not send friend request. This might be a permissions issue.',
+      });
+    }
   };
 
   const acceptFriendRequest = async (senderUsername: string) => {
-    if (!currentUser || !userDocRef) return;
+    if (!currentUser || !userDocRef || !accounts) return;
     
-    const sender = accounts?.find(acc => acc.player.username === senderUsername);
+    const sender = accounts.find(acc => acc.player.username === senderUsername);
     if (!sender) return;
 
     // A user can only update their own document.

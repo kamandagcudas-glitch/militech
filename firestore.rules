@@ -20,21 +20,55 @@ service cloud.firestore {
 
     match /users/{userId} {
       // Allow a new user to CREATE their own profile document.
-      // This simplified rule ensures registration is not blocked.
-      allow create: if isOwner(userId);
+      allow create: if request.auth.uid == userId;
 
       // Any signed-in user can read profiles for leaderboards, user directory, etc.
       allow read, list: if isSignedIn();
 
-      // An admin can update any user profile.
-      // A user can update their own profile, but cannot change their own protected status fields.
-      allow update: if isAdmin() || (isOwner(userId) &&
-                     request.resource.data.player.isCreator == resource.data.player.isCreator &&
-                     request.resource.data.player.isBanned == resource.data.player.isBanned &&
-                     request.resource.data.player.isMuted == resource.data.player.isMuted);
+      // A user can update their own profile, but not change protected fields.
+      // An admin can update anything.
+      // A user can also update another user's profile ONLY to send a friend request.
+      allow update: if isAdmin() || 
+                     (isOwner(userId) && !isChangingProtectedFields(request, resource)) ||
+                     isSendingFriendRequest(request, resource, userId);
 
       // Only admins can delete user profiles.
       allow delete: if isAdmin();
+    }
+    
+    function isChangingProtectedFields(request, resource) {
+      return request.resource.data.player.uid != resource.data.player.uid ||
+             request.resource.data.player.username != resource.data.player.username ||
+             request.resource.data.player.isCreator != resource.data.player.isCreator ||
+             request.resource.data.player.isBanned != resource.data.player.isBanned ||
+             request.resource.data.player.isMuted != resource.data.player.isMuted;
+    }
+
+    function isSendingFriendRequest(request, resource, userId) {
+      let req = request.resource.data;
+      let res = resource.data;
+      
+      // The user making the request is not the owner of the document they are trying to change.
+      let isNotOwner = request.auth.uid != userId;
+      
+      // Check that ONLY the friendRequests array is being changed.
+      // This is done by ensuring all other fields remain identical.
+      let otherFieldsUnchanged = req.player.uid == res.player.uid &&
+                                 req.player.username == res.player.username &&
+                                 req.player.displayName == res.player.displayName &&
+                                 req.player.avatar == res.player.avatar &&
+                                 req.player.email == res.player.email &&
+                                 req.player.isCreator == res.player.isCreator &&
+                                 req.player.isBanned == res.player.isBanned &&
+                                 req.player.isMuted == res.player.isMuted &&
+                                 req.player.friendUsernames.size() == res.player.friendUsernames.size() &&
+                                 req.player.unlockedTitleIds.size() == res.player.unlockedTitleIds.size() &&
+                                 req.player.badgeIds.size() == res.player.badgeIds.size();
+
+      // Check that the friendRequests array is only having one new name added.
+      let friendRequestAdded = req.player.friendRequests.size() == res.player.friendRequests.size() + 1;
+
+      return isNotOwner && otherFieldsUnchanged && friendRequestAdded;
     }
 
     // Public feedback board
