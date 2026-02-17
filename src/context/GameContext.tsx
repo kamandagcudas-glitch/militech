@@ -164,7 +164,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       let specialInsignia: 'black-flame' | undefined = undefined;
       let initialAchievements: Achievement[] = [];
       
-      const playerObject: Omit<Player, 'uid' | 'emailVerified'> = {
+      const playerObject: Partial<Player> = {
         username: trimmedUsername,
         displayName: displayName.trim(),
         avatar: ``,
@@ -210,7 +210,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const newPlayer: Player = {
         uid: user.uid,
         emailVerified: user.emailVerified,
-        ...playerObject,
+        ...(playerObject as Player),
       };
       
       const newStats: PlayerStats = {
@@ -234,16 +234,22 @@ export function GameProvider({ children }: { children: ReactNode }) {
         achievements: initialAchievements,
         files: [],
       };
-
-      await setDoc(doc(firestore, 'users', user.uid), newUserAccount);
+      
+      const batch = writeBatch(firestore);
+      const newUserDocRef = doc(firestore, 'users', user.uid);
+      batch.set(newUserDocRef, newUserAccount);
       
       if (isCreator) {
+          const adminDocRef = doc(firestore, 'admins', user.uid);
+          batch.set(adminDocRef, { createdAt: new Date().toISOString() });
           toast({
               title: <div className="text-4xl text-center w-full">🎉</div>,
               description: <div className="text-center font-bold">Creator Identified! Welcome.</div>,
               duration: 3000,
           });
       }
+
+      await batch.commit();
 
       return { success: true, message: 'Registration successful!' };
     } catch (error: any) {
@@ -316,24 +322,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
             let specialBackground: 'angelic' | 'cabbage' | undefined = undefined;
             let initialAchievements: Achievement[] = [];
 
-            if (isCreator) {
-                activeTitleId = 'creator';
-                unlockedTitleIds = ['creator'];
-                badgeIds = ['creator-badge', 'angelic-power-rune'];
-                specialBackground = 'angelic';
-                const achievement = achievementsData.find(a => a.id === 'creator');
-                if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
-                const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
-                if(runeBadge) initialAchievements.push({ ...runeBadge, timestamp: new Date().toISOString() });
-            }
-
-            const newPlayer: Player = {
-                uid: user.uid,
+            const playerObject: Partial<Player> = {
                 username: username,
                 displayName: user.displayName || username,
                 avatar: user.photoURL || '',
                 email: user.email || '',
-                emailVerified: user.emailVerified,
                 activeTitleId: activeTitleId,
                 unlockedTitleIds: unlockedTitleIds,
                 badgeIds: badgeIds,
@@ -343,7 +336,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 isBanned: false,
                 isMuted: false,
                 profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
-                ...(specialBackground && { specialBackground }),
+            };
+
+            if (isCreator) {
+                playerObject.activeTitleId = 'creator';
+                playerObject.unlockedTitleIds = ['creator'];
+                playerObject.badgeIds = ['creator-badge', 'angelic-power-rune'];
+                playerObject.specialBackground = 'angelic';
+                const achievement = achievementsData.find(a => a.id === 'creator');
+                if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+                const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
+                if(runeBadge) initialAchievements.push({ ...runeBadge, timestamp: new Date().toISOString() });
+            }
+
+            const newPlayer: Player = {
+                uid: user.uid,
+                emailVerified: user.emailVerified,
+                ...(playerObject as Player),
             };
             const newStats: PlayerStats = {
                 coc1: { attempts: 0, resets: 0 },
@@ -367,7 +376,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 files: [],
             };
 
-            await setDoc(userDocRef, newUserAccount);
+            const batch = writeBatch(firestore);
+            batch.set(userDocRef, newUserAccount);
+            if (isCreator) {
+                const adminDocRef = doc(firestore, 'admins', user.uid);
+                batch.set(adminDocRef, { createdAt: new Date().toISOString() });
+            }
+            await batch.commit();
+
             toast({
                 title: 'Account Created!',
                 description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
