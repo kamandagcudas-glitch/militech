@@ -14,8 +14,11 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      // Admin status is determined by the existence of a document in the /admins collection.
-      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      // Admin status is determined by email or the existence of a document in the /admins collection.
+      return isSignedIn() && (
+        request.auth.token.email == "kamandagcudas@gmail.com" ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
     }
     
     // Validates that a user is updating their own profile without escalating privileges.
