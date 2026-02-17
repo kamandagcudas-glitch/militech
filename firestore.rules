@@ -4,7 +4,6 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ========== HELPER FUNCTIONS ==========
-
     function isSignedIn() {
       return request.auth != null;
     }
@@ -18,38 +17,27 @@ service cloud.firestore {
     function isAdmin() {
       return isSignedIn() && request.auth.token.email == "kamandagcudas@gmail.com";
     }
-    
-    // Validates incoming data for a NEW user profile
-    function isCreatingOwnValidProfile(userId) {
-      let incomingData = request.resource.data;
-      let incomingPlayer = incomingData.player;
-
-      // User must be creating their own document.
-      // They cannot grant themselves creator status unless they are the admin.
-      return isOwner(userId) &&
-             incomingPlayer.isCreator == isAdmin();
-    }
 
     // ========== COLLECTION RULES ==========
 
-    // User profiles
     match /users/{userId} {
-      // Any signed-in user can read/list profiles for user directory & leaderboards.
+      // Allow any signed-in user to read profiles for leaderboards, user directory, etc.
       allow read, list: if isSignedIn();
-      
-      // A user can create their own profile, but only with valid initial data.
-      allow create: if isCreatingOwnValidProfile(userId);
-      
-      // A user can update their own document, but cannot change protected fields.
+
+      // Allow a user to create their OWN profile document.
+      // Validate that they are not illegitimately granting themselves admin/creator status.
+      allow create: if isOwner(userId) &&
+                       request.resource.data.player.isCreator == (request.auth.token.email == "kamandagcudas@gmail.com");
+
+      // Allow a user to update their own document, but protect critical fields.
       // An admin can update any document.
-      allow update: if (
-                      (isOwner(userId) &&
-                      request.resource.data.player.uid == resource.data.player.uid &&
-                      request.resource.data.player.username == resource.data.player.username &&
-                      request.resource.data.player.isCreator == resource.data.player.isCreator &&
-                      request.resource.data.player.isBanned == resource.data.player.isBanned &&
-                      request.resource.data.player.isMuted == resource.data.player.isMuted
-                    ) || isAdmin());
+      allow update: if (isOwner(userId) &&
+                       request.resource.data.player.uid == resource.data.player.uid &&
+                       request.resource.data.player.username == resource.data.player.username &&
+                       request.resource.data.player.isCreator == resource.data.player.isCreator &&
+                       request.resource.data.player.isBanned == resource.data.player.isBanned &&
+                       request.resource.data.player.isMuted == resource.data.player.isMuted
+                     ) || isAdmin();
 
       // Only admins can delete user profiles.
       allow delete: if isAdmin();
@@ -57,10 +45,11 @@ service cloud.firestore {
 
     // Public feedback board
     match /feedback/{feedbackId} {
-      // Any signed-in user can read feedback posts.
+      // Any signed-in user can read feedback.
       allow read, list: if isSignedIn();
 
-      // Any signed-in user can post feedback, unless they are banned or muted.
+      // Any signed-in user can post feedback if they are not banned or muted.
+      // This 'get' call is allowed because the rules for /users/{userId} permit reads by any signed-in user.
       allow create: if isSignedIn() &&
                        !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isBanned &&
                        !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isMuted;
@@ -69,21 +58,16 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
-    // Login History Logs
+    // Login History Logs - Readable by admin, creatable by the user themselves.
     match /loginHistory/{logId} {
-      // Only admins can read login history.
       allow read, list: if isAdmin();
-
-      // Any signed-in user can create their own login attempt log.
-      allow create: if isSignedIn(); 
-
-      // Logs are immutable.
-      allow update, delete: if false;
+      // Allow a user to create their own login log entry.
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false; // Logs are immutable.
     }
 
-    // Activity Logs
+    // Activity Logs - Only accessible by admins.
     match /activityLogs/{logId} {
-      // Only admins can read or write activity logs.
       allow read, write, list: if isAdmin();
     }
   }
