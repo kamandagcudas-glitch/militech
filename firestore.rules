@@ -29,9 +29,11 @@ service cloud.firestore {
     
     // Admin roles collection
     match /admins/{uid} {
-        // No one can read the list of admins.
-        allow read: if false;
-        // Only other admins can grant admin privileges.
+        // An admin can check their own status by reading their own document.
+        allow get: if isOwner(uid);
+        // No one can list all admins.
+        allow list: if false;
+        // Only other admins can grant or revoke admin privileges.
         allow write: if isAdmin();
     }
 
