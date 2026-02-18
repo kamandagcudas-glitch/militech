@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useState, useEffect } from 'react';
@@ -75,59 +76,64 @@ export default function PcBuilderPage() {
           ))}
         </TabsList>
         
-        {pcBuildsData.map(build => (
-          <TabsContent key={build.id} value={build.id}>
-            <Card className="bg-card/80 backdrop-blur-sm">
-                <CardHeader>
-                    <CardTitle className="font-headline text-2xl">{build.name} Build</CardTitle>
-                    <CardDescription>{build.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        {Object.entries(build.parts).map(([category, part]) => {
-                            const image = PlaceHolderImages.find(img => img.id === part.imageId);
-                            return (
-                                <Card key={part.name} className="flex flex-col transition-all duration-300 hover:border-primary/80 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1">
-                                    <CardHeader>
-                                        <div className="flex items-center justify-between">
-                                            <CardTitle className="text-xl font-semibold">{part.name}</CardTitle>
-                                            <Badge variant="secondary" className="flex items-center gap-2">
-                                                {categoryIcons[category as PcPartCategory]}
-                                                {category}
-                                            </Badge>
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="flex-grow flex flex-col gap-4">
-                                        {image && (
-                                            <div className="relative aspect-video rounded-md overflow-hidden border">
-                                                <Image 
-                                                    src={image.imageUrl} 
-                                                    alt={part.name} 
-                                                    fill 
-                                                    style={{ objectFit: 'cover' }} 
-                                                    data-ai-hint={image.imageHint}
-                                                />
-                                            </div>
-                                        )}
-                                        <p className="text-muted-foreground text-sm flex-grow">{part.description}</p>
-                                        <p className="text-lg font-bold text-primary text-right">${part.price.toFixed(2)}</p>
-                                    </CardContent>
-                                </Card>
-                            )
-                        })}
-                    </div>
-                    <div className="mt-8 pt-6 border-t">
-                        <div className="flex justify-end items-center gap-4">
-                             <h3 className="font-headline text-2xl font-bold flex items-center gap-2">
-                                <DollarSign/> Total Estimated Price:
-                            </h3>
-                            <p className="text-3xl font-bold font-mono text-primary">${totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-          </TabsContent>
-        ))}
+        {pcBuildsData.map(build => {
+          const isActive = build.id === activeBuildId;
+          return (
+            <TabsContent key={build.id} value={build.id}>
+              <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
+                  <CardHeader>
+                      <CardTitle className="font-headline text-2xl">{build.name} Build</CardTitle>
+                      <CardDescription>{build.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                          {Object.entries(build.parts).map(([category, part]) => {
+                              const image = PlaceHolderImages.find(img => img.id === part.imageId);
+                              return (
+                                  <Card key={part.name} className="flex flex-col transition-all duration-300 hover:border-primary/80 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1">
+                                      <CardHeader>
+                                          <div className="flex items-center justify-between">
+                                              <CardTitle className="text-xl font-semibold">{part.name}</CardTitle>
+                                              <Badge variant="secondary" className="flex items-center gap-2">
+                                                  {categoryIcons[category as PcPartCategory]}
+                                                  {category}
+                                              </Badge>
+                                          </div>
+                                      </CardHeader>
+                                      <CardContent className="flex-grow flex flex-col gap-4">
+                                          {image && (
+                                              <div className="relative aspect-video rounded-md overflow-hidden border bg-muted">
+                                                  <Image 
+                                                      src={image.imageUrl} 
+                                                      alt={part.name} 
+                                                      fill 
+                                                      priority={isActive}
+                                                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                      style={{ objectFit: 'cover' }} 
+                                                      data-ai-hint={image.imageHint}
+                                                  />
+                                              </div>
+                                          )}
+                                          <p className="text-muted-foreground text-sm flex-grow">{part.description}</p>
+                                          <p className="text-lg font-bold text-primary text-right">${part.price.toFixed(2)}</p>
+                                      </CardContent>
+                                  </Card>
+                              )
+                          })}
+                      </div>
+                      <div className="mt-8 pt-6 border-t border-primary/10">
+                          <div className="flex justify-end items-center gap-4">
+                               <h3 className="font-headline text-2xl font-bold flex items-center gap-2">
+                                  <DollarSign/> Total Estimated Price:
+                              </h3>
+                              <p className="text-3xl font-bold font-mono text-primary">${totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                          </div>
+                      </div>
+                  </CardContent>
+              </Card>
+            </TabsContent>
+          )
+        })}
       </Tabs>
     </div>
   );
