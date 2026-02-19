@@ -139,7 +139,7 @@ export default function FilesPage() {
             
             <div className="p-4 mb-6 rounded-lg border border-primary/50 bg-primary/10 text-primary flex items-center gap-3">
                 <AlertCircle className="h-5 w-5"/>
-                <p className="text-sm font-medium">MI-LITECH Network Storage: Your profile (including files and custom images) has a shared 1MB total capacity. Files larger than 800KB may fail to sync with the central database.</p>
+                <p className="text-sm font-medium">MI-LITECH Network Storage: Your profile (including files and custom images) has a shared 10MB total capacity. Note: Individual files larger than 800KB may still fail to sync with the database due to architectural constraints.</p>
             </div>
 
             <Card>
