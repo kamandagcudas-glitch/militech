@@ -260,7 +260,7 @@
   }
   .samurai body {
     background-color: hsl(var(--background));
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a12022' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5zm95 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9z'/%3E%3Cg%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a12022' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5zm95 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9z'/%3E%3Cg%3E%3C/g%3E%3C/svg%3E");
     animation: none;
   }
   .flames body {
@@ -607,43 +607,55 @@
       background-color: hsl(var(--card) / 0.85);
   }
 
-  .btn-futuristic {
-    @apply relative inline-block border-2 bg-transparent font-headline text-xl h-auto px-10 py-4 font-bold uppercase tracking-widest text-primary no-underline outline-none transition-all duration-300;
-    clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
-    text-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary) / 0.7);
-    border-color: hsl(var(--primary) / 0.5);
-  }
-
-  .btn-futuristic::before {
-    content: '';
-    @apply absolute;
-    top: 2px;
-    left: 2px;
-    right: 2px;
-    bottom: 2px;
-    clip-path: polygon(0 8px, 8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px));
-    transition: all 0.3s ease;
-    border: 2px solid hsl(var(--accent) / 0.3);
-  }
-
-  .btn-futuristic:hover {
-    transform: translateY(-2px);
-    text-shadow: 0 0 12px hsl(var(--primary)), 0 0 24px hsl(var(--primary) / 0.7);
+  /* Redesigned Cyber Button */
+  .cyber-btn {
+    @apply relative inline-flex items-center justify-center font-headline font-bold uppercase tracking-[0.2em] transition-all duration-300 overflow-hidden;
+    clip-path: polygon(12% 0, 100% 0, 100% 70%, 88% 100%, 0 100%, 0 30%);
+    border: 2px solid hsl(var(--primary));
+    background: transparent;
     color: hsl(var(--primary));
-    background-color: hsl(var(--primary) / 0.1);
-    box-shadow: 0 5px 20px hsl(var(--primary) / 0.4);
-    animation: futuristic-pulse-border 1.5s infinite ease-in-out;
+    box-shadow: 0 0 15px hsl(var(--primary) / 0.3), inset 0 0 10px hsl(var(--primary) / 0.2);
+    text-shadow: 0 0 5px hsl(var(--primary) / 0.5);
   }
-  
-  .btn-futuristic:hover::before {
-      border-color: hsl(var(--accent) / 0.8);
-      animation: futuristic-glitch-short 0.3s steps(2, jump-end) infinite;
+
+  /* Sweep Effect */
+  .cyber-btn::before {
+    content: "";
+    @apply absolute top-0 -left-full w-1/2 h-full transition-all duration-500 pointer-events-none;
+    background: linear-gradient(90deg, transparent, hsl(var(--accent) / 0.4), transparent);
+    transform: skewX(-25deg);
   }
-  
-  .btn-futuristic:active {
-    transform: translateY(0px);
-    box-shadow: 0 0 10px hsl(var(--primary) / 0.6), inset 0 0 10px hsl(var(--primary)/0.5);
-    background-color: hsl(var(--primary)/0.2);
+
+  /* Glitch Line Decoration */
+  .cyber-btn::after {
+    content: "";
+    @apply absolute left-0 bottom-0 w-full h-[2px] bg-accent opacity-0 transition-opacity;
+    box-shadow: 0 0 10px hsl(var(--accent));
+  }
+
+  .cyber-btn:hover {
+    @apply scale-[1.02];
+    background: hsl(var(--primary) / 0.1);
+    box-shadow: 0 0 25px hsl(var(--primary) / 0.6), inset 0 0 15px hsl(var(--primary) / 0.3);
+    color: white;
+    text-shadow: 0 0 10px white, 0 0 20px hsl(var(--primary));
+    border-color: white;
+  }
+
+  .cyber-btn:hover::before {
+    @apply left-[150%];
+  }
+
+  .cyber-btn:hover::after {
+    @apply opacity-100;
+    animation: cyber-glitch-line 2s steps(1) infinite;
+  }
+
+  .cyber-btn:active {
+    animation: cyber-neural-shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+    background: hsl(var(--accent) / 0.2);
+    border-color: hsl(var(--accent));
+    box-shadow: 0 0 30px hsl(var(--accent));
   }
 
   /* Gamified Avatar Borders */
@@ -752,6 +764,20 @@
   .avatar-border-wrapper[data-border="default"]::before {
     content: none;
   }
+}
+
+@keyframes cyber-glitch-line {
+  0%, 100% { bottom: 0; height: 2px; }
+  33% { bottom: 40%; height: 1px; }
+  66% { bottom: 80%; height: 3px; }
+}
+
+@keyframes cyber-neural-shake {
+  0% { transform: translate(0); }
+  25% { transform: translate(-4px, 2px); }
+  50% { transform: translate(4px, -2px); }
+  75% { transform: translate(-2px, -2px); }
+  100% { transform: translate(0); }
 }
 
 @keyframes glitch-red {

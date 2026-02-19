@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useContext, useEffect, useRef, useCallback } from 'react';
@@ -287,7 +286,7 @@ export default function QuizPage() {
           </RadioGroup>
 
           <div className="flex justify-end mt-8">
-            <Button size="lg" onClick={handleNext} disabled={!answers[currentQuestionIndex]}>
+            <Button variant="cyber" size="lg" onClick={handleNext} disabled={!answers[currentQuestionIndex]}>
               {currentQuestionIndex < totalQuestions - 1 ? 'Next' : 'Submit'}
             </Button>
           </div>
@@ -341,7 +340,7 @@ export default function QuizPage() {
               <Download className="mr-2 h-4 w-4" />
               Download Results
             </Button>
-            <Button onClick={handleDialogClose} className="w-full sm:w-auto">Continue</Button>
+            <Button variant="cyber" onClick={handleDialogClose} className="w-full sm:w-auto">Continue</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

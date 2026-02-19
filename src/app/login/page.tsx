@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useContext, useEffect, useState } from "react";
@@ -113,23 +112,14 @@ export default function LoginPage() {
                 onKeyDown={(e) => e.key === "Enter" && handleLogin()}
               />
             </div>
-            {theme === 'cyberpunk' ? (
-                <button
-                    onClick={handleLogin}
-                    className="btn-futuristic w-full"
-                    disabled={!email.trim() || !password.trim()}
-                >
-                    Access Terminal
-                </button>
-            ) : (
-                <Button
-                    onClick={handleLogin}
-                    className="w-full h-12 text-lg font-bold"
-                    disabled={!email.trim() || !password.trim()}
-                >
-                    Access Terminal
-                </Button>
-            )}
+            <Button
+                variant="cyber"
+                onClick={handleLogin}
+                className="w-full h-14"
+                disabled={!email.trim() || !password.trim()}
+            >
+                Access Terminal
+            </Button>
           </div>
            <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">

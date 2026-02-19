@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useContext, useState, useMemo } from 'react';
@@ -122,7 +121,7 @@ export default function DashboardPage() {
                                     <Progress value={progressPercentage} className="mb-4" />
                                 </div>
                                 <Link href={`/coc/${coc.id}`} passHref>
-                                    <Button className="w-full mt-2">
+                                    <Button variant="cyber" className="w-full mt-2">
                                         {progressPercentage === 100 ? 'Review' : 'Start'} Module <ArrowRight className="ml-2" />
                                     </Button>
                                 </Link>
@@ -142,7 +141,7 @@ export default function DashboardPage() {
                         </CardHeader>
                         <CardContent className="flex-grow flex items-end">
                             <Link href={card.href} passHref>
-                                <Button className="w-full mt-2" variant="secondary">
+                                <Button variant="cyber" className="w-full mt-2">
                                     {card.buttonText} <ArrowRight className="ml-2" />
                                 </Button>
                             </Link>

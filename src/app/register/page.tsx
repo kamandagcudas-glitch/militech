@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useContext } from 'react';
@@ -167,15 +166,14 @@ export default function RegisterPage() {
 
                         {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
 
-                        {theme === 'cyberpunk' ? (
-                            <button onClick={handleRegister} className="btn-futuristic w-full" disabled={isButtonDisabled}>
-                                Register
-                            </button>
-                        ) : (
-                            <Button onClick={handleRegister} className="w-full h-12 text-lg font-bold" disabled={isButtonDisabled}>
-                                Register
-                            </Button>
-                        )}
+                        <Button 
+                            variant="cyber"
+                            onClick={handleRegister} 
+                            className="w-full h-14" 
+                            disabled={isButtonDisabled}
+                        >
+                            Register
+                        </Button>
                     </div>
                      <div className="mt-4 text-center text-sm">
                         <p className="text-muted-foreground">

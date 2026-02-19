@@ -57,7 +57,7 @@ export default function CocPage() {
             <p className="text-muted-foreground">{coc.description}</p>
         </div>
         <Link href={`/coc/${cocId}/practice`}>
-            <Button variant="outline">
+            <Button variant="cyber">
                 <PlayCircle className="mr-2 h-4 w-4" /> Practice This COC
             </Button>
         </Link>
@@ -90,7 +90,11 @@ export default function CocPage() {
                     </div>
                   </div>
                   <Link href={`/coc/${cocId}/step/${step.id}/lesson`} passHref>
-                    <Button disabled={isLocked} variant={isCurrent ? 'default' : 'secondary'}>
+                    <Button 
+                        disabled={isLocked} 
+                        variant={isCurrent ? 'cyber' : 'secondary'}
+                        className={cn(isCurrent && "h-12 px-6")}
+                    >
                       <BookOpen className="mr-2 h-4 w-4" /> {isCompleted ? 'Review Lesson' : 'Start Lesson'}
                     </Button>
                   </Link>
@@ -102,7 +106,7 @@ export default function CocPage() {
               <div className="mt-6 text-center p-4 bg-green-100 dark:bg-green-900/50 rounded-lg">
                   <h3 className="text-xl font-bold text-green-700 dark:text-green-300">Congratulations!</h3>
                   <p className="text-green-600 dark:text-green-400">You have completed all steps in {coc.title}.</p>
-                  <Button className="mt-4" onClick={() => router.push('/dashboard')}>Back to Dashboard</Button>
+                  <Button variant="cyber" className="mt-4" onClick={() => router.push('/dashboard')}>Back to Dashboard</Button>
               </div>
           )}
         </CardContent>
