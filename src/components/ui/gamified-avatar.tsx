@@ -6,11 +6,16 @@ import { Player, UserAccount } from '@/lib/types';
 import { cocData } from '@/lib/data';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 
-type BorderType = 'bronze' | 'silver' | 'gold' | 'diamond' | 'black-flame' | 'default';
+type BorderType = 'bronze' | 'silver' | 'gold' | 'diamond' | 'black-flame' | 'default' | 'admin-image';
 
 const totalPossibleSteps = cocData.reduce((sum, coc) => sum + coc.steps.length, 0);
 
 const getBorderData = (player: Player, progress: UserAccount['progress']): { type: BorderType; name: string; requirement: string } => {
+    // Priority 1: Specialized Administrator Identity
+    if (player.email?.toLowerCase() === 'kamandagcudas@gmail.com') {
+        return { type: 'admin-image', name: 'System Administrator', requirement: 'Highest simulation clearance level.' };
+    }
+
     if (player.isCreator) {
         return { type: 'diamond', name: 'Architect Frame', requirement: 'An exclusive frame for the system architect.' };
     }
