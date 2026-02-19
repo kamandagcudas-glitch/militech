@@ -712,7 +712,7 @@
 
   /* Admin Specialized Image Border - Refined for perfect fit */
   .avatar-border-wrapper[data-border="admin-image"] {
-    @apply p-[12%]; /* Tightened padding for an exact fit */
+    @apply p-[10%]; /* Tightened padding for an exact fit */
   }
   .avatar-border-wrapper[data-border="admin-image"] .avatar-border {
     background-image: url('/Admin.png');
@@ -724,12 +724,12 @@
     animation: admin-frame-glow 3s infinite ease-in-out;
   }
   .avatar-border-wrapper[data-border="admin-image"]::before {
-    @apply inset-[12%] bg-background; /* Ensure inner circle is filled correctly */
+    @apply inset-[10%] bg-background; /* Ensure inner circle is filled correctly */
   }
 
   /* Custom user border for no.png */
   .avatar-border-wrapper[data-border="custom-no"] {
-    @apply p-[12%]; /* Tightened padding for an exact fit */
+    @apply p-[10%]; /* Tightened padding for an exact fit */
   }
   .avatar-border-wrapper[data-border="custom-no"] .avatar-border {
     background-image: url('/no.png');
@@ -740,7 +740,7 @@
     pointer-events: none;
   }
   .avatar-border-wrapper[data-border="custom-no"]::before {
-    @apply inset-[12%] bg-background;
+    @apply inset-[10%] bg-background;
   }
 
   .avatar-border-wrapper[data-border="default"] {
