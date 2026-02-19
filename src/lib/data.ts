@@ -640,6 +640,7 @@ export const achievementsData: Achievement[] = [
     { id: 'rapid-click', name: 'Rapid Clicker', description: 'Whoa there, take it easy on that mouse.', type: 'badge' },
     { id: 'black-flame-wanderer', name: 'Black Flame Wanderer', description: 'burnt to toast', type: 'title' },
     { id: 'good-boy', name: 'Good Boy', description: 'Whos Mommy good boy ;>', type: 'title' },
+    { id: 'steve-from-minecraft', name: 'Steve From Minecraft', description: 'Mining and crafting in the simulation.', type: 'title' },
 ];
 
 export const miniGameData: MiniGameRound[] = [
@@ -665,5 +666,6 @@ export const wordCompletionGameData: WordCompletionGameRound[] = [
   { id: 'wc12', answer: 'HARDWARE', hint: 'The physical parts of a computer.' },
   { id: 'wc13', answer: 'ALGORITHM', hint: 'A process or set of rules to be followed in calculations.' },
   { id: 'wc14', answer: 'DATABASE', hint: 'An organized collection of structured information, or data.' },
-  { id: 'wc15', answer: 'DEFRAGMENT', hint: 'Reorganizing files on a disk to occupy contiguous storage locations.' },
+  { id: 'wc15', answer: 'DATABASE', hint: 'An organized collection of structured information, or data.' },
+  { id: 'wc16', answer: 'DEFRAGMENT', hint: 'Reorganizing files on a disk to occupy contiguous storage locations.' },
 ];

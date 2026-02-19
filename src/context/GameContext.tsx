@@ -60,6 +60,7 @@ const ADMIN_EMAIL = "kamandagcudas@gmail.com";
 const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
 const RAYTHEON_USERNAME = "Raytheon";
 const GOOD_BOY_USERNAME = "goodboy";
+const PAPET_USERNAME = "Papet";
 
 export interface GameContextType {
   currentUser: UserAccount | null;
@@ -147,6 +148,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const isVergil = trimmedUsername.toLowerCase() === 'vergil';
       const isRaytheon = trimmedUsername === RAYTHEON_USERNAME;
       const isGoodBoy = trimmedUsername.toLowerCase() === GOOD_BOY_USERNAME.toLowerCase();
+      const isPapet = trimmedUsername.toLowerCase() === PAPET_USERNAME.toLowerCase();
 
       const playerObject: Partial<Player> = {
         uid: user.uid,
@@ -197,6 +199,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
           playerObject.activeTitleId = 'good-boy';
           playerObject.unlockedTitleIds = ['good-boy'];
           const achievement = achievementsData.find(a => a.id === 'good-boy');
+          if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
+      } else if (isPapet) {
+          playerObject.activeTitleId = 'steve-from-minecraft';
+          playerObject.unlockedTitleIds = ['steve-from-minecraft'];
+          const achievement = achievementsData.find(a => a.id === 'steve-from-minecraft');
           if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
       }
 
