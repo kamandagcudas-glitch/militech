@@ -12,7 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Upload, FileText, FileImage, FileVideo, File, Trash2, Download, Share2, FolderOpen, AlertCircle, Send, Check } from 'lucide-react';
+import { Upload, FileText, FileImage, FileVideo, File, Trash2, Download, Share2, FolderOpen, AlertCircle, Send, Check, HardDrive } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 // Helper to format file size into a readable string
 const formatBytes = (bytes: number, decimals = 2) => {
@@ -113,6 +114,13 @@ export default function FilesPage() {
     
     const sortedFiles = [...currentUser.files].sort((a,b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime());
 
+    const totalUsedBytes = useMemo(() => {
+        return currentUser.files.reduce((sum, file) => sum + file.size, 0);
+    }, [currentUser.files]);
+
+    const totalCapacityBytes = 10 * 1024 * 1024; // 10MB
+    const usagePercentage = (totalUsedBytes / totalCapacityBytes) * 100;
+
     return (
         <div className="container mx-auto">
             <input
@@ -137,9 +145,48 @@ export default function FilesPage() {
                 </Button>
             </div>
             
-            <div className="p-4 mb-6 rounded-lg border border-primary/50 bg-primary/10 text-primary flex items-center gap-3">
-                <AlertCircle className="h-5 w-5"/>
-                <p className="text-sm font-medium">MI-LITECH Network Storage: Your profile (including files and custom images) has a shared 10MB total capacity. Note: Individual files larger than 800KB may still fail to sync with the database due to architectural constraints.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <Card className="md:col-span-2">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium flex items-center gap-2">
+                            <HardDrive className="h-4 w-4 text-primary" />
+                            Storage Usage
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex justify-between text-xs mb-2">
+                            <span>{formatBytes(totalUsedBytes)} used</span>
+                            <span>10 MB limit</span>
+                        </div>
+                        <Progress value={usagePercentage} className="h-2" />
+                        <div className="mt-4 p-3 rounded bg-muted/50 border border-primary/20 flex items-start gap-3">
+                            <AlertCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                            <p className="text-[10px] leading-relaxed text-muted-foreground">
+                                <strong>ARCHITECTURE ADVISORY:</strong> While your network allocation is 10MB, the underlying Agent Profile database has a physical synchronization limit of 1MB total. Storing more than 800KB of total data (files + profile metadata) may result in synchronization failures.
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+                
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">Constraints</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Max File Size:</span>
+                            <span className="font-bold">1.0 MB</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">Total Capacity:</span>
+                            <span className="font-bold">10.0 MB</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">File Types:</span>
+                            <span className="font-bold">Any</span>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
             <Card>

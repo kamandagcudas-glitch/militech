@@ -764,11 +764,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const uploadFile = (file: File) => {
     if (!currentUser || !userDocRef) return;
-    // Standardizing to 10MB limit
-    if (file.size > 10 * 1024 * 1024) { 
-      toast({ variant: "destructive", title: "File is too large", description: "Network Storage Limit: 10MB per file." });
+    
+    // 1MB Individual File Limit
+    if (file.size > 1 * 1024 * 1024) { 
+      toast({ variant: "destructive", title: "File too large", description: "Individual files must be under 1MB." });
       return;
     }
+
+    // 10MB Total Capacity Limit
+    const currentTotalSize = currentUser.files.reduce((sum, f) => sum + f.size, 0);
+    if (currentTotalSize + file.size > 10 * 1024 * 1024) {
+      toast({ variant: "destructive", title: "Storage full", description: "You have reached your 10MB total capacity." });
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
