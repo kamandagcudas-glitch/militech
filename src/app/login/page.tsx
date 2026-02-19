@@ -74,7 +74,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm shadow-2xl bg-card/80 backdrop-blur-sm border border-primary/20">
         <CardHeader className="text-center flex flex-col items-center gap-4">
           <Image 
-            src="/miltechs.png" 
+            src="/militechs.png" 
             alt="MI-LITECH Logo" 
             width={80} 
             height={80} 

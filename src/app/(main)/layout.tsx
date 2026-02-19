@@ -106,7 +106,7 @@ export default function MainAppLayout({
         <SidebarHeader>
           <div className="flex items-center gap-3 p-2">
             <Image 
-              src="/miltechs.png" 
+              src="/militechs.png" 
               alt="MI-LITECH Logo" 
               width={40} 
               height={40} 
