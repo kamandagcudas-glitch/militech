@@ -101,12 +101,12 @@ export default function ProfilePage() {
     const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Check file size (1MB limit for Firestore document safety)
-            if (file.size > 1024 * 1024) {
+            // Increased to 5MB limit
+            if (file.size > 5 * 1024 * 1024) {
                 toast({
                     variant: "destructive",
                     title: "Image Too Large",
-                    description: "Please select an image smaller than 1MB to ensure it can be saved.",
+                    description: "Please select an image smaller than 5MB. Note: Firestore limits may apply.",
                 });
                 e.target.value = '';
                 return;
@@ -147,11 +147,12 @@ export default function ProfilePage() {
     const handleBgFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (file.size > 1024 * 1024) { // 1MB limit for document safety
+            // Increased to 5MB limit
+            if (file.size > 5 * 1024 * 1024) {
                 toast({
                     variant: "destructive",
                     title: "Image Too Large",
-                    description: "Background images must be smaller than 1MB to be saved to your profile.",
+                    description: "Background images must be smaller than 5MB to be saved.",
                 });
                 e.target.value = '';
                 return;
@@ -458,7 +459,7 @@ export default function ProfilePage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Upload Profile Picture</DialogTitle>
-                        <DialogDescription>Select a JPG or PNG image (Max 1MB). The image will be saved to your MI-LITECH profile.</DialogDescription>
+                        <DialogDescription>Select a JPG or PNG image (Max 5MB). The image will be saved to your MI-LITECH profile.</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                         {avatarPreviewUrl && (
@@ -489,7 +490,7 @@ export default function ProfilePage() {
                 <DialogContent className="max-w-3xl">
                     <DialogHeader>
                         <DialogTitle>Customize Profile Background</DialogTitle>
-                        <DialogDescription>Select a predefined theme or upload your own image (Max 1MB).</DialogDescription>
+                        <DialogDescription>Select a predefined theme or upload your own image (Max 5MB).</DialogDescription>
                     </DialogHeader>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
                         <div className="space-y-3">

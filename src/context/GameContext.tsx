@@ -547,8 +547,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const updateAvatar = (avatarDataUrl: string) => {
-    if (!currentUser) return;
-    updateUserDoc({ 'player.avatar': avatarDataUrl });
+    if (!userDocRef) return;
+    updateDocumentNonBlocking(userDocRef, { 'player.avatar': avatarDataUrl });
   };
   
   const updateDisplayName = async (displayName: string): Promise<{ success: boolean; message: string; }> => {
@@ -704,12 +704,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
   
   const updateProfileBackground = (idOrUrl: string) => {
-    if (!currentUser) return;
+    if (!userDocRef) return;
     if (idOrUrl.startsWith('data:image/')) {
-      updateUserDoc({ 'player.profileBackgroundId': 'custom', 'player.profileBackgroundUrl': idOrUrl });
+      updateDocumentNonBlocking(userDocRef, { 
+        'player.profileBackgroundId': 'custom', 
+        'player.profileBackgroundUrl': idOrUrl 
+      });
       toast({ title: 'Custom Background Applied!' });
     } else {
-      updateUserDoc({ 'player.profileBackgroundId': idOrUrl, 'player.profileBackgroundUrl': '' });
+      updateDocumentNonBlocking(userDocRef, { 
+        'player.profileBackgroundId': idOrUrl, 
+        'player.profileBackgroundUrl': '' 
+      });
       toast({ title: 'Profile Background Updated!' });
     }
   };
