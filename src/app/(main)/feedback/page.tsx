@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useContext, useState }from 'react';
@@ -27,12 +28,16 @@ export default function FeedbackPage() {
         <div className="relative -m-4 md:-m-6 h-full overflow-hidden">
             {/* Background Layers */}
             <div 
-                className="absolute inset-0 w-full h-full bg-cover bg-center feedback-bg-image"
+                className="absolute inset-0 w-full h-full bg-cover bg-center feedback-bg-image z-[-20]"
                 style={{ backgroundImage: `url(${feedbackPageBackgroundUrl})` }}
                 data-ai-hint="cyberpunk city"
             />
-            <div className="absolute inset-0 w-full h-full bg-black/40 backdrop-blur-[6px]" />
-            <div className="absolute inset-0 w-full h-full feedback-bg-scanlines" />
+            {/* The global RunningPixelBackground is fixed at z-[-10]. 
+                By setting the background image to z-[-20] and the overlay/scanlines to z-[-5], 
+                the runners appear running ON the background city but BEHIND the scanlines/UI. */}
+            
+            <div className="absolute inset-0 w-full h-full bg-black/40 backdrop-blur-[6px] z-[-5]" />
+            <div className="absolute inset-0 w-full h-full feedback-bg-scanlines z-[-5]" />
 
             {/* Content Layer */}
             <div className="relative z-10 h-full overflow-y-auto p-4 md:p-6">

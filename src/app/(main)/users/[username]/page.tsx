@@ -100,14 +100,20 @@ export default function PublicProfilePage() {
     return (
         <div className="relative -m-4 md:-m-6 h-full">
              {hasSpecialBg ? (
-                <SpecialBackground type={player.specialBackground!} />
+                <div className="absolute inset-0 z-[-20]">
+                    <SpecialBackground type={player.specialBackground!} />
+                </div>
             ) : (
                 <div
-                    className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500"
+                    className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500 z-[-20]"
                     style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
                 />
             )}
-            <div className="absolute inset-0 w-full h-full bg-background/60 backdrop-blur-sm" />
+            
+            {/* The global RunningPixelBackground is fixed at z-[-10]. 
+                By setting the background image to z-[-20] and the overlay to z-[-5], 
+                the runners appear running ON the background but BEHIND the blur/UI. */}
+            <div className="absolute inset-0 w-full h-full bg-background/60 backdrop-blur-sm z-[-5]" />
 
             <div className="relative z-10 p-4 md:p-6 lg:p-8">
                 <Breadcrumb className="mb-4">
@@ -141,7 +147,7 @@ export default function PublicProfilePage() {
                                     {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-6 w-6" title="Angelic Power Rune"/>}
                                     {player.specialInsignia === 'black-flame' && <BlackFlameIcon className="text-primary h-6 w-6" title="Black Flame Wanderer"/>}
                                 </CardTitle>
-                                <CardDescription>@{player.username}</CardDescription>
+                                <CardTitle className="text-sm font-medium opacity-70">@{player.username}</CardTitle>
                                 {player.isBanned && <Badge variant="destructive" className="mt-2 text-base flex items-center gap-1"><ShieldX className="h-4 w-4"/>BANNED</Badge>}
                                 {displayTitle && <Badge variant="destructive" className="text-lg mt-1">{displayTitle}</Badge>}
                                 {!isCurrentUser && currentUser && (

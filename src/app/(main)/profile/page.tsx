@@ -71,14 +71,6 @@ export default function ProfilePage() {
 
     // Friend list logic: Find full user accounts for each friend username.
     const friends = useMemo(() => {
-        /**
-         * Friend Relationship Storage:
-         * The `friendUsernames` array on the `Player` object stores a list of usernames.
-         * This logic maps those usernames to the full UserAccount objects from the global `accounts` list
-         * to display their details (avatar, title, etc.).
-         * It includes a defensive check for `player.friendUsernames` to prevent crashes during
-         * data migration or brief inconsistencies.
-         */
         if (!player.friendUsernames) {
             return [];
         }
@@ -103,13 +95,6 @@ export default function ProfilePage() {
     };
 
 
-    /**
-     * Background Selection Logic:
-     * This determines the correct background image URL to display.
-     * The value is read from the user's data in the GameContext.
-     * It falls back to the default background if no selection is found.
-     * Console logs are added for debugging purposes.
-     */
     const currentBackgroundUrl = useMemo(() => {
         if (!player) {
             console.log('Profile Background: Player data not available.');
@@ -227,31 +212,23 @@ export default function ProfilePage() {
 
     return (
         <div className="relative -m-4 md:-m-6 h-full">
-            {/* 
-                Background Image Container.
-                It's an absolute-positioned div that fills the parent container.
-                The background image is applied via inline style from the `currentBackgroundUrl` state.
-            */}
             {hasSpecialBg ? (
-                <SpecialBackground type={player.specialBackground!} />
+                <div className="absolute inset-0 z-[-20]">
+                    <SpecialBackground type={player.specialBackground!} />
+                </div>
             ) : (
                 <div
-                    className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500"
+                    className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500 z-[-20]"
                     style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
                 />
             )}
-            {/* 
-                Overlay layer.
-                This sits on top of the background image to provide contrast for the text content.
-                The backdrop-blur effect is also applied here.
-            */}
-            <div className="absolute inset-0 w-full h-full bg-background/60 backdrop-blur-sm" />
+            
+            {/* The global RunningPixelBackground is fixed at z-[-10]. 
+                By setting the background image to z-[-20] and the overlay to z-[-5], 
+                the runners appear running ON the background but BEHIND the blur/UI. */}
+            
+            <div className="absolute inset-0 w-full h-full bg-background/60 backdrop-blur-sm z-[-5]" />
 
-            {/* 
-                Content Container.
-                This holds all the visible page content (cards, titles, etc.).
-                `position: relative` and `z-10` ensure it sits on top of the background and overlay layers.
-            */}
             <div className="relative z-10 container mx-auto p-4 md:p-6 lg:p-8">
                 <h1 className="font-headline text-4xl font-bold mb-8">Player Profile</h1>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
