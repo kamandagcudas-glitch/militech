@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
-// Define the characters used for the glitch effect
+// Define the characters used for the glitch effect - purely technical symbols, no emojis.
 const GLITCH_CHARS = '█▓▒░>_#';
 
 /**
