@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -40,8 +41,9 @@ const RunningPixelBackground = () => {
     setRunners(newRunners);
   }, [theme]);
 
-  // Hide the runners on the landing page (Title Screen)
-  if (pathname === '/') return null;
+  // Hide the runners on the landing page, login, register, and forgot password pages
+  const isAuthPage = pathname === '/' || pathname === '/login' || pathname === '/register' || pathname === '/forgot-password';
+  if (isAuthPage) return null;
 
   const getMaskImage = () => {
     switch (theme) {
