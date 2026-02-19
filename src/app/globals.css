@@ -260,7 +260,7 @@
   }
   .samurai body {
     background-color: hsl(var(--background));
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a12022' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5zm95 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9z'/%3E%3Cg%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a12022' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5zm95 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9z'/%3E%3Cg%3E%3C/g%3E%3C/svg%3E");
     animation: none;
   }
   .flames body {
@@ -648,7 +648,11 @@
 
   /* Gamified Avatar Borders */
   .avatar-border-wrapper {
-    @apply relative p-1 rounded-full w-fit h-fit flex items-center justify-center transition-transform duration-300 hover:scale-105;
+    @apply relative p-1 rounded-full w-fit h-fit flex items-center justify-center transition-all duration-300;
+  }
+
+  .avatar-border-wrapper:hover {
+    @apply brightness-110;
   }
 
   .avatar-border {
@@ -708,7 +712,7 @@
 
   /* Admin Specialized Image Border - Refined for perfect fit */
   .avatar-border-wrapper[data-border="admin-image"] {
-    @apply p-[14%]; /* Increased padding to ensure profile pic sits inside the frame hole */
+    @apply p-[12%]; /* Tightened padding for an exact fit */
   }
   .avatar-border-wrapper[data-border="admin-image"] .avatar-border {
     background-image: url('/Admin.png');
@@ -720,12 +724,12 @@
     animation: admin-frame-glow 3s infinite ease-in-out;
   }
   .avatar-border-wrapper[data-border="admin-image"]::before {
-    @apply inset-[14%] bg-background; /* Ensure inner circle is filled correctly */
+    @apply inset-[12%] bg-background; /* Ensure inner circle is filled correctly */
   }
 
   /* Custom user border for no.png */
   .avatar-border-wrapper[data-border="custom-no"] {
-    @apply p-[14%];
+    @apply p-[12%]; /* Tightened padding for an exact fit */
   }
   .avatar-border-wrapper[data-border="custom-no"] .avatar-border {
     background-image: url('/no.png');
@@ -736,7 +740,7 @@
     pointer-events: none;
   }
   .avatar-border-wrapper[data-border="custom-no"]::before {
-    @apply inset-[14%] bg-background;
+    @apply inset-[12%] bg-background;
   }
 
   .avatar-border-wrapper[data-border="default"] {
