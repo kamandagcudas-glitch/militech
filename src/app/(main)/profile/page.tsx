@@ -57,14 +57,6 @@ export default function ProfilePage() {
     const { player, stats, achievements } = currentUser;
     const hasSpecialBg = !!player.specialBackground;
 
-    useEffect(() => {
-        if (hasSpecialBg) {
-            console.log(`Profile Background: User ${player.username} has special background '${player.specialBackground}' applied.`);
-        } else {
-            console.log(`Profile Background: User ${player.username} is using standard background system.`);
-        }
-    }, [player.username, hasSpecialBg, player.specialBackground]);
-    
     const activeTitle = player.activeTitleId ? achievementsData.find(a => a.id === player.activeTitleId) : null;
     const displayTitle = player.customTitle || activeTitle?.name;
     const unlockedBadges = achievements.filter(a => a.type === 'badge');
@@ -96,39 +88,46 @@ export default function ProfilePage() {
 
 
     const currentBackgroundUrl = useMemo(() => {
-        if (!player) {
-            console.log('Profile Background: Player data not available.');
-            return '';
-        }
+        if (!player) return '';
     
         if (player.profileBackgroundId === 'custom' && player.profileBackgroundUrl) {
-            console.log('Profile Background: Applying custom uploaded background.');
             return player.profileBackgroundUrl;
         }
         
         const predefined = predefinedBackgrounds.find(bg => bg.id === player.profileBackgroundId);
-        const url = predefined ? predefined.imageUrl : (predefinedBackgrounds[0]?.imageUrl || '');
-        console.log(`Profile Background: Applying predefined background with ID '${player.profileBackgroundId}'. URL: ${url}`);
-        return url;
+        return predefined ? predefined.imageUrl : (predefinedBackgrounds[0]?.imageUrl || '');
     }, [player]);
 
     const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
-            setSelectedAvatarFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setAvatarPreviewUrl(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            toast({
-                variant: "destructive",
-                title: "Invalid File Type",
-                description: "Please select a JPG or PNG image.",
-            });
-            setSelectedAvatarFile(null);
-            setAvatarPreviewUrl(null);
+        if (file) {
+            // Check file size (1MB limit for Firestore document safety)
+            if (file.size > 1024 * 1024) {
+                toast({
+                    variant: "destructive",
+                    title: "Image Too Large",
+                    description: "Please select an image smaller than 1MB to ensure it can be saved.",
+                });
+                e.target.value = '';
+                return;
+            }
+
+            if (file.type === 'image/jpeg' || file.type === 'image/png') {
+                setSelectedAvatarFile(file);
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setAvatarPreviewUrl(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Invalid File Type",
+                    description: "Please select a JPG or PNG image.",
+                });
+                setSelectedAvatarFile(null);
+                setAvatarPreviewUrl(null);
+            }
         }
     };
 
@@ -148,12 +147,13 @@ export default function ProfilePage() {
     const handleBgFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            if (file.size > 1024 * 1024) { // 1MB limit for document safety
                 toast({
                     variant: "destructive",
                     title: "Image Too Large",
-                    description: "Background images must be smaller than 5MB.",
+                    description: "Background images must be smaller than 1MB to be saved to your profile.",
                 });
+                e.target.value = '';
                 return;
             }
 
@@ -222,10 +222,6 @@ export default function ProfilePage() {
                     style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
                 />
             )}
-            
-            {/* The global RunningPixelBackground is fixed at z-[-10]. 
-                By setting the background image to z-[-20] and the overlay to z-[-5], 
-                the runners appear running ON the background but BEHIND the blur/UI. */}
             
             <div className="absolute inset-0 w-full h-full bg-background/60 backdrop-blur-sm z-[-5]" />
 
@@ -462,7 +458,7 @@ export default function ProfilePage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Upload Profile Picture</DialogTitle>
-                        <DialogDescription>Select a JPG or PNG image. The image will be saved locally in your browser.</DialogDescription>
+                        <DialogDescription>Select a JPG or PNG image (Max 1MB). The image will be saved to your MI-LITECH profile.</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                         {avatarPreviewUrl && (
@@ -493,7 +489,7 @@ export default function ProfilePage() {
                 <DialogContent className="max-w-3xl">
                     <DialogHeader>
                         <DialogTitle>Customize Profile Background</DialogTitle>
-                        <DialogDescription>Select a predefined theme or upload your own image.</DialogDescription>
+                        <DialogDescription>Select a predefined theme or upload your own image (Max 1MB).</DialogDescription>
                     </DialogHeader>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
                         <div className="space-y-3">

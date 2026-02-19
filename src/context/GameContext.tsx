@@ -53,6 +53,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth';
+import { updateDocumentNonBlocking, addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 
 const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
@@ -444,15 +445,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateUserDoc = useCallback(async (updates: Partial<UserAccount> | {[key:string]: any}) => {
+  const updateUserDoc = useCallback((updates: Partial<UserAccount> | {[key:string]: any}) => {
     if (!userDocRef) return;
-    try {
-      await updateDoc(userDocRef, updates);
-    } catch (error) {
-      console.error("Update User Doc Error: ", error);
-      toast({ variant: "destructive", title: "Update Failed", description: "Your changes could not be saved." });
-    }
-  }, [userDocRef, toast]);
+    updateDocumentNonBlocking(userDocRef, updates);
+  }, [userDocRef]);
   
   const logActivity = useCallback(async (activity: string, details: string) => {
     if (!currentUser || !isAdmin) return;
@@ -569,7 +565,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
           return { success: false, message: 'Display name can only contain letters, numbers, spaces, and underscores.' };
       }
 
-      await updateUserDoc({ 'player.displayName': trimmedDisplayName });
+      updateUserDoc({ 'player.displayName': trimmedDisplayName });
 
       toast({
           title: "Display Name Updated!",
@@ -656,7 +652,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const rejectFriendRequest = async (senderUsername: string) => {
     if (!currentUser || !userDocRef) return;
     const newRequests = currentUser.player.friendRequests.filter(req => req !== senderUsername);
-    await updateUserDoc({ 'player.friendRequests': newRequests });
+    updateUserDoc({ 'player.friendRequests': newRequests });
 
     const sender = accounts?.find(acc => acc.player.username === senderUsername);
     toast({
@@ -699,7 +695,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       });
     } catch (error) {
       console.error("Send Verification Email Error: ", error);
-      toast({ variant: 'destructive', title: 'Error', description: 'Could not send verification email.' });
+      toast({ variant: "destructive", title: "Error", description: "Could not send verification email." });
     }
   };
 
@@ -733,7 +729,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     
     try {
         await updateAuthEmail(authUser, trimmedEmail);
-        await updateDoc(userDocRef, { 'player.email': trimmedEmail, 'player.emailVerified': false });
+        updateUserDoc({ 'player.email': trimmedEmail, 'player.emailVerified': false });
         toast({ title: "Email Updated", description: "Your email has been updated. Please re-verify." });
         return { success: true, message: "Success" };
     } catch (error: any) {
@@ -760,14 +756,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
     return { success: false, message: "This function is deprecated. Please use the link sent to your email." };
   }
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = (file: File) => {
     if (!currentUser || !userDocRef) return;
     if (file.size > 5 * 1024 * 1024) { 
       toast({ variant: "destructive", title: "File is too large", description: "Files must be smaller than 5MB." });
       return;
     }
     const reader = new FileReader();
-    reader.onload = async (e) => {
+    reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
       const newFile: UserFile = {
         id: crypto.randomUUID(),
@@ -779,17 +775,17 @@ export function GameProvider({ children }: { children: ReactNode }) {
         sharedWith: [],
         uploadDate: new Date().toISOString(),
       };
-      await updateUserDoc({ files: [...currentUser.files, newFile] });
+      updateUserDoc({ files: [...currentUser.files, newFile] });
       logActivity('File Uploaded', `File: ${file.name}`);
       toast({ title: "File Uploaded", description: `"${file.name}" has been saved.` });
     };
     reader.readAsDataURL(file);
   };
   
-  const deleteFile = async (fileId: string) => {
+  const deleteFile = (fileId: string) => {
     if (!currentUser) return;
     const updatedFiles = currentUser.files.filter(f => f.id !== fileId);
-    await updateUserDoc({ files: updatedFiles });
+    updateUserDoc({ files: updatedFiles });
     toast({ title: "File Deleted" });
   };
   
@@ -819,7 +815,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     toast({ title: "File Shared!", description: `A copy of "${fileToShare.name}" has been sent to ${friendUsername}.` });
   };
   
-  const postFeedback = async (message: string) => {
+  const postFeedback = (message: string) => {
     if (!currentUser) return;
     if (currentUser.player.isBanned || currentUser.player.isMuted) {
       toast({ variant: 'destructive', title: 'Action Restricted' });
@@ -834,7 +830,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       timestamp: new Date().toISOString(),
       specialInsignia: currentUser.player.specialInsignia,
     };
-    await addDoc(collection(firestore, 'feedback'), newFeedback);
+    addDocumentNonBlocking(collection(firestore, 'feedback'), newFeedback);
     logActivity('Feedback Posted', `Message: "${message.substring(0, 30)}..."`);
     toast({ title: "Feedback Submitted!" });
   };
@@ -852,7 +848,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     for (const key in updates) {
         playerUpdate[`player.${key}`] = (updates as any)[key];
     }
-    await updateDoc(userDoc.ref, playerUpdate);
+    updateDocumentNonBlocking(userDoc.ref, playerUpdate);
   };
   
   const banUser = (username: string) => {
@@ -891,7 +887,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     toast({ title: 'Title Updated', description: `${username}'s title has been changed.` });
   };
 
-  const sendMessage = async (friendUid: string, message: string) => {
+  const sendMessage = (friendUid: string, message: string) => {
     if (!currentUser || !friendUid) return;
 
     const uids = [currentUser.player.uid, friendUid].sort();
@@ -899,7 +895,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     const messagesCol = collection(firestore, 'chats', chatId, 'messages');
     
-    await addDoc(messagesCol, {
+    addDocumentNonBlocking(messagesCol, {
       senderId: currentUser.player.uid,
       message: message,
       timestamp: serverTimestamp(),
