@@ -1,20 +1,34 @@
+
 "use client";
 
-import { useContext, useState, useMemo } from 'react';
+import { useContext, useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { cocData } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck, Search } from 'lucide-react';
+import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck, Search, Trophy } from 'lucide-react';
 import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import AnimatedGlitchText from '@/components/animated-glitch-text';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import StickmanFighter from '@/components/stickman-fighter';
 
 export default function DashboardPage() {
     const game = useContext(GameContext) as GameContextType;
     const [searchQuery, setSearchQuery] = useState('');
+    const [showSecretGame, setShowSecretGame] = useState(false);
+
+    useEffect(() => {
+        if (searchQuery.toUpperCase() === 'BORED') {
+            setShowSecretGame(true);
+            setSearchQuery('');
+            if (game.addAchievement) {
+                game.addAchievement('certified-bored');
+            }
+        }
+    }, [searchQuery, game]);
 
     if (!game.currentUser) return null;
 
@@ -156,6 +170,12 @@ export default function DashboardPage() {
                     <p>No modules or features match your search query.</p>
                 </div>
             )}
+
+            <Dialog open={showSecretGame} onOpenChange={setShowSecretGame}>
+                <DialogContent className="max-w-[800px] p-0 bg-black border-primary overflow-hidden">
+                    <StickmanFighter onExit={() => setShowSecretGame(false)} />
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
