@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
@@ -13,26 +12,26 @@ const totalPossibleSteps = cocData.reduce((sum, coc) => sum + coc.steps.length, 
 
 const getBorderData = (player: Player, progress: UserAccount['progress']): { type: BorderType; name: string; requirement: string } => {
     if (player.isCreator) {
-        return { type: 'diamond', name: 'Diamond Border', requirement: 'An exclusive border for the system architect.' };
+        return { type: 'diamond', name: 'Architect Frame', requirement: 'An exclusive frame for the system architect.' };
     }
     if (player.specialInsignia === 'black-flame') {
-        return { type: 'black-flame', name: 'Black Flame Border', requirement: 'Master the dark arts.' };
+        return { type: 'black-flame', name: 'Abyssal Frame', requirement: 'Master the dark arts of the simulation.' };
     }
 
     const totalCompletedSteps = Object.values(progress).reduce((sum, p) => sum + p.completedSteps.length, 0);
     const completionPercentage = totalPossibleSteps > 0 ? (totalCompletedSteps / totalPossibleSteps) * 100 : 0;
 
     if (completionPercentage >= 75) {
-        return { type: 'gold', name: 'Gold Border', requirement: 'Achieve 75% total completion.' };
+        return { type: 'gold', name: 'Master Frame', requirement: 'Achieve 75% total completion.' };
     }
     if (completionPercentage >= 25) {
-        return { type: 'silver', name: 'Silver Border', requirement: 'Achieve 25% total completion.' };
+        return { type: 'silver', name: 'Elite Frame', requirement: 'Achieve 25% total completion.' };
     }
     if (completionPercentage > 0) {
-        return { type: 'bronze', name: 'Bronze Border', requirement: 'Complete your first step.' };
+        return { type: 'bronze', name: 'Apprentice Frame', requirement: 'Complete your first step.' };
     }
 
-    return { type: 'default', name: 'Default Border', requirement: 'Begin your journey.' };
+    return { type: 'default', name: 'Standard Unit', requirement: 'Begin your journey.' };
 };
 
 export function GamifiedAvatar({ account, className, imageClassName }: { account: UserAccount; className?: string; imageClassName?: string }) {
@@ -53,9 +52,9 @@ export function GamifiedAvatar({ account, className, imageClassName }: { account
     const avatarComponent = (
         <div className={cn("avatar-border-wrapper", className)} data-border={borderData.type}>
             <div className="avatar-border"></div>
-            <Avatar className={cn('relative', imageClassName)}>
+            <Avatar className={cn('relative z-10', imageClassName)}>
                 <AvatarImage src={player.avatar} alt={player.username} />
-                <AvatarFallback>{player.displayName.charAt(0)}</AvatarFallback>
+                <AvatarFallback className="bg-muted text-foreground">{player.displayName.charAt(0)}</AvatarFallback>
             </Avatar>
         </div>
     );
@@ -64,9 +63,9 @@ export function GamifiedAvatar({ account, className, imageClassName }: { account
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>{avatarComponent}</TooltipTrigger>
-                <TooltipContent>
-                    <p className="font-bold">{borderData.name}</p>
-                    <p className="text-muted-foreground">{borderData.requirement}</p>
+                <TooltipContent side="top" className="bg-card/90 backdrop-blur-md border-primary/50 text-foreground p-3">
+                    <p className="font-bold text-primary">{borderData.name}</p>
+                    <p className="text-xs text-muted-foreground">{borderData.requirement}</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
