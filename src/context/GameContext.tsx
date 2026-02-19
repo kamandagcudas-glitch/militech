@@ -764,8 +764,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const uploadFile = (file: File) => {
     if (!currentUser || !userDocRef) return;
-    if (file.size > 5 * 1024 * 1024) { 
-      toast({ variant: "destructive", title: "File is too large", description: "Files must be smaller than 5MB." });
+    // Standardizing to 1MB limit to ensure it fits in the Firestore document
+    if (file.size > 1 * 1024 * 1024) { 
+      toast({ variant: "destructive", title: "File is too large", description: "Network Storage Limit: 1MB per file." });
       return;
     }
     const reader = new FileReader();

@@ -137,9 +137,9 @@ export default function FilesPage() {
                 </Button>
             </div>
             
-            <div className="p-4 mb-6 rounded-lg border border-yellow-400/50 bg-yellow-950/30 text-yellow-300 flex items-center gap-3">
+            <div className="p-4 mb-6 rounded-lg border border-primary/50 bg-primary/10 text-primary flex items-center gap-3">
                 <AlertCircle className="h-5 w-5"/>
-                <p className="text-sm font-medium">This is an offline-only demo. Uploaded files are stored in your browser's local storage, which has a hard limit of around 5MB. Do not upload large or critical files.</p>
+                <p className="text-sm font-medium">MI-LITECH Network Storage: Your profile (including files and custom images) has a shared 1MB total capacity. Files larger than 800KB may fail to sync with the central database.</p>
             </div>
 
             <Card>
