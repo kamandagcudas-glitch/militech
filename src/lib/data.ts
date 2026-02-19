@@ -1,5 +1,4 @@
 
-
 import type { COC, MiniGameRound, Achievement, WordCompletionGameRound } from './types';
 
 export const cocData: COC[] = [
@@ -539,7 +538,7 @@ export const cocData: COC[] = [
             { question: 'If your computer cannot start Windows properly, how can you access System Restore?', options: ['You cannot access it', 'From the Advanced Startup Options menu', 'By pressing F1', 'By unplugging the computer'], correctAnswer: 'From the Advanced Startup Options menu', explanation: 'If Windows fails to boot multiple times, it will often automatically load the Advanced Startup Options, which includes System Restore.' },
             { question: 'What does System Restore use to store its data?', options: ['The cloud', 'A hidden folder on your hard drive called "System Volume Information"', 'A separate, external hard drive', 'The Recycle Bin'], correctAnswer: 'A hidden folder on your hard drive called "System Volume Information"', explanation: 'System Restore allocates a certain percentage of your disk space for its restore points.' },
             { question: 'Can you undo a System Restore?', options: ['No, it is permanent', 'Yes, you can undo the most recent restore', 'Only if you have a backup', 'Only within the first 5 minutes'], correctAnswer: 'Yes, you can undo the most recent restore', explanation: 'If restoring to a point doesn\'t fix your problem or causes a new one, you have the option to undo it.' },
-            { question: 'Does System Restore protect you from viruses?', options: ['Yes, it is a complete antivirus solution', 'No, it is not a replacement for antivirus software', 'It can remove some viruses, but may not remove all traces', 'Only from email viruses'], correctAnswer: 'It can remove some viruses, but may not remove all traces', explanation: 'While it might revert a change made by a virus, it does not clean the infection. You still need proper antivirus software.' },
+            { question: 'Does System Restore protect you from viruses?', options: ['Yes, it is a complete antivirus solution', 'No, it is not a replacement for antivirus software', 'It can remove some viruses, but may not remove all traces', 'Only from email viruses'], correctAnswer: 'No, it does not affect personal files', explanation: 'While it might revert a change made by a virus, it does not clean the infection. You still need proper antivirus software.' },
             { question: 'By default, when does Windows automatically create a restore point?', options: ['Every time you open a file', 'Before a major Windows Update or software installation', 'Every night at midnight', 'It never creates them automatically'], correctAnswer: 'Before a major Windows Update or software installation', explanation: 'Windows creates restore points automatically during significant system events.' },
             { question: 'What is the main purpose of System Restore?', options: ['To back up your personal photos', 'To recover from system malfunctions or bad software installs', 'To free up disk space', 'To speed up your internet'], correctAnswer: 'To recover from system malfunctions or bad software installs', explanation: 'It\'s a recovery tool, not a backup solution for personal data.' },
             { question: 'How do you create a restore point manually?', options: ['It is not possible', 'In System Properties > System Protection, click "Create"', 'In Task Manager, click "New Task"', 'By saving a file in a special folder'], correctAnswer: 'In System Properties > System Protection, click "Create"', explanation: 'You can give the restore point a descriptive name to remember why you created it.' },
@@ -640,6 +639,7 @@ export const achievementsData: Achievement[] = [
     { id: 'angelic-power-rune', name: 'Angelic Power Rune', description: 'A symbol of divine power, granted to the angelic.', type: 'badge' },
     { id: 'rapid-click', name: 'Rapid Clicker', description: 'Whoa there, take it easy on that mouse.', type: 'badge' },
     { id: 'black-flame-wanderer', name: 'Black Flame Wanderer', description: 'burnt to toast', type: 'title' },
+    { id: 'good-boy', name: 'Good Boy', description: 'Whos Mommy good boy ;>', type: 'title' },
 ];
 
 export const miniGameData: MiniGameRound[] = [

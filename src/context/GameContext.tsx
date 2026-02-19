@@ -59,6 +59,7 @@ const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
 const ADMIN_EMAIL = "kamandagcudas@gmail.com";
 const CABBAGE_THIEF_USERNAME = "TheGreatCabbageThief";
 const RAYTHEON_USERNAME = "Raytheon";
+const GOOD_BOY_USERNAME = "goodboy";
 
 export interface GameContextType {
   currentUser: UserAccount | null;
@@ -130,14 +131,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
     const trimmedUsername = username.trim();
     const trimmedEmail = email.trim().toLowerCase();
     
-    // This query is now allowed for signed-out users, but it's best to avoid it
-    // if possible to prevent unnecessary reads. We'll handle uniqueness via Firestore rules on create.
-    const usernameQuery = query(collection(firestore, 'users'), where('player.username', '==', trimmedUsername));
-    // const usernameSnapshot = await getDocs(usernameQuery);
-    // if (!usernameSnapshot.empty) {
-    //   return { success: false, message: 'This callsign is already taken.' };
-    // }
-    
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
         return { success: false, message: 'Please enter a valid email address.' };
     }
@@ -153,6 +146,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const isCabbageThief = trimmedUsername === CABBAGE_THIEF_USERNAME;
       const isVergil = trimmedUsername.toLowerCase() === 'vergil';
       const isRaytheon = trimmedUsername === RAYTHEON_USERNAME;
+      const isGoodBoy = trimmedUsername.toLowerCase() === GOOD_BOY_USERNAME.toLowerCase();
 
       const playerObject: Partial<Player> = {
         uid: user.uid,
@@ -199,6 +193,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
               if(playerObject.unlockedTitleIds) playerObject.unlockedTitleIds.push(achievement.id);
               playerObject.activeTitleId = achievement.id;
           }
+      } else if (isGoodBoy) {
+          playerObject.activeTitleId = 'good-boy';
+          playerObject.unlockedTitleIds = ['good-boy'];
+          const achievement = achievementsData.find(a => a.id === 'good-boy');
+          if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
       }
 
       const newPlayer: Player = {
@@ -223,7 +222,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
         profileBackgroundId: newPlayer.profileBackgroundId,
       };
 
-      // Conditionally add optional fields to avoid Firestore 'undefined' error
       if (newPlayer.customTitle) finalPlayerObject.customTitle = newPlayer.customTitle;
       if (newPlayer.specialBackground) finalPlayerObject.specialBackground = newPlayer.specialBackground;
       if (newPlayer.specialInsignia) finalPlayerObject.specialInsignia = newPlayer.specialInsignia;
@@ -283,7 +281,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
       const user = userCredential.user;
 
-      // Log the login attempt
       await addDoc(collection(firestore, 'loginHistory'), {
           userId: user.uid,
           username: user.email,
@@ -311,8 +308,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
         if (!userDocSnap.exists()) {
             const isCreator = user.email?.toLowerCase() === ADMIN_EMAIL;
-            // New user, create profile
-            // Generate a unique username
             let username = user.email?.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || `user${Date.now()}`;
             if(isCreator) {
                 username = CREATOR_USERNAME;
@@ -410,10 +405,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 title: 'Account Created!',
                 description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
             });
-            userDocSnap = await getDoc(userDocRef); // Re-fetch the doc after creation
+            userDocSnap = await getDoc(userDocRef);
         }
 
-        // Log login attempt
         await addDoc(collection(firestore, 'loginHistory'), {
             userId: user.uid,
             username: user.email,
@@ -425,7 +419,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
         return { success: true, message: 'Login successful' };
     } catch (error: any) {
         if (error.code === 'auth/popup-closed-by-user') {
-            // Do not show an error toast if the user cancelled
             return { success: false, message: 'Sign-in cancelled by user.' };
         }
         console.error("Google Sign-In Error: ", error);
@@ -592,7 +585,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return;
     }
   
-    // Check if a request was already sent or if they are already friends
     if (receiverAccount.player.friendRequests?.includes(currentUser.player.username)) {
       toast({ title: 'A request has already been sent.' });
       return;
@@ -633,7 +625,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     const batch = writeBatch(firestore);
 
-    // Update current user's document
     const newCurrentUserFriends = [...currentUser.player.friendUsernames, senderUsername];
     const newCurrentUserRequests = currentUser.player.friendRequests.filter(req => req !== senderUsername);
     batch.update(userDocRef, { 
@@ -641,7 +632,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       'player.friendRequests': newCurrentUserRequests
     });
 
-    // Update sender's document
     const senderDocRef = doc(firestore, 'users', sender.player.uid);
     const newSenderFriends = [...sender.player.friendUsernames, currentUser.player.username];
     batch.update(senderDocRef, {
@@ -675,11 +665,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     const batch = writeBatch(firestore);
 
-    // Remove friend from current user's list
     const newCurrentUserFriends = currentUser.player.friendUsernames.filter(f => f !== friendUsername);
     batch.update(userDocRef, { 'player.friendUsernames': newCurrentUserFriends });
 
-    // Remove current user from friend's list
     if (friendAccount) {
         const friendDocRef = doc(firestore, 'users', friendAccount.player.uid);
         const newFriendFriends = friendAccount.player.friendUsernames.filter(f => f !== currentUser.player.username);
@@ -811,12 +799,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     const batch = writeBatch(firestore);
 
-    // Add file to friend's files array
     const friendDocRef = doc(firestore, 'users', friendAccount.player.uid);
-    const newFriendFile = { ...fileToShare, ownerUsername: currentUser.player.username, sharedWith: [] }; // Reset sharedWith for the copy
+    const newFriendFile = { ...fileToShare, ownerUsername: currentUser.player.username, sharedWith: [] };
     batch.update(friendDocRef, { files: [...friendAccount.files, newFriendFile] });
     
-    // Update the sharedWith array on the original file
     const newSharedWith = [...fileToShare.sharedWith, friendUsername];
     const updatedMyFiles = currentUser.files.map(f => f.id === fileId ? { ...f, sharedWith: newSharedWith } : f);
     batch.update(userDocRef, { files: updatedMyFiles });
@@ -928,4 +914,3 @@ export function GameProvider({ children }: { children: ReactNode }) {
     </GameContext.Provider>
   );
 }
-
