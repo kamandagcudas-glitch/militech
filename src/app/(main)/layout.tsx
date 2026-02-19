@@ -4,6 +4,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   SidebarProvider,
   Sidebar,
@@ -103,9 +104,18 @@ export default function MainAppLayout({
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2">
-            <GamepadIcon className="size-8 text-primary" />
-            <h1 className="font-headline text-2xl font-bold">IT MAZING</h1>
+          <div className="flex items-center gap-3 p-2">
+            <Image 
+              src="/miltechs.png" 
+              alt="MI-LITECH Logo" 
+              width={40} 
+              height={40} 
+              className="rounded-md shadow-lg shadow-primary/20"
+            />
+            <div className="flex flex-col">
+              <h1 className="font-headline text-xl font-bold leading-none">MI-LITECH</h1>
+              <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest mt-1">Operations</span>
+            </div>
           </div>
         </SidebarHeader>
         <SidebarContent>
@@ -184,4 +194,3 @@ export default function MainAppLayout({
     </SidebarProvider>
   );
 }
-

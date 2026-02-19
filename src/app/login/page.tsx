@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { useTheme } from "@/context/ThemeContext";
@@ -71,13 +72,22 @@ export default function LoginPage() {
     <main className="flex min-h-screen flex-col items-center justify-center p-4">
       <Link href="/" className="absolute top-8 left-8 text-sm text-muted-foreground hover:text-primary">&larr; Back to Home</Link>
       <Card className="w-full max-w-sm shadow-2xl bg-card/80 backdrop-blur-sm border border-primary/20">
-        <CardHeader className="text-center">
-          <CardTitle className="font-headline text-4xl font-bold text-primary">
-            Agent Login
-          </CardTitle>
-          <CardDescription>
-            Enter your credentials to continue your mission.
-          </CardDescription>
+        <CardHeader className="text-center flex flex-col items-center gap-4">
+          <Image 
+            src="/miltechs.png" 
+            alt="MI-LITECH Logo" 
+            width={80} 
+            height={80} 
+            className="rounded-lg shadow-2xl shadow-primary/20"
+          />
+          <div>
+            <CardTitle className="font-headline text-4xl font-bold text-primary">
+              Agent Login
+            </CardTitle>
+            <CardDescription>
+              Enter your credentials to continue your mission.
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
