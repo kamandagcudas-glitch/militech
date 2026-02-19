@@ -260,7 +260,7 @@
   }
   .samurai body {
     background-color: hsl(var(--background));
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a12022' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5zm95 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a12022' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5zm95 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9z'/%3E%3Cg%3E%3C/g%3E%3C/svg%3E");
     animation: none;
   }
   .flames body {
@@ -648,7 +648,7 @@
 
   /* Gamified Avatar Borders */
   .avatar-border-wrapper {
-    @apply relative p-1 rounded-full w-fit h-fit transition-transform duration-300 hover:scale-105;
+    @apply relative p-1 rounded-full w-fit h-fit flex items-center justify-center transition-transform duration-300 hover:scale-105;
   }
 
   .avatar-border {
@@ -658,7 +658,7 @@
   /* Layered structure for border: Wrapper -> Inner Background (Padding) -> Image */
   .avatar-border-wrapper::before {
     content: '';
-    @apply absolute inset-[3px] rounded-full z-[1] bg-card;
+    @apply absolute inset-[2px] rounded-full z-[1] bg-card;
   }
 
   /* Common shimmer animation */
@@ -669,27 +669,27 @@
 
   .avatar-border-wrapper[data-border="bronze"] .avatar-border {
     background: linear-gradient(135deg, #a87932 0%, #cd7f32 50%, #8b5a2b 100%);
-    box-shadow: 0 0 10px rgba(205, 127, 50, 0.3), inset 0 0 5px rgba(0,0,0,0.5);
+    box-shadow: 0 0 8px rgba(205, 127, 50, 0.3);
   }
 
   .avatar-border-wrapper[data-border="silver"] .avatar-border {
     background: linear-gradient(135deg, #d1d1d1 0%, #ffffff 50%, #a1a1a1 100%);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2), inset 0 0 5px rgba(0,0,0,0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
   }
 
   .avatar-border-wrapper[data-border="gold"] .avatar-border {
     background: linear-gradient(135deg, #ffd700 0%, #fff9aa 50%, #b8860b 100%);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), inset 0 0 5px rgba(0,0,0,0.5);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
     animation: gold-pulse 3s infinite ease-in-out;
   }
 
   @keyframes gold-pulse {
-    50% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), inset 0 0 8px rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
   }
 
   .avatar-border-wrapper[data-border="diamond"] .avatar-border {
     background: linear-gradient(135deg, #b9f2ff 0%, #ffffff 50%, #70d1ff 100%);
-    box-shadow: 0 0 20px rgba(185, 242, 255, 0.6), inset 0 0 10px rgba(185, 242, 255, 0.4);
+    box-shadow: 0 0 15px rgba(185, 242, 255, 0.6);
     overflow: hidden;
   }
 
@@ -702,24 +702,24 @@
 
   .avatar-border-wrapper[data-border="black-flame"] .avatar-border {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, #000 50%, hsl(var(--primary)) 100%);
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.6), inset 0 0 10px hsl(var(--primary) / 0.4);
+    box-shadow: 0 0 15px hsl(var(--primary) / 0.6);
     animation: border-pulse 2.5s infinite ease-in-out;
   }
 
-  /* Admin Specialized Image Border */
+  /* Admin Specialized Image Border - Refined for perfect fit */
   .avatar-border-wrapper[data-border="admin-image"] {
-    @apply p-2;
+    @apply p-1.5; /* Tighten padding */
   }
   .avatar-border-wrapper[data-border="admin-image"] .avatar-border {
     background-image: url('/Admin.png');
-    background-size: 100% 100%;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     z-index: 2;
     animation: admin-frame-glow 3s infinite ease-in-out;
   }
   .avatar-border-wrapper[data-border="admin-image"]::before {
-    background: transparent;
+    @apply inset-[4px] bg-background; /* Ensure inner circle is filled correctly */
   }
 
   .avatar-border-wrapper[data-border="default"] {
