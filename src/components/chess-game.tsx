@@ -360,20 +360,20 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
               <Bot className="h-3 w-3" /> System Logic
             </h3>
             <div className="grid grid-cols-1 gap-2">
-              <div className="flex bg-zinc-800 rounded p-1">
+              <div className="flex gap-1">
                   <Button
-                    variant="ghost"
+                    variant="cyber"
                     size="sm"
                     onClick={() => { setMoveMode('PvBot'); resetGame(); }}
-                    className={cn("flex-1 text-[10px] h-7", moveMode === 'PvBot' && "bg-zinc-700 text-cyan-400")}
+                    className={cn("flex-1 text-[10px] h-7", moveMode !== 'PvBot' && "opacity-50 grayscale")}
                   >
                     AI UNIT
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant="cyber"
                     size="sm"
                     onClick={() => { setMoveMode('PvP'); resetGame(); }}
-                    className={cn("flex-1 text-[10px] h-7", moveMode === 'PvP' && "bg-zinc-700 text-cyan-400")}
+                    className={cn("flex-1 text-[10px] h-7", moveMode !== 'PvP' && "opacity-50 grayscale")}
                   >
                     NEURAL LINK
                   </Button>
@@ -386,10 +386,10 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
                           {(['Easy', 'Medium', 'Hard'] as Difficulty[]).map((d) => (
                               <Button
                                 key={d}
-                                variant="ghost"
+                                variant="cyber"
                                 size="sm"
                                 onClick={() => setDifficulty(d)}
-                                className={cn("text-[9px] h-6 border border-zinc-800", difficulty === d && "bg-cyan-500/20 text-cyan-400 border-cyan-500/50")}
+                                className={cn("text-[9px] h-6 px-0", difficulty !== d && "opacity-50 grayscale")}
                               >
                                 {d}
                               </Button>
@@ -434,10 +434,10 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
             )}
 
             <div className="mt-auto space-y-2 pt-4">
-              <Button variant="outline" className="w-full justify-start gap-2 h-8 text-[10px] border-zinc-800" onClick={undoMove} disabled={boardHistory.length === 0}>
+              <Button variant="cyber" className="w-full justify-start gap-2 h-8 text-[10px]" onClick={undoMove} disabled={boardHistory.length === 0}>
                 <Undo2 className="h-3 w-3" /> UNDO ACTION
               </Button>
-              <Button variant="outline" className="w-full justify-start gap-2 h-8 text-[10px] text-destructive hover:text-destructive border-zinc-800" onClick={resetGame}>
+              <Button variant="cyber" className="w-full justify-start gap-2 h-8 text-[10px]" onClick={resetGame}>
                 <RotateCcw className="h-3 w-3" /> REBOOT CORE
               </Button>
             </div>
