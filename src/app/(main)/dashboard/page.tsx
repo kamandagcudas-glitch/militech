@@ -12,7 +12,7 @@ import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck, Search, Tro
 import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import AnimatedGlitchText from '@/components/animated-glitch-text';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import StickmanFighter from '@/components/stickman-fighter';
 
 export default function DashboardPage() {
@@ -173,6 +173,9 @@ export default function DashboardPage() {
 
             <Dialog open={showSecretGame} onOpenChange={setShowSecretGame}>
                 <DialogContent className="max-w-[800px] p-0 bg-black border-primary overflow-hidden">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Stickman Fighter Easter Egg</DialogTitle>
+                    </DialogHeader>
                     <StickmanFighter onExit={() => setShowSecretGame(false)} />
                 </DialogContent>
             </Dialog>
