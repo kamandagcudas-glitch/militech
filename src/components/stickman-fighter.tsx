@@ -13,11 +13,22 @@ interface StickmanFighterProps {
 
 type GameMode = 'PvP' | 'PvBot';
 
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
+  color: string;
+}
+
 export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
   const [winner, setWinner] = useState<string | null>(null);
   const requestRef = useRef<number>(null);
+  const particlesRef = useRef<Particle[]>([]);
+  const [shake, setShake] = useState(0);
 
   const CANVAS_WIDTH = 800;
   const CANVAS_HEIGHT = 400;
@@ -40,6 +51,8 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     direction: number; // 1 for right, -1 for left
     name: string;
     attackCooldown: number = 0;
+    frame: number = 0;
+    hitFlash: number = 0;
 
     constructor(x: number, y: number, color: string, direction: number, name: string) {
       this.x = x;
@@ -50,13 +63,31 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-      ctx.strokeStyle = this.color;
+      this.frame++;
+      
+      // Hit flash effect
+      const drawColor = this.hitFlash > 0 ? '#ffffff' : this.color;
+      if (this.hitFlash > 0) this.hitFlash--;
+
+      ctx.strokeStyle = drawColor;
       ctx.lineWidth = 4;
       ctx.lineCap = 'round';
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = this.color;
+
+      // Dynamic bobbing (breathing)
+      const bob = Math.sin(this.frame * 0.1) * 2;
+      const headBob = Math.sin(this.frame * 0.15) * 1;
 
       const headX = this.x + this.width / 2;
-      const headY = this.y + 15;
+      const headY = this.y + 15 + bob + headBob;
       const headRadius = 12;
+
+      // Ground Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.beginPath();
+      ctx.ellipse(headX, GROUND_Y, 20, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
 
       // Body (Spine)
       ctx.beginPath();
@@ -69,47 +100,95 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       ctx.arc(headX, headY, headRadius, 0, Math.PI * 2);
       ctx.stroke();
 
+      // Eyes (Digital units)
+      ctx.fillStyle = 'white';
+      const eyeOffset = 4 * this.direction;
+      if (this.hitFlash > 0) {
+          // X Eyes when hit
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(headX + eyeOffset - 2, headY - 2);
+          ctx.lineTo(headX + eyeOffset + 2, headY + 2);
+          ctx.moveTo(headX + eyeOffset + 2, headY - 2);
+          ctx.lineTo(headX + eyeOffset - 2, headY + 2);
+          ctx.stroke();
+      } else if (this.isAttacking) {
+          // Angry/Focused eyes
+          ctx.fillRect(headX + eyeOffset - 1, headY - 2, 6 * this.direction, 2);
+      } else {
+          // Neutral eyes
+          ctx.fillRect(headX + eyeOffset, headY - 1, 2, 2);
+      }
+
+      // Reset shadow for limbs
+      ctx.shadowBlur = 0;
+
       // Arms
       const armY = headY + 20;
       let leftArmX = headX - 20;
       let rightArmX = headX + 20;
+      let leftArmY = armY + 10;
+      let rightArmY = armY + 10;
 
       if (this.isAttacking) {
         if (this.attackType === 'punch') {
-          if (this.direction === 1) rightArmX = headX + 40;
-          else leftArmX = headX - 40;
+          if (this.direction === 1) {
+              rightArmX = headX + 45;
+              rightArmY = armY;
+          } else {
+              leftArmX = headX - 45;
+              leftArmY = armY;
+          }
         }
       }
 
       if (this.isBlocking) {
         leftArmX = headX - 10;
         rightArmX = headX + 10;
+        leftArmY = headY + 10;
+        rightArmY = headY + 10;
+      }
+
+      // Animated arm sway when walking
+      if (Math.abs(this.velocityX) > 0 && !this.isAttacking && !this.isBlocking) {
+          const sway = Math.sin(this.frame * 0.2) * 15;
+          leftArmX -= sway;
+          rightArmX += sway;
       }
 
       ctx.beginPath();
       ctx.moveTo(headX, armY);
-      ctx.lineTo(leftArmX, armY + 10);
+      ctx.lineTo(leftArmX, leftArmY);
       ctx.stroke();
 
       ctx.beginPath();
       ctx.moveTo(headX, armY);
-      ctx.lineTo(rightArmX, armY + 10);
+      ctx.lineTo(rightArmX, rightArmY);
       ctx.stroke();
 
       // Legs
-      const legY = headY + 50;
+      const legY = headY + 50 - bob; // Connect spine to legs
       let leftLegEnd = legY + 25;
       let rightLegEnd = legY + 25;
       let leftLegX = headX - 15;
       let rightLegX = headX + 15;
 
+      // Leg animation when moving
+      if (Math.abs(this.velocityX) > 0 && !this.isJumping) {
+          const walkCycle = Math.sin(this.frame * 0.2);
+          leftLegX = headX + (walkCycle * 20);
+          rightLegX = headX - (walkCycle * 20);
+          leftLegEnd = legY + 25 - (Math.abs(walkCycle) * 5);
+          rightLegEnd = legY + 25 - (Math.abs(walkCycle) * 5);
+      }
+
       if (this.isAttacking && this.attackType === 'kick') {
         if (this.direction === 1) {
-            rightLegX = headX + 45;
-            rightLegEnd = legY + 5;
+            rightLegX = headX + 50;
+            rightLegEnd = legY;
         } else {
-            leftLegX = headX - 45;
-            leftLegEnd = legY + 5;
+            leftLegX = headX - 50;
+            leftLegEnd = legY;
         }
       }
 
@@ -123,11 +202,11 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       ctx.lineTo(rightLegX, rightLegEnd);
       ctx.stroke();
       
-      // HP Bar local indicator
+      // Name Tag
       ctx.fillStyle = 'white';
-      ctx.font = '12px Orbitron';
+      ctx.font = 'bold 10px Orbitron';
       ctx.textAlign = 'center';
-      ctx.fillText(this.name, headX, this.y - 10);
+      ctx.fillText(this.name, headX, this.y - 20);
     }
 
     update() {
@@ -154,18 +233,31 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       if (this.attackCooldown === 0) {
         this.isAttacking = true;
         this.attackType = type;
-        this.attackCooldown = 30;
+        this.attackCooldown = 25;
         setTimeout(() => {
           this.isAttacking = false;
           this.attackType = null;
-        }, 200);
+        }, 150);
       }
     }
   }
 
-  const p1Ref = useRef<Fighter>(new Fighter(100, 200, '#00f6ff', 1, 'AGENT'));
-  const p2Ref = useRef<Fighter>(new Fighter(660, 200, '#ff0080', -1, 'TARGET'));
+  const p1Ref = useRef<Fighter>(new Fighter(100, 200, '#00f6ff', 1, 'AGENT_01'));
+  const p2Ref = useRef<Fighter>(new Fighter(660, 200, '#ff0080', -1, 'INTRUDER_X'));
   const keys = useRef<Set<string>>(new Set());
+
+  const spawnParticles = (x: number, y: number, color: string) => {
+      for (let i = 0; i < 10; i++) {
+          particlesRef.current.push({
+              x,
+              y,
+              vx: (Math.random() - 0.5) * 10,
+              vy: (Math.random() - 0.5) * 10,
+              life: 1.0,
+              color
+          });
+      }
+  };
 
   const gameLoop = useCallback(() => {
     const canvas = canvasRef.current;
@@ -173,12 +265,34 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Shake logic
+    let shakeX = 0;
+    let shakeY = 0;
+    if (shake > 0) {
+        shakeX = (Math.random() - 0.5) * shake;
+        shakeY = (Math.random() - 0.5) * shake;
+        setShake(prev => Math.max(0, prev - 1));
+    }
+
     // Clear
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     // Draw Background
-    ctx.fillStyle = '#0a0f23';
+    ctx.save();
+    ctx.translate(shakeX, shakeY);
+    ctx.fillStyle = '#05070a';
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    
+    // Grid floor
+    ctx.strokeStyle = 'rgba(48, 0, 255, 0.2)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < CANVAS_WIDTH; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, GROUND_Y);
+        ctx.lineTo(i, CANVAS_HEIGHT);
+        ctx.stroke();
+    }
+    
     ctx.strokeStyle = '#3000ff';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -205,17 +319,18 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         if (keys.current.has('ArrowUp') && !p2.isJumping) p2.velocityY = -15;
         p2.isBlocking = keys.current.has('ArrowDown');
       } else if (gameMode === 'PvBot') {
-        // Simple Bot AI
+        // Advanced-ish Bot AI
         const dx = p1.x - p2.x;
         p2.velocityX = 0;
-        if (Math.abs(dx) > 60) {
-          p2.velocityX = dx > 0 ? 3 : -3;
+        if (Math.abs(dx) > 70) {
+          p2.velocityX = dx > 0 ? 3.5 : -3.5;
           p2.direction = dx > 0 ? 1 : -1;
         } else {
           p2.direction = dx > 0 ? 1 : -1;
-          if (Math.random() < 0.05) p2.attack(Math.random() > 0.5 ? 'punch' : 'kick');
-          p2.isBlocking = p1.isAttacking && Math.random() < 0.7;
+          if (Math.random() < 0.06) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick');
+          p2.isBlocking = p1.isAttacking && Math.random() < 0.8;
         }
+        if (p1.isJumping && Math.random() < 0.02) p2.velocityY = -12;
       }
 
       // Update
@@ -225,15 +340,19 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       // Combat Check
       const checkHit = (attacker: Fighter, defender: Fighter) => {
         if (attacker.isAttacking && !defender.isBlocking) {
-          const range = attacker.attackType === 'punch' ? 50 : 70;
+          const range = attacker.attackType === 'punch' ? 55 : 75;
           const dist = Math.abs((attacker.x + attacker.width/2) - (defender.x + defender.width/2));
-          if (dist < range && Math.abs(attacker.y - defender.y) < 50) {
-            defender.health -= attacker.attackType === 'punch' ? 5 : 8;
+          if (dist < range && Math.abs(attacker.y - defender.y) < 60) {
+            const damage = attacker.attackType === 'punch' ? 5 : 10;
+            defender.health -= damage;
+            defender.hitFlash = 5;
+            spawnParticles(defender.x + defender.width/2, defender.y + 40, attacker.color);
+            setShake(damage);
             attacker.isAttacking = false; // Prevent multi-hit
             if (defender.health <= 0) {
               defender.health = 0;
               setWinner(attacker.name);
-              if (attacker.name === 'AGENT') onWin?.();
+              if (attacker.name === 'AGENT_01') onWin?.();
             }
           }
         }
@@ -243,39 +362,73 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       checkHit(p2, p1);
     }
 
-    // Draw
+    // Particles
+    particlesRef.current.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.2;
+        p.life -= 0.02;
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.life;
+        ctx.fillRect(p.x, p.y, 3, 3);
+    });
+    particlesRef.current = particlesRef.current.filter(p => p.life > 0);
+    ctx.globalAlpha = 1.0;
+
+    // Draw Fighters
     p1.draw(ctx);
     p2.draw(ctx);
 
     // Global HUD
     const drawHP = (fighter: Fighter, x: number, align: 'left' | 'right') => {
       const w = 300;
-      const h = 20;
-      ctx.fillStyle = '#333';
-      ctx.fillRect(x, 20, w, h);
-      ctx.fillStyle = fighter.color;
+      const h = 15;
+      const corner = 4;
+      
+      // BG
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(x, 30, w, h);
+      
+      // Bar
       const healthW = (fighter.health / 100) * w;
-      ctx.fillRect(align === 'left' ? x : x + (w - healthW), 20, healthW, h);
+      const barX = align === 'left' ? x : x + (w - healthW);
+      
+      const grad = ctx.createLinearGradient(barX, 30, barX + healthW, 30);
+      grad.addColorStop(0, fighter.color);
+      grad.addColorStop(1, '#fff');
+      
+      ctx.fillStyle = grad;
+      ctx.fillRect(barX, 30, healthW, h);
+      
+      // Border
       ctx.strokeStyle = 'white';
-      ctx.strokeRect(x, 20, w, h);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, 30, w, h);
     };
 
     drawHP(p1, 20, 'left');
     drawHP(p2, CANVAS_WIDTH - 320, 'right');
 
     if (winner) {
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillStyle = 'rgba(0,0,0,0.85)';
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = winner === p1.name ? p1.color : p2.color;
       ctx.fillStyle = winner === p1.name ? p1.color : p2.color;
-      ctx.font = '48px Orbitron';
+      ctx.font = 'bold 48px Orbitron';
       ctx.textAlign = 'center';
-      ctx.fillText(`${winner} WINS`, CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
-      ctx.font = '20px Orbitron';
-      ctx.fillText('Press SPACE to Restart', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 50);
+      ctx.fillText(`${winner} DOMINATES`, CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
+      
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'white';
+      ctx.font = '16px Orbitron';
+      ctx.fillText('PRESS SPACE TO REINITIALIZE SIMULATION', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 60);
     }
 
+    ctx.restore();
     requestRef.current = requestAnimationFrame(gameLoop);
-  }, [gameMode, winner, onWin]);
+  }, [gameMode, winner, onWin, shake]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -289,8 +442,10 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       if (winner && e.code === 'Space') {
         p1Ref.current.health = 100;
         p1Ref.current.x = 100;
+        p1Ref.current.y = 200;
         p2Ref.current.health = 100;
         p2Ref.current.x = 660;
+        p2Ref.current.y = 200;
         setWinner(null);
       }
     };
@@ -309,38 +464,54 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
   if (!gameMode) {
     return (
-      <div className="flex flex-col items-center justify-center h-[400px] w-[800px] bg-black text-white p-8 space-y-8">
-        <h2 className="text-4xl font-cyber text-primary animate-pulse flex items-center gap-4">
-          <Sword className="h-10 w-10" /> SYSTEM INTRUSION <Shield className="h-10 w-10" />
+      <div className="flex flex-col items-center justify-center h-[400px] w-[800px] bg-black text-white p-8 space-y-8 relative overflow-hidden">
+        {/* Background glitch effect */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000')] bg-cover" />
+        
+        <h2 className="text-5xl font-cyber text-primary animate-pulse flex items-center gap-6 relative z-10">
+          <Sword className="h-12 w-12" /> COMBAT INTRUSION <Shield className="h-12 w-12" />
         </h2>
-        <div className="grid grid-cols-2 gap-8 w-full max-w-md">
-          <Button variant="cyber" className="h-24 text-xl" onClick={() => setGameMode('PvBot')}>
-            <Bot className="mr-2" /> AGENT VS BOT
+        
+        <div className="grid grid-cols-2 gap-8 w-full max-w-lg relative z-10">
+          <Button variant="cyber" className="h-28 text-2xl group" onClick={() => setGameMode('PvBot')}>
+            <Bot className="mr-3 h-8 w-8 transition-transform group-hover:scale-110" /> AGENT VS AI
           </Button>
-          <Button variant="cyber" className="h-24 text-xl" onClick={() => setGameMode('PvP')}>
-            <User className="mr-2" /> LOCAL PVP
+          <Button variant="cyber" className="h-28 text-2xl group" onClick={() => setGameMode('PvP')}>
+            <User className="mr-3 h-8 w-8 transition-transform group-hover:scale-110" /> LOCAL PVP
           </Button>
         </div>
-        <Button variant="ghost" onClick={onExit} className="text-muted-foreground">Abort Mission</Button>
+        
+        <Button variant="ghost" onClick={onExit} className="text-muted-foreground hover:text-primary z-10">
+          Abort Simulation
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="relative group">
+    <div className="relative group bg-black rounded-lg overflow-hidden border-2 border-primary/30">
       <canvas
         ref={canvasRef}
         width={CANVAS_WIDTH}
         height={CANVAS_HEIGHT}
-        className="rounded-lg shadow-2xl shadow-primary/20 cursor-none"
+        className="cursor-none"
       />
       <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button variant="destructive" size="icon" onClick={onExit}>
+        <Button variant="destructive" size="icon" onClick={onExit} className="rounded-full shadow-lg shadow-black/50">
           <X className="h-4 w-4" />
         </Button>
       </div>
-      <div className="absolute bottom-4 left-4 text-[10px] font-mono text-white/30 pointer-events-none">
-        P1: WASD + J/K | {gameMode === 'PvP' ? 'P2: ARROWS + 1/2' : 'BOT MODE'}
+      
+      {/* Controls Overlay */}
+      <div className="absolute bottom-4 left-4 flex gap-8 text-[10px] font-mono text-white/40 pointer-events-none bg-black/40 backdrop-blur-sm p-2 rounded border border-white/10">
+        <div className="flex flex-col">
+            <span className="text-primary font-bold">AGENT_01 (P1)</span>
+            <span>WASD: MOVE/JUMP | J: PUNCH | K: KICK</span>
+        </div>
+        <div className="flex flex-col">
+            <span className="text-pink-500 font-bold">{gameMode === 'PvBot' ? 'AI_UNIT' : 'AGENT_02 (P2)'}</span>
+            <span>{gameMode === 'PvBot' ? 'AUTONOMOUS MODE' : 'ARROWS: MOVE | 1: PUNCH | 2: KICK'}</span>
+        </div>
       </div>
     </div>
   );
