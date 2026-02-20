@@ -3,7 +3,7 @@
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { X, Sword, Shield, User, Bot, Trophy } from 'lucide-react';
+import { X, Sword, Shield, User, Bot, Trophy, Crosshair, Wand2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface StickmanFighterProps {
@@ -12,6 +12,7 @@ interface StickmanFighterProps {
 }
 
 type GameMode = 'PvP' | 'PvBot';
+type WeaponType = 'none' | 'sword' | 'spear' | 'gun';
 
 interface Particle {
   x: number;
@@ -22,12 +23,29 @@ interface Particle {
   color: string;
 }
 
+interface Bullet {
+  x: number;
+  y: number;
+  vx: number;
+  ownerName: string;
+  color: string;
+}
+
+const WEAPONS: { type: WeaponType; icon: any; label: string; description: string }[] = [
+    { type: 'sword', icon: Sword, label: 'Sword', description: 'Balanced speed & reach' },
+    { type: 'spear', icon: Wand2, label: 'Spear', description: 'Maximum melee range' },
+    { type: 'gun', icon: Crosshair, label: 'Railgun', description: 'Long-range projectiles' },
+];
+
 export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
+  const [p1Weapon, setP1Weapon] = useState<WeaponType | null>(null);
+  const [p2Weapon, setP2Weapon] = useState<WeaponType | null>(null);
   const [winner, setWinner] = useState<string | null>(null);
   const requestRef = useRef<number>(null);
   const particlesRef = useRef<Particle[]>([]);
+  const bulletsRef = useRef<Bullet[]>([]);
   const [shake, setShake] = useState(0);
 
   const CANVAS_WIDTH = 800;
@@ -45,7 +63,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     health: number = 100;
     color: string;
     isAttacking: boolean = false;
-    attackType: 'punch' | 'kick' | null = null;
+    attackType: 'punch' | 'kick' | 'shoot' | null = null;
     isBlocking: boolean = false;
     isJumping: boolean = false;
     direction: number; // 1 for right, -1 for left
@@ -53,19 +71,20 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     attackCooldown: number = 0;
     frame: number = 0;
     hitFlash: number = 0;
+    weapon: WeaponType;
 
-    constructor(x: number, y: number, color: string, direction: number, name: string) {
+    constructor(x: number, y: number, color: string, direction: number, name: string, weapon: WeaponType) {
       this.x = x;
       this.y = y;
       this.color = color;
       this.direction = direction;
       this.name = name;
+      this.weapon = weapon;
     }
 
     draw(ctx: CanvasRenderingContext2D) {
       this.frame++;
       
-      // Hit flash effect
       const drawColor = this.hitFlash > 0 ? '#ffffff' : this.color;
       if (this.hitFlash > 0) this.hitFlash--;
 
@@ -75,7 +94,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       ctx.shadowBlur = 10;
       ctx.shadowColor = this.color;
 
-      // Dynamic bobbing (breathing)
       const bob = Math.sin(this.frame * 0.1) * 2;
       const headBob = Math.sin(this.frame * 0.15) * 1;
 
@@ -100,11 +118,10 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       ctx.arc(headX, headY, headRadius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Eyes (Digital units)
+      // Eyes
       ctx.fillStyle = 'white';
       const eyeOffset = 4 * this.direction;
       if (this.hitFlash > 0) {
-          // X Eyes when hit
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(headX + eyeOffset - 2, headY - 2);
@@ -113,25 +130,26 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
           ctx.lineTo(headX + eyeOffset - 2, headY + 2);
           ctx.stroke();
       } else if (this.isAttacking) {
-          // Angry/Focused eyes
           ctx.fillRect(headX + eyeOffset - 1, headY - 2, 6 * this.direction, 2);
       } else {
-          // Neutral eyes
           ctx.fillRect(headX + eyeOffset, headY - 1, 2, 2);
       }
 
-      // Reset shadow for limbs
       ctx.shadowBlur = 0;
 
-      // Arms
+      // Arms & Weapon
       const armY = headY + 20;
       let leftArmX = headX - 20;
       let rightArmX = headX + 20;
       let leftArmY = armY + 10;
       let rightArmY = armY + 10;
 
+      // Handle weapon drawing in the "active" hand
+      const activeHandX = this.direction === 1 ? rightArmX : leftArmX;
+      const activeHandY = this.direction === 1 ? rightArmY : leftArmY;
+
       if (this.isAttacking) {
-        if (this.attackType === 'punch') {
+        if (this.attackType === 'punch' || this.attackType === 'shoot') {
           if (this.direction === 1) {
               rightArmX = headX + 45;
               rightArmY = armY;
@@ -149,13 +167,13 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         rightArmY = headY + 10;
       }
 
-      // Animated arm sway when walking
       if (Math.abs(this.velocityX) > 0 && !this.isAttacking && !this.isBlocking) {
           const sway = Math.sin(this.frame * 0.2) * 15;
           leftArmX -= sway;
           rightArmX += sway;
       }
 
+      // Draw Arms
       ctx.beginPath();
       ctx.moveTo(headX, armY);
       ctx.lineTo(leftArmX, leftArmY);
@@ -166,14 +184,54 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       ctx.lineTo(rightArmX, rightArmY);
       ctx.stroke();
 
+      // DRAW WEAPONS
+      ctx.save();
+      ctx.strokeStyle = this.color;
+      ctx.lineWidth = 3;
+      if (this.weapon === 'sword') {
+          const weaponX = this.direction === 1 ? rightArmX : leftArmX;
+          const weaponY = this.direction === 1 ? rightArmY : leftArmY;
+          ctx.beginPath();
+          ctx.moveTo(weaponX, weaponY);
+          ctx.lineTo(weaponX + 30 * this.direction, weaponY - 20);
+          ctx.stroke();
+          // Blade glow
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+      } else if (this.weapon === 'spear') {
+          const weaponX = this.direction === 1 ? rightArmX : leftArmX;
+          const weaponY = this.direction === 1 ? rightArmY : leftArmY;
+          ctx.beginPath();
+          ctx.moveTo(weaponX - 15 * this.direction, weaponY + 15);
+          ctx.lineTo(weaponX + 50 * this.direction, weaponY - 30);
+          ctx.stroke();
+          // Spear tip
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(weaponX + 50 * this.direction, weaponY - 30, 4, 0, Math.PI * 2);
+          ctx.fill();
+      } else if (this.weapon === 'gun') {
+          const weaponX = this.direction === 1 ? rightArmX : leftArmX;
+          const weaponY = this.direction === 1 ? rightArmY : leftArmY;
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(weaponX, weaponY);
+          ctx.lineTo(weaponX + 15 * this.direction, weaponY);
+          ctx.stroke();
+          ctx.lineWidth = 3;
+          ctx.lineTo(weaponX + 15 * this.direction, weaponY + 8);
+          ctx.stroke();
+      }
+      ctx.restore();
+
       // Legs
-      const legY = headY + 50 - bob; // Connect spine to legs
+      const legY = headY + 50 - bob;
       let leftLegEnd = legY + 25;
       let rightLegEnd = legY + 25;
       let leftLegX = headX - 15;
       let rightLegX = headX + 15;
 
-      // Leg animation when moving
       if (Math.abs(this.velocityX) > 0 && !this.isJumping) {
           const walkCycle = Math.sin(this.frame * 0.2);
           leftLegX = headX + (walkCycle * 20);
@@ -202,7 +260,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       ctx.lineTo(rightLegX, rightLegEnd);
       ctx.stroke();
       
-      // Name Tag
       ctx.fillStyle = 'white';
       ctx.font = 'bold 10px Orbitron';
       ctx.textAlign = 'center';
@@ -224,16 +281,28 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
       if (this.attackCooldown > 0) this.attackCooldown--;
       
-      // Keep in bounds
       if (this.x < 0) this.x = 0;
       if (this.x + this.width > CANVAS_WIDTH) this.x = CANVAS_WIDTH - this.width;
     }
 
-    attack(type: 'punch' | 'kick') {
+    attack(type: 'punch' | 'kick' | 'shoot') {
       if (this.attackCooldown === 0) {
         this.isAttacking = true;
         this.attackType = type;
-        this.attackCooldown = 25;
+        
+        if (type === 'shoot' && this.weapon === 'gun') {
+            this.attackCooldown = 40;
+            bulletsRef.current.push({
+                x: this.x + (this.direction === 1 ? 60 : -20),
+                y: this.y + 35,
+                vx: 12 * this.direction,
+                ownerName: this.name,
+                color: this.color
+            });
+        } else {
+            this.attackCooldown = 25;
+        }
+
         setTimeout(() => {
           this.isAttacking = false;
           this.attackType = null;
@@ -242,8 +311,8 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     }
   }
 
-  const p1Ref = useRef<Fighter>(new Fighter(100, 200, '#00f6ff', 1, 'AGENT_01'));
-  const p2Ref = useRef<Fighter>(new Fighter(660, 200, '#ff0080', -1, 'INTRUDER_X'));
+  const p1Ref = useRef<Fighter | null>(null);
+  const p2Ref = useRef<Fighter | null>(null);
   const keys = useRef<Set<string>>(new Set());
 
   const spawnParticles = (x: number, y: number, color: string) => {
@@ -261,11 +330,10 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
   const gameLoop = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !p1Ref.current || !p2Ref.current) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Shake logic
     let shakeX = 0;
     let shakeY = 0;
     if (shake > 0) {
@@ -274,10 +342,8 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         setShake(prev => Math.max(0, prev - 1));
     }
 
-    // Clear
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // Draw Background
     ctx.save();
     ctx.translate(shakeX, shakeY);
     ctx.fillStyle = '#05070a';
@@ -319,36 +385,42 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         if (keys.current.has('ArrowUp') && !p2.isJumping) p2.velocityY = -15;
         p2.isBlocking = keys.current.has('ArrowDown');
       } else if (gameMode === 'PvBot') {
-        // Advanced-ish Bot AI
         const dx = p1.x - p2.x;
         p2.velocityX = 0;
-        if (Math.abs(dx) > 70) {
+        if (Math.abs(dx) > (p2.weapon === 'gun' ? 300 : 70)) {
           p2.velocityX = dx > 0 ? 3.5 : -3.5;
           p2.direction = dx > 0 ? 1 : -1;
         } else {
           p2.direction = dx > 0 ? 1 : -1;
-          if (Math.random() < 0.06) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick');
+          if (p2.weapon === 'gun') {
+              if (Math.random() < 0.03) p2.attack('shoot');
+          } else {
+              if (Math.random() < 0.06) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick');
+          }
           p2.isBlocking = p1.isAttacking && Math.random() < 0.8;
         }
         if (p1.isJumping && Math.random() < 0.02) p2.velocityY = -12;
       }
 
-      // Update
       p1.update();
       p2.update();
 
       // Combat Check
       const checkHit = (attacker: Fighter, defender: Fighter) => {
         if (attacker.isAttacking && !defender.isBlocking) {
-          const range = attacker.attackType === 'punch' ? 55 : 75;
+          let range = 55;
+          if (attacker.weapon === 'sword' && attacker.attackType === 'punch') range = 75;
+          if (attacker.weapon === 'spear' && attacker.attackType === 'punch') range = 100;
+          if (attacker.attackType === 'kick') range = 75;
+
           const dist = Math.abs((attacker.x + attacker.width/2) - (defender.x + defender.width/2));
           if (dist < range && Math.abs(attacker.y - defender.y) < 60) {
-            const damage = attacker.attackType === 'punch' ? 5 : 10;
+            const damage = attacker.attackType === 'punch' ? (attacker.weapon === 'gun' ? 2 : 8) : 12;
             defender.health -= damage;
             defender.hitFlash = 5;
             spawnParticles(defender.x + defender.width/2, defender.y + 40, attacker.color);
             setShake(damage);
-            attacker.isAttacking = false; // Prevent multi-hit
+            attacker.isAttacking = false;
             if (defender.health <= 0) {
               defender.health = 0;
               setWinner(attacker.name);
@@ -360,7 +432,41 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
       checkHit(p1, p2);
       checkHit(p2, p1);
+
+      // Bullet logic
+      bulletsRef.current.forEach((bullet, i) => {
+          bullet.x += bullet.vx;
+          
+          const target = bullet.ownerName === p1.name ? p2 : p1;
+          const dist = Math.abs(bullet.x - (target.x + target.width/2));
+          if (dist < 30 && Math.abs(bullet.y - (target.y + 40)) < 40) {
+              if (!target.isBlocking) {
+                  target.health -= 10;
+                  target.hitFlash = 5;
+                  spawnParticles(bullet.x, bullet.y, bullet.color);
+                  setShake(5);
+                  if (target.health <= 0) {
+                      target.health = 0;
+                      setWinner(bullet.ownerName);
+                  }
+              }
+              bulletsRef.current.splice(i, 1);
+          }
+
+          if (bullet.x < 0 || bullet.x > CANVAS_WIDTH) {
+              bulletsRef.current.splice(i, 1);
+          }
+      });
     }
+
+    // Draw Bullets
+    bulletsRef.current.forEach(bullet => {
+        ctx.fillStyle = bullet.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = bullet.color;
+        ctx.fillRect(bullet.x, bullet.y, 8, 3);
+        ctx.shadowBlur = 0;
+    });
 
     // Particles
     particlesRef.current.forEach((p, i) => {
@@ -375,32 +481,21 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     particlesRef.current = particlesRef.current.filter(p => p.life > 0);
     ctx.globalAlpha = 1.0;
 
-    // Draw Fighters
     p1.draw(ctx);
     p2.draw(ctx);
 
-    // Global HUD
     const drawHP = (fighter: Fighter, x: number, align: 'left' | 'right') => {
       const w = 300;
       const h = 15;
-      const corner = 4;
-      
-      // BG
       ctx.fillStyle = '#1a1a1a';
       ctx.fillRect(x, 30, w, h);
-      
-      // Bar
       const healthW = (fighter.health / 100) * w;
       const barX = align === 'left' ? x : x + (w - healthW);
-      
       const grad = ctx.createLinearGradient(barX, 30, barX + healthW, 30);
       grad.addColorStop(0, fighter.color);
       grad.addColorStop(1, '#fff');
-      
       ctx.fillStyle = grad;
       ctx.fillRect(barX, 30, healthW, h);
-      
-      // Border
       ctx.strokeStyle = 'white';
       ctx.lineWidth = 1;
       ctx.strokeRect(x, 30, w, h);
@@ -412,14 +507,12 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     if (winner) {
       ctx.fillStyle = 'rgba(0,0,0,0.85)';
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      
       ctx.shadowBlur = 20;
       ctx.shadowColor = winner === p1.name ? p1.color : p2.color;
       ctx.fillStyle = winner === p1.name ? p1.color : p2.color;
       ctx.font = 'bold 48px Orbitron';
       ctx.textAlign = 'center';
       ctx.fillText(`${winner} DOMINATES`, CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
-      
       ctx.shadowBlur = 0;
       ctx.fillStyle = 'white';
       ctx.font = '16px Orbitron';
@@ -433,20 +526,21 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       keys.current.add(e.key);
-      if (e.key === 'j') p1Ref.current.attack('punch');
-      if (e.key === 'k') p1Ref.current.attack('kick');
-      if (gameMode === 'PvP') {
-        if (e.key === '1') p2Ref.current.attack('punch');
-        if (e.key === '2') p2Ref.current.attack('kick');
+      const p1 = p1Ref.current;
+      const p2 = p2Ref.current;
+      if (p1) {
+          if (e.key === 'j') p1.attack(p1.weapon === 'gun' ? 'shoot' : 'punch');
+          if (e.key === 'k') p1.attack('kick');
+      }
+      if (gameMode === 'PvP' && p2) {
+        if (e.key === '1') p2.attack(p2.weapon === 'gun' ? 'shoot' : 'punch');
+        if (e.key === '2') p2.attack('kick');
       }
       if (winner && e.code === 'Space') {
-        p1Ref.current.health = 100;
-        p1Ref.current.x = 100;
-        p1Ref.current.y = 200;
-        p2Ref.current.health = 100;
-        p2Ref.current.x = 660;
-        p2Ref.current.y = 200;
+        if(p1) { p1.health = 100; p1.x = 100; p1.y = 200; }
+        if(p2) { p2.health = 100; p2.x = 660; p2.y = 200; }
         setWinner(null);
+        bulletsRef.current = [];
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => keys.current.delete(e.key);
@@ -462,16 +556,29 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     };
   }, [gameLoop, gameMode, winner]);
 
+  // Handle Game Initialization
+  useEffect(() => {
+      if (gameMode && p1Weapon && p2Weapon) {
+          p1Ref.current = new Fighter(100, 200, '#00f6ff', 1, 'AGENT_01', p1Weapon);
+          const p2Wep = gameMode === 'PvBot' ? (['sword', 'spear', 'gun'][Math.floor(Math.random()*3)] as WeaponType) : p2Weapon;
+          p2Ref.current = new Fighter(660, 200, '#ff0080', -1, gameMode === 'PvBot' ? 'AI_UNIT' : 'AGENT_02', p2Wep);
+      }
+  }, [gameMode, p1Weapon, p2Weapon]);
+
+  const resetSelection = () => {
+      setGameMode(null);
+      setP1Weapon(null);
+      setP2Weapon(null);
+      setWinner(null);
+  };
+
   if (!gameMode) {
     return (
       <div className="flex flex-col items-center justify-center h-[400px] w-[800px] bg-black text-white p-8 space-y-8 relative overflow-hidden">
-        {/* Background glitch effect */}
         <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000')] bg-cover" />
-        
         <h2 className="text-5xl font-cyber text-primary animate-pulse flex items-center gap-6 relative z-10">
           <Sword className="h-12 w-12" /> COMBAT INTRUSION <Shield className="h-12 w-12" />
         </h2>
-        
         <div className="grid grid-cols-2 gap-8 w-full max-w-lg relative z-10">
           <Button variant="cyber" className="h-28 text-2xl group" onClick={() => setGameMode('PvBot')}>
             <Bot className="mr-3 h-8 w-8 transition-transform group-hover:scale-110" /> AGENT VS AI
@@ -480,12 +587,40 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
             <User className="mr-3 h-8 w-8 transition-transform group-hover:scale-110" /> LOCAL PVP
           </Button>
         </div>
-        
         <Button variant="ghost" onClick={onExit} className="text-muted-foreground hover:text-primary z-10">
           Abort Simulation
         </Button>
       </div>
     );
+  }
+
+  if (!p1Weapon || (gameMode === 'PvP' && !p2Weapon)) {
+      const isSelectingP2 = p1Weapon !== null;
+      return (
+          <div className="flex flex-col items-center justify-center h-[400px] w-[800px] bg-black text-white p-8 relative overflow-hidden">
+              <h3 className="text-3xl font-cyber text-accent mb-8">
+                  SELECT ARMAMENT: {isSelectingP2 ? 'AGENT_02' : 'AGENT_01'}
+              </h3>
+              <div className="grid grid-cols-3 gap-6 w-full max-w-2xl">
+                  {WEAPONS.map(w => (
+                      <Card 
+                        key={w.type} 
+                        className="bg-zinc-900 border-primary/30 hover:border-primary transition-all cursor-pointer group"
+                        onClick={() => isSelectingP2 ? setP2Weapon(w.type) : (gameMode === 'PvBot' ? (setP1Weapon(w.type), setP2Weapon('none')) : setP1Weapon(w.type))}
+                      >
+                          <div className="p-6 flex flex-col items-center text-center gap-4">
+                              <w.icon className="h-12 w-12 text-primary group-hover:scale-110 transition-transform" />
+                              <div>
+                                  <p className="font-bold text-white uppercase tracking-tighter">{w.label}</p>
+                                  <p className="text-[10px] text-zinc-500">{w.description}</p>
+                              </div>
+                          </div>
+                      </Card>
+                  ))}
+              </div>
+              <Button variant="link" className="mt-6 text-zinc-500" onClick={resetSelection}>Change Mode</Button>
+          </div>
+      )
   }
 
   return (
@@ -502,17 +637,22 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         </Button>
       </div>
       
-      {/* Controls Overlay */}
       <div className="absolute bottom-4 left-4 flex gap-8 text-[10px] font-mono text-white/40 pointer-events-none bg-black/40 backdrop-blur-sm p-2 rounded border border-white/10">
         <div className="flex flex-col">
-            <span className="text-primary font-bold">AGENT_01 (P1)</span>
-            <span>WASD: MOVE/JUMP | J: PUNCH | K: KICK</span>
+            <span className="text-primary font-bold uppercase">AGENT_01 ({p1Weapon})</span>
+            <span>WASD: MOVE | J: {p1Weapon === 'gun' ? 'FIRE' : 'ATTACK'} | K: KICK</span>
         </div>
         <div className="flex flex-col">
-            <span className="text-pink-500 font-bold">{gameMode === 'PvBot' ? 'AI_UNIT' : 'AGENT_02 (P2)'}</span>
-            <span>{gameMode === 'PvBot' ? 'AUTONOMOUS MODE' : 'ARROWS: MOVE | 1: PUNCH | 2: KICK'}</span>
+            <span className="text-pink-500 font-bold uppercase">
+                {gameMode === 'PvBot' ? `AI_UNIT (${p2Ref.current?.weapon})` : `AGENT_02 (${p2Weapon})`}
+            </span>
+            <span>{gameMode === 'PvBot' ? 'AUTONOMOUS' : `ARROWS: MOVE | 1: ${p2Weapon === 'gun' ? 'FIRE' : 'ATTACK'} | 2: KICK`}</span>
         </div>
       </div>
     </div>
   );
 }
+
+const Card = ({ children, className, onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) => (
+    <div onClick={onClick} className={cn("rounded-lg border shadow-sm", className)}>{children}</div>
+);
