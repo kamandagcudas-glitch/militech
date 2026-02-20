@@ -82,22 +82,22 @@ class Fighter {
     if (this.hitFlash > 0) this.hitFlash--;
 
     ctx.strokeStyle = drawColor;
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 5; // Thicker lines for visibility
     ctx.lineCap = 'round';
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 20;
     ctx.shadowColor = this.color;
 
-    const bob = Math.sin(this.frame * 0.1) * 2;
-    const headBob = Math.sin(this.frame * 0.15) * 1;
+    const bob = Math.sin(this.frame * 0.1) * 3;
+    const headBob = Math.sin(this.frame * 0.15) * 1.5;
 
     const headX = this.x + this.width / 2;
     const headY = this.y + 15 + bob + headBob;
-    const headRadius = 12;
+    const headRadius = 14;
 
     // Ground Shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
     ctx.beginPath();
-    ctx.ellipse(headX, GROUND_Y, 20, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(headX, GROUND_Y, 25, 6, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Body (Spine)
@@ -113,19 +113,19 @@ class Fighter {
 
     // Eyes
     ctx.fillStyle = 'white';
-    const eyeOffset = 4 * this.direction;
+    const eyeOffset = 5 * this.direction;
     if (this.hitFlash > 0) {
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(headX + eyeOffset - 2, headY - 2);
-        ctx.lineTo(headX + eyeOffset + 2, headY + 2);
-        ctx.moveTo(headX + eyeOffset + 2, headY - 2);
-        ctx.lineTo(headX + eyeOffset - 2, headY + 2);
+        ctx.moveTo(headX + eyeOffset - 3, headY - 3);
+        ctx.lineTo(headX + eyeOffset + 3, headY + 3);
+        ctx.moveTo(headX + eyeOffset + 3, headY - 3);
+        ctx.lineTo(headX + eyeOffset - 3, headY + 3);
         ctx.stroke();
     } else if (this.isAttacking) {
-        ctx.fillRect(headX + eyeOffset - 1, headY - 2, 6 * this.direction, 2);
+        ctx.fillRect(headX + eyeOffset - 1, headY - 3, 8 * this.direction, 3);
     } else {
-        ctx.fillRect(headX + eyeOffset, headY - 1, 2, 2);
+        ctx.fillRect(headX + eyeOffset, headY - 1, 3, 3);
     }
 
     ctx.shadowBlur = 0;
@@ -134,30 +134,30 @@ class Fighter {
     const armY = headY + 20;
     let leftArmX = headX - 20;
     let rightArmX = headX + 20;
-    let leftArmY = armY + 10;
-    let rightArmY = armY + 10;
+    let leftArmY = armY + 15;
+    let rightArmY = armY + 15;
 
     if (this.isAttacking) {
       if (this.attackType === 'punch' || this.attackType === 'shoot') {
         if (this.direction === 1) {
-            rightArmX = headX + 45;
+            rightArmX = headX + 50;
             rightArmY = armY;
         } else {
-            leftArmX = headX - 45;
+            leftArmX = headX - 50;
             leftArmY = armY;
         }
       }
     }
 
     if (this.isBlocking) {
-      leftArmX = headX - 10;
-      rightArmX = headX + 10;
-      leftArmY = headY + 10;
-      rightArmY = headY + 10;
+      leftArmX = headX - 12;
+      rightArmX = headX + 12;
+      leftArmY = headY + 12;
+      rightArmY = headY + 12;
     }
 
     if (Math.abs(this.velocityX) > 0 && !this.isAttacking && !this.isBlocking) {
-        const sway = Math.sin(this.frame * 0.2) * 15;
+        const sway = Math.sin(this.frame * 0.25) * 18;
         leftArmX -= sway;
         rightArmX += sway;
     }
@@ -176,8 +176,8 @@ class Fighter {
     // DRAW WEAPONS
     ctx.save();
     ctx.strokeStyle = this.color;
-    ctx.lineWidth = 3;
-    ctx.shadowBlur = 10;
+    ctx.lineWidth = 4;
+    ctx.shadowBlur = 15;
     ctx.shadowColor = this.color;
     
     if (this.weapon === 'sword') {
@@ -185,58 +185,58 @@ class Fighter {
         const weaponY = this.direction === 1 ? rightArmY : leftArmY;
         ctx.beginPath();
         ctx.moveTo(weaponX, weaponY);
-        ctx.lineTo(weaponX + 30 * this.direction, weaponY - 20);
+        ctx.lineTo(weaponX + 35 * this.direction, weaponY - 25);
         ctx.stroke();
         ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.5;
         ctx.stroke();
     } else if (this.weapon === 'spear') {
         const weaponX = this.direction === 1 ? rightArmX : leftArmX;
         const weaponY = this.direction === 1 ? rightArmY : leftArmY;
         ctx.beginPath();
-        ctx.moveTo(weaponX - 15 * this.direction, weaponY + 15);
-        ctx.lineTo(weaponX + 50 * this.direction, weaponY - 30);
+        ctx.moveTo(weaponX - 20 * this.direction, weaponY + 20);
+        ctx.lineTo(weaponX + 60 * this.direction, weaponY - 40);
         ctx.stroke();
         ctx.fillStyle = '#fff';
         ctx.beginPath();
-        ctx.arc(weaponX + 50 * this.direction, weaponY - 30, 4, 0, Math.PI * 2);
+        ctx.arc(weaponX + 60 * this.direction, weaponY - 40, 5, 0, Math.PI * 2);
         ctx.fill();
     } else if (this.weapon === 'gun') {
         const weaponX = this.direction === 1 ? rightArmX : leftArmX;
         const weaponY = this.direction === 1 ? rightArmY : leftArmY;
-        ctx.lineWidth = 6;
+        ctx.lineWidth = 8;
         ctx.beginPath();
         ctx.moveTo(weaponX, weaponY);
-        ctx.lineTo(weaponX + 15 * this.direction, weaponY);
+        ctx.lineTo(weaponX + 20 * this.direction, weaponY);
         ctx.stroke();
-        ctx.lineWidth = 3;
-        ctx.lineTo(weaponX + 15 * this.direction, weaponY + 8);
+        ctx.lineWidth = 4;
+        ctx.lineTo(weaponX + 20 * this.direction, weaponY + 10);
         ctx.stroke();
     }
     ctx.restore();
 
     // Legs
     const legY = headY + 50 - bob;
-    let leftLegEnd = legY + 25;
-    let rightLegEnd = legY + 25;
-    let leftLegX = headX - 15;
-    let rightLegX = headX + 15;
+    let leftLegEnd = legY + 30;
+    let rightLegEnd = legY + 30;
+    let leftLegX = headX - 18;
+    let rightLegX = headX + 18;
 
     if (Math.abs(this.velocityX) > 0 && !this.isJumping) {
-        const walkCycle = Math.sin(this.frame * 0.2);
-        leftLegX = headX + (walkCycle * 20);
-        rightLegX = headX - (walkCycle * 20);
-        leftLegEnd = legY + 25 - (Math.abs(walkCycle) * 5);
-        rightLegEnd = legY + 25 - (Math.abs(walkCycle) * 5);
+        const walkCycle = Math.sin(this.frame * 0.25);
+        leftLegX = headX + (walkCycle * 25);
+        rightLegX = headX - (walkCycle * 25);
+        leftLegEnd = legY + 30 - (Math.abs(walkCycle) * 8);
+        rightLegEnd = legY + 30 - (Math.abs(walkCycle) * 8);
     }
 
     if (this.isAttacking && this.attackType === 'kick') {
       if (this.direction === 1) {
-          rightLegX = headX + 50;
-          rightLegEnd = legY;
+          rightLegX = headX + 60;
+          rightLegEnd = legY + 10;
       } else {
-          leftLegX = headX - 50;
-          leftLegEnd = legY;
+          leftLegX = headX - 60;
+          leftLegEnd = legY + 10;
       }
     }
 
@@ -251,9 +251,9 @@ class Fighter {
     ctx.stroke();
     
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 10px Orbitron';
+    ctx.font = 'bold 12px Orbitron';
     ctx.textAlign = 'center';
-    ctx.fillText(this.name, headX, this.y - 20);
+    ctx.fillText(this.name, headX, this.y - 25);
   }
 
   update(CANVAS_WIDTH: number, GROUND_Y: number) {
@@ -261,7 +261,7 @@ class Fighter {
     this.y += this.velocityY;
 
     if (this.y + this.height < GROUND_Y) {
-      this.velocityY += 0.6;
+      this.velocityY += 0.7; // Slightly higher gravity
       this.isJumping = true;
     } else {
       this.velocityY = 0;
@@ -281,22 +281,22 @@ class Fighter {
       this.attackType = type;
       
       if (type === 'shoot' && this.weapon === 'gun') {
-          this.attackCooldown = 40;
+          this.attackCooldown = 45;
           bulletsRef.current.push({
-              x: this.x + (this.direction === 1 ? 60 : -20),
+              x: this.x + (this.direction === 1 ? 65 : -25),
               y: this.y + 35,
-              vx: 12 * this.direction,
+              vx: 14 * this.direction,
               ownerName: this.name,
               color: this.color
           });
       } else {
-          this.attackCooldown = 25;
+          this.attackCooldown = 28;
       }
 
       setTimeout(() => {
         this.isAttacking = false;
         this.attackType = null;
-      }, 150);
+      }, 180); // Longer window for collision
     }
   }
 }
@@ -330,12 +330,12 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
   }, []);
 
   const spawnParticles = (x: number, y: number, color: string) => {
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 15; i++) {
           particlesRef.current.push({
               x,
               y,
-              vx: (Math.random() - 0.5) * 10,
-              vy: (Math.random() - 0.5) * 10,
+              vx: (Math.random() - 0.5) * 12,
+              vy: (Math.random() - 0.5) * 12,
               life: 1.0,
               color
           });
@@ -366,7 +366,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     
     // Draw Battlefield Background
     if (bgRef.current) {
-        ctx.globalAlpha = 0.4;
+        ctx.globalAlpha = 0.5;
         ctx.drawImage(bgRef.current, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         ctx.globalAlpha = 1.0;
     } else {
@@ -375,7 +375,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     }
     
     // Grid floor
-    ctx.strokeStyle = 'rgba(48, 0, 255, 0.2)';
+    ctx.strokeStyle = 'rgba(0, 246, 255, 0.2)';
     ctx.lineWidth = 1;
     for (let i = 0; i < CANVAS_WIDTH; i += 40) {
         ctx.beginPath();
@@ -384,8 +384,8 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         ctx.stroke();
     }
     
-    ctx.strokeStyle = '#3000ff';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#00f6ff';
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(0, GROUND_Y);
     ctx.lineTo(CANVAS_WIDTH, GROUND_Y);
@@ -397,29 +397,29 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     if (!winner) {
       // P1 Input
       p1.velocityX = 0;
-      if (keys.current.has('a')) { p1.velocityX = -5; p1.direction = -1; }
-      if (keys.current.has('d')) { p1.velocityX = 5; p1.direction = 1; }
-      if (keys.current.has('w') && !p1.isJumping) p1.velocityY = -15;
+      if (keys.current.has('a')) { p1.velocityX = -6; p1.direction = -1; }
+      if (keys.current.has('d')) { p1.velocityX = 6; p1.direction = 1; }
+      if (keys.current.has('w') && !p1.isJumping) p1.velocityY = -16;
       p1.isBlocking = keys.current.has('s');
 
       // P2 / Bot Input
       if (gameMode === 'PvP') {
         p2.velocityX = 0;
-        if (keys.current.has('ArrowLeft')) { p2.velocityX = -5; p2.direction = -1; }
-        if (keys.current.has('ArrowRight')) { p2.velocityX = 5; p2.direction = 1; }
-        if (keys.current.has('ArrowUp') && !p2.isJumping) p2.velocityY = -15;
+        if (keys.current.has('ArrowLeft')) { p2.velocityX = -6; p2.direction = -1; }
+        if (keys.current.has('ArrowRight')) { p2.velocityX = 6; p2.direction = 1; }
+        if (keys.current.has('ArrowUp') && !p2.isJumping) p2.velocityY = -16;
         p2.isBlocking = keys.current.has('ArrowDown');
       } else if (gameMode === 'PvBot' && difficulty) {
         const dx = p1.x - p2.x;
         p2.velocityX = 0;
         
         // Scaled AI Properties
-        const aiSpeed = difficulty === 'Easy' ? 2.5 : difficulty === 'Hard' ? 4.5 : 6.5;
-        const aiAttackFreq = difficulty === 'Easy' ? 0.02 : difficulty === 'Hard' ? 0.08 : 0.15;
-        const aiBlockChance = difficulty === 'Easy' ? 0.3 : difficulty === 'Hard' ? 0.8 : 0.98;
-        const aiJumpFreq = difficulty === 'Easy' ? 0.01 : difficulty === 'Hard' ? 0.04 : 0.08;
+        const aiSpeed = difficulty === 'Easy' ? 3.0 : difficulty === 'Hard' ? 5.5 : 7.5;
+        const aiAttackFreq = difficulty === 'Easy' ? 0.02 : difficulty === 'Hard' ? 0.08 : 0.18;
+        const aiBlockChance = difficulty === 'Easy' ? 0.3 : difficulty === 'Hard' ? 0.7 : 0.95;
+        const aiJumpFreq = difficulty === 'Easy' ? 0.01 : difficulty === 'Hard' ? 0.04 : 0.1;
 
-        if (Math.abs(dx) > (p2.weapon === 'gun' ? 300 : 70)) {
+        if (Math.abs(dx) > (p2.weapon === 'gun' ? 350 : 80)) {
           p2.velocityX = dx > 0 ? aiSpeed : -aiSpeed;
           p2.direction = dx > 0 ? 1 : -1;
         } else {
@@ -429,9 +429,14 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
           } else {
               if (Math.random() < aiAttackFreq) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick', bulletsRef);
           }
-          p2.isBlocking = p1.isAttacking && Math.random() < aiBlockChance;
+          // AI Reactive Block
+          if (p1.isAttacking && Math.random() < aiBlockChance) {
+              p2.isBlocking = true;
+          } else {
+              p2.isBlocking = false;
+          }
         }
-        if (p1.isJumping && Math.random() < aiJumpFreq) p2.velocityY = -12;
+        if (p1.isJumping && Math.random() < aiJumpFreq) p2.velocityY = -14;
       }
 
       p1.update(CANVAS_WIDTH, GROUND_Y);
@@ -439,27 +444,38 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
       // Combat Check
       const checkHit = (attacker: Fighter, defender: Fighter) => {
-        if (attacker.isAttacking && !defender.isBlocking) {
-          let range = 55;
-          if (attacker.weapon === 'sword' && attacker.attackType === 'punch') range = 75;
-          if (attacker.weapon === 'spear' && attacker.attackType === 'punch') range = 100;
-          if (attacker.attackType === 'kick') range = 75;
+        if (attacker.isAttacking) {
+          let range = 60;
+          if (attacker.weapon === 'sword') range = 85;
+          if (attacker.weapon === 'spear') range = 115;
+          if (attacker.attackType === 'kick') range = 80;
 
-          const dist = Math.abs((attacker.x + attacker.width/2) - (defender.x + defender.width/2));
-          if (dist < range && Math.abs(attacker.y - defender.y) < 60) {
-            let damage = attacker.attackType === 'punch' ? (attacker.weapon === 'gun' ? 2 : 8) : 12;
+          const dxToTarget = (defender.x + defender.width/2) - (attacker.x + attacker.width/2);
+          const dist = Math.abs(dxToTarget);
+          const isFacing = (dxToTarget > 0 && attacker.direction === 1) || (dxToTarget < 0 && attacker.direction === -1);
+
+          if (isFacing && dist < range && Math.abs(attacker.y - defender.y) < 80) {
+            let damage = attacker.attackType === 'punch' ? (attacker.weapon === 'gun' ? 3 : 10) : 15;
             
+            // Damage Mitigation through blocking
+            if (defender.isBlocking) {
+                damage = Math.floor(damage * 0.15); // Chip damage exists
+            }
+
             // Scaled Damage for AI
             if (attacker.name === 'AI_UNIT') {
-                const multiplier = difficulty === 'Easy' ? 0.7 : difficulty === 'Hard' ? 1.2 : 2.0;
+                const multiplier = difficulty === 'Easy' ? 0.6 : difficulty === 'Hard' ? 1.3 : 2.5;
                 damage = Math.floor(damage * multiplier);
             }
 
-            defender.health -= damage;
-            defender.hitFlash = 5;
-            spawnParticles(defender.x + defender.width/2, defender.y + 40, attacker.color);
-            setShake(damage);
-            attacker.isAttacking = false;
+            if (damage > 0) {
+                defender.health -= damage;
+                defender.hitFlash = 6;
+                spawnParticles(defender.x + defender.width/2, defender.y + 40, attacker.color);
+                setShake(Math.min(damage, 15));
+            }
+            
+            attacker.isAttacking = false; // consume the attack
             if (defender.health <= 0) {
               defender.health = 0;
               setWinner(attacker.name);
@@ -477,22 +493,24 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
           bullet.x += bullet.vx;
           
           const target = bullet.ownerName === p1.name ? p2 : p1;
-          const dist = Math.abs(bullet.x - (target.x + target.width/2));
-          if (dist < 30 && Math.abs(bullet.y - (target.y + 40)) < 40) {
-              if (!target.isBlocking) {
-                  let damage = 10;
-                  if (bullet.ownerName === 'AI_UNIT') {
-                      const multiplier = difficulty === 'Easy' ? 0.7 : difficulty === 'Hard' ? 1.2 : 2.0;
-                      damage = Math.floor(damage * multiplier);
-                  }
-                  target.health -= damage;
-                  target.hitFlash = 5;
-                  spawnParticles(bullet.x, bullet.y, bullet.color);
-                  setShake(5);
-                  if (target.health <= 0) {
-                      target.health = 0;
-                      setWinner(bullet.ownerName);
-                  }
+          const distToTarget = Math.abs(bullet.x - (target.x + target.width/2));
+          
+          if (distToTarget < 35 && Math.abs(bullet.y - (target.y + 40)) < 50) {
+              let damage = 12;
+              if (target.isBlocking) {
+                  damage = 2; // minor chip damage
+              }
+              if (bullet.ownerName === 'AI_UNIT') {
+                  const multiplier = difficulty === 'Easy' ? 0.6 : difficulty === 'Hard' ? 1.3 : 2.5;
+                  damage = Math.floor(damage * multiplier);
+              }
+              target.health -= damage;
+              target.hitFlash = 6;
+              spawnParticles(bullet.x, bullet.y, bullet.color);
+              setShake(8);
+              if (target.health <= 0) {
+                  target.health = 0;
+                  setWinner(bullet.ownerName);
               }
               bulletsRef.current.splice(i, 1);
           }
@@ -506,9 +524,9 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     // Draw Bullets
     bulletsRef.current.forEach(bullet => {
         ctx.fillStyle = bullet.color;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 12;
         ctx.shadowColor = bullet.color;
-        ctx.fillRect(bullet.x, bullet.y, 8, 3);
+        ctx.fillRect(bullet.x, bullet.y, 10, 4);
         ctx.shadowBlur = 0;
     });
 
@@ -516,11 +534,11 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     particlesRef.current.forEach((p, i) => {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.2;
-        p.life -= 0.02;
+        p.vy += 0.25;
+        p.life -= 0.025;
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.life;
-        ctx.fillRect(p.x, p.y, 3, 3);
+        ctx.fillRect(p.x, p.y, 4, 4);
     });
     particlesRef.current = particlesRef.current.filter(p => p.life > 0);
     ctx.globalAlpha = 1.0;
@@ -529,9 +547,9 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     p2.draw(ctx, GROUND_Y);
 
     const drawHP = (fighter: Fighter, x: number, align: 'left' | 'right') => {
-      const w = 300;
-      const h = 15;
-      ctx.fillStyle = '#1a1a1a';
+      const w = 320;
+      const h = 20;
+      ctx.fillStyle = '#111';
       ctx.fillRect(x, 30, w, h);
       const healthW = (fighter.health / 100) * w;
       const barX = align === 'left' ? x : x + (w - healthW);
@@ -541,26 +559,26 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       ctx.fillStyle = grad;
       ctx.fillRect(barX, 30, healthW, h);
       ctx.strokeStyle = 'white';
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 2;
       ctx.strokeRect(x, 30, w, h);
     };
 
     drawHP(p1, 20, 'left');
-    drawHP(p2, CANVAS_WIDTH - 320, 'right');
+    drawHP(p2, CANVAS_WIDTH - 340, 'right');
 
     if (winner) {
-      ctx.fillStyle = 'rgba(0,0,0,0.85)';
+      ctx.fillStyle = 'rgba(0,0,0,0.9)';
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      ctx.shadowBlur = 20;
+      ctx.shadowBlur = 25;
       ctx.shadowColor = winner === p1.name ? p1.color : p2.color;
       ctx.fillStyle = winner === p1.name ? p1.color : p2.color;
-      ctx.font = 'bold 48px Orbitron';
+      ctx.font = 'bold 54px Orbitron';
       ctx.textAlign = 'center';
       ctx.fillText(`${winner} DOMINATES`, CANVAS_WIDTH/2, CANVAS_HEIGHT/2);
       ctx.shadowBlur = 0;
       ctx.fillStyle = 'white';
-      ctx.font = '16px Orbitron';
-      ctx.fillText('PRESS SPACE TO REINITIALIZE SIMULATION', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 60);
+      ctx.font = '18px Orbitron';
+      ctx.fillText('PRESS SPACE TO REINITIALIZE SIMULATION', CANVAS_WIDTH/2, CANVAS_HEIGHT/2 + 70);
     }
 
     ctx.restore();
@@ -572,19 +590,20 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       keys.current.add(e.key);
       const p1 = p1Ref.current;
       const p2 = p2Ref.current;
-      if (p1) {
+      if (p1 && !winner) {
           if (e.key === 'j') p1.attack(p1.weapon === 'gun' ? 'shoot' : 'punch', bulletsRef);
           if (e.key === 'k') p1.attack('kick', bulletsRef);
       }
-      if (gameMode === 'PvP' && p2) {
+      if (gameMode === 'PvP' && p2 && !winner) {
         if (e.key === '1') p2.attack(p2.weapon === 'gun' ? 'shoot' : 'punch', bulletsRef);
         if (e.key === '2') p2.attack('kick', bulletsRef);
       }
       if (winner && e.code === 'Space') {
-        if(p1) { p1.health = 100; p1.x = 100; p1.y = 200; }
-        if(p2) { p2.health = 100; p2.x = 660; p2.y = 200; }
+        if(p1) { p1.health = 100; p1.x = 100; p1.y = 200; p1.isAttacking = false; p1.attackCooldown = 0; }
+        if(p2) { p2.health = 100; p2.x = 660; p2.y = 200; p2.isAttacking = false; p2.attackCooldown = 0; }
         setWinner(null);
         bulletsRef.current = [];
+        particlesRef.current = [];
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => keys.current.delete(e.key);
