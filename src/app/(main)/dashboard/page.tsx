@@ -93,7 +93,7 @@ export default function DashboardPage() {
     return (
         <div className="container mx-auto">
             <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h1 className="font-headline text-4xl font-bold flex items-center gap-2">
+                <h1 className="font-headline text-4xl font-bold flex flex-wrap items-center gap-2">
                     <AnimatedGlitchText text={`Welcome, ${player.displayName}!`} />
                     {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-12" title="Creator"/>}
                     {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-[-12deg]" title="Angelic Power Rune"/>}

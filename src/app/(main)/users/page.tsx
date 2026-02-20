@@ -73,13 +73,13 @@ export default function UsersPage() {
 
                         return (
                              <Card key={user.player.username} className="text-center bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all flex flex-col">
-                                <CardContent className="pt-6 flex-grow flex flex-col items-center gap-4">
-                                    <Link href={`/users/${user.player.username}`} className="flex flex-col items-center gap-2 text-foreground hover:text-foreground">
+                                <CardContent className="pt-6 flex-grow flex flex-col items-center gap-4 min-w-0">
+                                    <Link href={`/users/${user.player.username}`} className="flex flex-col items-center gap-2 text-foreground hover:text-foreground w-full">
                                         <GamifiedAvatar account={user} imageClassName="w-24 h-24" />
-                                        <div className="hover:underline">
-                                            <h3 className="text-xl font-bold">{user.player.displayName}</h3>
-                                            <p className="text-sm text-muted-foreground">@{user.player.username}</p>
-                                            {activeTitle && <Badge variant="destructive" className="mt-1">{activeTitle.name}</Badge>}
+                                        <div className="hover:underline w-full px-2">
+                                            <h3 className="text-xl font-bold truncate" title={user.player.displayName}>{user.player.displayName}</h3>
+                                            <p className="text-sm text-muted-foreground truncate">@{user.player.username}</p>
+                                            {activeTitle && <Badge variant="destructive" className="mt-1 max-w-full truncate">{activeTitle.name}</Badge>}
                                         </div>
                                     </Link>
                                 </CardContent>

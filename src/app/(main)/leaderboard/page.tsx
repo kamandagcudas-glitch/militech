@@ -119,11 +119,11 @@ export default function LeaderboardPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <Link href={`/users/${rankedUser.player.username}`} className="flex items-center gap-4 group hover:cursor-pointer">
+                                            <Link href={`/users/${rankedUser.player.username}`} className="flex items-center gap-4 group hover:cursor-pointer min-w-0">
                                                 <GamifiedAvatar account={userAccount} />
-                                                <div>
-                                                    <p className="font-semibold text-base group-hover:underline group-hover:text-primary">{rankedUser.player.displayName}</p>
-                                                     {displayTitle && <Badge variant="destructive" className="mt-1">{displayTitle}</Badge>}
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-base group-hover:underline group-hover:text-primary truncate max-w-[150px] sm:max-w-[250px]">{rankedUser.player.displayName}</p>
+                                                     {displayTitle && <Badge variant="destructive" className="mt-1 max-w-[150px] sm:max-w-[250px] truncate">{displayTitle}</Badge>}
                                                 </div>
                                             </Link>
                                         </TableCell>

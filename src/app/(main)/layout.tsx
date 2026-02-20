@@ -181,10 +181,10 @@ export default function MainAppLayout({
       <SidebarInset>
         <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm">
           <SidebarTrigger />
-          <div className="flex items-center gap-3">
-             <div className="flex flex-col items-end -space-y-1">
-              <span className="font-medium">{player.displayName}</span>
-              <span className="text-xs text-muted-foreground">@{player.username}</span>
+          <div className="flex items-center gap-3 min-w-0">
+             <div className="flex flex-col items-end -space-y-1 min-w-0">
+              <span className="font-medium truncate max-w-[120px] sm:max-w-[200px]">{player.displayName}</span>
+              <span className="text-xs text-muted-foreground truncate max-w-[120px] sm:max-w-[200px]">@{player.username}</span>
             </div>
             <GamifiedAvatar account={currentUser} imageClassName="h-8 w-8" />
           </div>
