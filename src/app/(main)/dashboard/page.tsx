@@ -14,18 +14,27 @@ import AnimatedGlitchText from '@/components/animated-glitch-text';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import StickmanFighter from '@/components/stickman-fighter';
+import ChessGame from '@/components/chess-game';
 
 export default function DashboardPage() {
     const game = useContext(GameContext) as GameContextType;
     const [searchQuery, setSearchQuery] = useState('');
     const [showSecretGame, setShowSecretGame] = useState(false);
+    const [showChessGame, setShowChessGame] = useState(false);
 
     useEffect(() => {
-        if (searchQuery.toUpperCase() === 'BORED') {
+        const query = searchQuery.toUpperCase();
+        if (query === 'BORED') {
             setShowSecretGame(true);
             setSearchQuery('');
             if (game.addAchievement) {
                 game.addAchievement('certified-bored');
+            }
+        } else if (query === 'BRAGA') {
+            setShowChessGame(true);
+            setSearchQuery('');
+            if (game.addAchievement) {
+                game.addAchievement('grandmaster-braga');
             }
         }
     }, [searchQuery, game]);
@@ -177,6 +186,15 @@ export default function DashboardPage() {
                         <DialogTitle>Stickman Fighter Easter Egg</DialogTitle>
                     </DialogHeader>
                     <StickmanFighter onExit={() => setShowSecretGame(false)} />
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={showChessGame} onOpenChange={setShowChessGame}>
+                <DialogContent className="max-w-fit p-0 bg-transparent border-none overflow-hidden">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>Braga Mode Chess</DialogTitle>
+                    </DialogHeader>
+                    <ChessGame onExit={() => setShowChessGame(false)} />
                 </DialogContent>
             </Dialog>
         </div>
