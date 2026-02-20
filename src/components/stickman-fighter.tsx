@@ -37,6 +37,263 @@ const WEAPONS: { type: WeaponType; icon: any; label: string; description: string
     { type: 'gun', icon: Crosshair, label: 'Railgun', description: 'Long-range projectiles' },
 ];
 
+const BATTLEFIELD_BG = "https://images.unsplash.com/photo-1515339760107-1952b7a08454?q=80&w=1200";
+
+class Fighter {
+  x: number;
+  y: number;
+  width: number = 40;
+  height: number = 80;
+  velocityX: number = 0;
+  velocityY: number = 0;
+  health: number = 100;
+  color: string;
+  isAttacking: boolean = false;
+  attackType: 'punch' | 'kick' | 'shoot' | null = null;
+  isBlocking: boolean = false;
+  isJumping: boolean = false;
+  direction: number; // 1 for right, -1 for left
+  name: string;
+  attackCooldown: number = 0;
+  frame: number = 0;
+  hitFlash: number = 0;
+  weapon: WeaponType;
+
+  constructor(x: number, y: number, color: string, direction: number, name: string, weapon: WeaponType) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.direction = direction;
+    this.name = name;
+    this.weapon = weapon;
+  }
+
+  draw(ctx: CanvasRenderingContext2D, GROUND_Y: number) {
+    this.frame++;
+    
+    const drawColor = this.hitFlash > 0 ? '#ffffff' : this.color;
+    if (this.hitFlash > 0) this.hitFlash--;
+
+    ctx.strokeStyle = drawColor;
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = this.color;
+
+    const bob = Math.sin(this.frame * 0.1) * 2;
+    const headBob = Math.sin(this.frame * 0.15) * 1;
+
+    const headX = this.x + this.width / 2;
+    const headY = this.y + 15 + bob + headBob;
+    const headRadius = 12;
+
+    // Ground Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.beginPath();
+    ctx.ellipse(headX, GROUND_Y, 20, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Body (Spine)
+    ctx.beginPath();
+    ctx.moveTo(headX, headY + headRadius);
+    ctx.lineTo(headX, headY + 50);
+    ctx.stroke();
+
+    // Head
+    ctx.beginPath();
+    ctx.arc(headX, headY, headRadius, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Eyes
+    ctx.fillStyle = 'white';
+    const eyeOffset = 4 * this.direction;
+    if (this.hitFlash > 0) {
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(headX + eyeOffset - 2, headY - 2);
+        ctx.lineTo(headX + eyeOffset + 2, headY + 2);
+        ctx.moveTo(headX + eyeOffset + 2, headY - 2);
+        ctx.lineTo(headX + eyeOffset - 2, headY + 2);
+        ctx.stroke();
+    } else if (this.isAttacking) {
+        ctx.fillRect(headX + eyeOffset - 1, headY - 2, 6 * this.direction, 2);
+    } else {
+        ctx.fillRect(headX + eyeOffset, headY - 1, 2, 2);
+    }
+
+    ctx.shadowBlur = 0;
+
+    // Arms & Weapon
+    const armY = headY + 20;
+    let leftArmX = headX - 20;
+    let rightArmX = headX + 20;
+    let leftArmY = armY + 10;
+    let rightArmY = armY + 10;
+
+    if (this.isAttacking) {
+      if (this.attackType === 'punch' || this.attackType === 'shoot') {
+        if (this.direction === 1) {
+            rightArmX = headX + 45;
+            rightArmY = armY;
+        } else {
+            leftArmX = headX - 45;
+            leftArmY = armY;
+        }
+      }
+    }
+
+    if (this.isBlocking) {
+      leftArmX = headX - 10;
+      rightArmX = headX + 10;
+      leftArmY = headY + 10;
+      rightArmY = headY + 10;
+    }
+
+    if (Math.abs(this.velocityX) > 0 && !this.isAttacking && !this.isBlocking) {
+        const sway = Math.sin(this.frame * 0.2) * 15;
+        leftArmX -= sway;
+        rightArmX += sway;
+    }
+
+    // Draw Arms
+    ctx.beginPath();
+    ctx.moveTo(headX, armY);
+    ctx.lineTo(leftArmX, leftArmY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(headX, armY);
+    ctx.lineTo(rightArmX, rightArmY);
+    ctx.stroke();
+
+    // DRAW WEAPONS
+    ctx.save();
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = this.color;
+    
+    if (this.weapon === 'sword') {
+        const weaponX = this.direction === 1 ? rightArmX : leftArmX;
+        const weaponY = this.direction === 1 ? rightArmY : leftArmY;
+        ctx.beginPath();
+        ctx.moveTo(weaponX, weaponY);
+        ctx.lineTo(weaponX + 30 * this.direction, weaponY - 20);
+        ctx.stroke();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    } else if (this.weapon === 'spear') {
+        const weaponX = this.direction === 1 ? rightArmX : leftArmX;
+        const weaponY = this.direction === 1 ? rightArmY : leftArmY;
+        ctx.beginPath();
+        ctx.moveTo(weaponX - 15 * this.direction, weaponY + 15);
+        ctx.lineTo(weaponX + 50 * this.direction, weaponY - 30);
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(weaponX + 50 * this.direction, weaponY - 30, 4, 0, Math.PI * 2);
+        ctx.fill();
+    } else if (this.weapon === 'gun') {
+        const weaponX = this.direction === 1 ? rightArmX : leftArmX;
+        const weaponY = this.direction === 1 ? rightArmY : leftArmY;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(weaponX, weaponY);
+        ctx.lineTo(weaponX + 15 * this.direction, weaponY);
+        ctx.stroke();
+        ctx.lineWidth = 3;
+        ctx.lineTo(weaponX + 15 * this.direction, weaponY + 8);
+        ctx.stroke();
+    }
+    ctx.restore();
+
+    // Legs
+    const legY = headY + 50 - bob;
+    let leftLegEnd = legY + 25;
+    let rightLegEnd = legY + 25;
+    let leftLegX = headX - 15;
+    let rightLegX = headX + 15;
+
+    if (Math.abs(this.velocityX) > 0 && !this.isJumping) {
+        const walkCycle = Math.sin(this.frame * 0.2);
+        leftLegX = headX + (walkCycle * 20);
+        rightLegX = headX - (walkCycle * 20);
+        leftLegEnd = legY + 25 - (Math.abs(walkCycle) * 5);
+        rightLegEnd = legY + 25 - (Math.abs(walkCycle) * 5);
+    }
+
+    if (this.isAttacking && this.attackType === 'kick') {
+      if (this.direction === 1) {
+          rightLegX = headX + 50;
+          rightLegEnd = legY;
+      } else {
+          leftLegX = headX - 50;
+          leftLegEnd = legY;
+      }
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(headX, legY);
+    ctx.lineTo(leftLegX, leftLegEnd);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(headX, legY);
+    ctx.lineTo(rightLegX, rightLegEnd);
+    ctx.stroke();
+    
+    ctx.fillStyle = 'white';
+    ctx.font = 'bold 10px Orbitron';
+    ctx.textAlign = 'center';
+    ctx.fillText(this.name, headX, this.y - 20);
+  }
+
+  update(CANVAS_WIDTH: number, GROUND_Y: number) {
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+
+    if (this.y + this.height < GROUND_Y) {
+      this.velocityY += 0.6;
+      this.isJumping = true;
+    } else {
+      this.velocityY = 0;
+      this.y = GROUND_Y - this.height;
+      this.isJumping = false;
+    }
+
+    if (this.attackCooldown > 0) this.attackCooldown--;
+    
+    if (this.x < 0) this.x = 0;
+    if (this.x + this.width > CANVAS_WIDTH) this.x = CANVAS_WIDTH - this.width;
+  }
+
+  attack(type: 'punch' | 'kick' | 'shoot', bulletsRef: React.MutableRefObject<Bullet[]>) {
+    if (this.attackCooldown === 0) {
+      this.isAttacking = true;
+      this.attackType = type;
+      
+      if (type === 'shoot' && this.weapon === 'gun') {
+          this.attackCooldown = 40;
+          bulletsRef.current.push({
+              x: this.x + (this.direction === 1 ? 60 : -20),
+              y: this.y + 35,
+              vx: 12 * this.direction,
+              ownerName: this.name,
+              color: this.color
+          });
+      } else {
+          this.attackCooldown = 25;
+      }
+
+      setTimeout(() => {
+        this.isAttacking = false;
+        this.attackType = null;
+      }, 150);
+    }
+  }
+}
+
 export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
@@ -46,274 +303,23 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
   const requestRef = useRef<number>(null);
   const particlesRef = useRef<Particle[]>([]);
   const bulletsRef = useRef<Bullet[]>([]);
+  const bgRef = useRef<HTMLImageElement | null>(null);
   const [shake, setShake] = useState(0);
 
   const CANVAS_WIDTH = 800;
   const CANVAS_HEIGHT = 400;
   const GROUND_Y = 350;
-  const GRAVITY = 0.6;
-
-  class Fighter {
-    x: number;
-    y: number;
-    width: number = 40;
-    height: number = 80;
-    velocityX: number = 0;
-    velocityY: number = 0;
-    health: number = 100;
-    color: string;
-    isAttacking: boolean = false;
-    attackType: 'punch' | 'kick' | 'shoot' | null = null;
-    isBlocking: boolean = false;
-    isJumping: boolean = false;
-    direction: number; // 1 for right, -1 for left
-    name: string;
-    attackCooldown: number = 0;
-    frame: number = 0;
-    hitFlash: number = 0;
-    weapon: WeaponType;
-
-    constructor(x: number, y: number, color: string, direction: number, name: string, weapon: WeaponType) {
-      this.x = x;
-      this.y = y;
-      this.color = color;
-      this.direction = direction;
-      this.name = name;
-      this.weapon = weapon;
-    }
-
-    draw(ctx: CanvasRenderingContext2D) {
-      this.frame++;
-      
-      const drawColor = this.hitFlash > 0 ? '#ffffff' : this.color;
-      if (this.hitFlash > 0) this.hitFlash--;
-
-      ctx.strokeStyle = drawColor;
-      ctx.lineWidth = 4;
-      ctx.lineCap = 'round';
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = this.color;
-
-      const bob = Math.sin(this.frame * 0.1) * 2;
-      const headBob = Math.sin(this.frame * 0.15) * 1;
-
-      const headX = this.x + this.width / 2;
-      const headY = this.y + 15 + bob + headBob;
-      const headRadius = 12;
-
-      // Ground Shadow
-      ctx.fillStyle = 'rgba(0,0,0,0.3)';
-      ctx.beginPath();
-      ctx.ellipse(headX, GROUND_Y, 20, 5, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Body (Spine)
-      ctx.beginPath();
-      ctx.moveTo(headX, headY + headRadius);
-      ctx.lineTo(headX, headY + 50);
-      ctx.stroke();
-
-      // Head
-      ctx.beginPath();
-      ctx.arc(headX, headY, headRadius, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Eyes
-      ctx.fillStyle = 'white';
-      const eyeOffset = 4 * this.direction;
-      if (this.hitFlash > 0) {
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(headX + eyeOffset - 2, headY - 2);
-          ctx.lineTo(headX + eyeOffset + 2, headY + 2);
-          ctx.moveTo(headX + eyeOffset + 2, headY - 2);
-          ctx.lineTo(headX + eyeOffset - 2, headY + 2);
-          ctx.stroke();
-      } else if (this.isAttacking) {
-          ctx.fillRect(headX + eyeOffset - 1, headY - 2, 6 * this.direction, 2);
-      } else {
-          ctx.fillRect(headX + eyeOffset, headY - 1, 2, 2);
-      }
-
-      ctx.shadowBlur = 0;
-
-      // Arms & Weapon
-      const armY = headY + 20;
-      let leftArmX = headX - 20;
-      let rightArmX = headX + 20;
-      let leftArmY = armY + 10;
-      let rightArmY = armY + 10;
-
-      // Handle weapon drawing in the "active" hand
-      const activeHandX = this.direction === 1 ? rightArmX : leftArmX;
-      const activeHandY = this.direction === 1 ? rightArmY : leftArmY;
-
-      if (this.isAttacking) {
-        if (this.attackType === 'punch' || this.attackType === 'shoot') {
-          if (this.direction === 1) {
-              rightArmX = headX + 45;
-              rightArmY = armY;
-          } else {
-              leftArmX = headX - 45;
-              leftArmY = armY;
-          }
-        }
-      }
-
-      if (this.isBlocking) {
-        leftArmX = headX - 10;
-        rightArmX = headX + 10;
-        leftArmY = headY + 10;
-        rightArmY = headY + 10;
-      }
-
-      if (Math.abs(this.velocityX) > 0 && !this.isAttacking && !this.isBlocking) {
-          const sway = Math.sin(this.frame * 0.2) * 15;
-          leftArmX -= sway;
-          rightArmX += sway;
-      }
-
-      // Draw Arms
-      ctx.beginPath();
-      ctx.moveTo(headX, armY);
-      ctx.lineTo(leftArmX, leftArmY);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(headX, armY);
-      ctx.lineTo(rightArmX, rightArmY);
-      ctx.stroke();
-
-      // DRAW WEAPONS
-      ctx.save();
-      ctx.strokeStyle = this.color;
-      ctx.lineWidth = 3;
-      if (this.weapon === 'sword') {
-          const weaponX = this.direction === 1 ? rightArmX : leftArmX;
-          const weaponY = this.direction === 1 ? rightArmY : leftArmY;
-          ctx.beginPath();
-          ctx.moveTo(weaponX, weaponY);
-          ctx.lineTo(weaponX + 30 * this.direction, weaponY - 20);
-          ctx.stroke();
-          // Blade glow
-          ctx.strokeStyle = '#fff';
-          ctx.lineWidth = 1;
-          ctx.stroke();
-      } else if (this.weapon === 'spear') {
-          const weaponX = this.direction === 1 ? rightArmX : leftArmX;
-          const weaponY = this.direction === 1 ? rightArmY : leftArmY;
-          ctx.beginPath();
-          ctx.moveTo(weaponX - 15 * this.direction, weaponY + 15);
-          ctx.lineTo(weaponX + 50 * this.direction, weaponY - 30);
-          ctx.stroke();
-          // Spear tip
-          ctx.fillStyle = '#fff';
-          ctx.beginPath();
-          ctx.arc(weaponX + 50 * this.direction, weaponY - 30, 4, 0, Math.PI * 2);
-          ctx.fill();
-      } else if (this.weapon === 'gun') {
-          const weaponX = this.direction === 1 ? rightArmX : leftArmX;
-          const weaponY = this.direction === 1 ? rightArmY : leftArmY;
-          ctx.lineWidth = 6;
-          ctx.beginPath();
-          ctx.moveTo(weaponX, weaponY);
-          ctx.lineTo(weaponX + 15 * this.direction, weaponY);
-          ctx.stroke();
-          ctx.lineWidth = 3;
-          ctx.lineTo(weaponX + 15 * this.direction, weaponY + 8);
-          ctx.stroke();
-      }
-      ctx.restore();
-
-      // Legs
-      const legY = headY + 50 - bob;
-      let leftLegEnd = legY + 25;
-      let rightLegEnd = legY + 25;
-      let leftLegX = headX - 15;
-      let rightLegX = headX + 15;
-
-      if (Math.abs(this.velocityX) > 0 && !this.isJumping) {
-          const walkCycle = Math.sin(this.frame * 0.2);
-          leftLegX = headX + (walkCycle * 20);
-          rightLegX = headX - (walkCycle * 20);
-          leftLegEnd = legY + 25 - (Math.abs(walkCycle) * 5);
-          rightLegEnd = legY + 25 - (Math.abs(walkCycle) * 5);
-      }
-
-      if (this.isAttacking && this.attackType === 'kick') {
-        if (this.direction === 1) {
-            rightLegX = headX + 50;
-            rightLegEnd = legY;
-        } else {
-            leftLegX = headX - 50;
-            leftLegEnd = legY;
-        }
-      }
-
-      ctx.beginPath();
-      ctx.moveTo(headX, legY);
-      ctx.lineTo(leftLegX, leftLegEnd);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(headX, legY);
-      ctx.lineTo(rightLegX, rightLegEnd);
-      ctx.stroke();
-      
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 10px Orbitron';
-      ctx.textAlign = 'center';
-      ctx.fillText(this.name, headX, this.y - 20);
-    }
-
-    update() {
-      this.x += this.velocityX;
-      this.y += this.velocityY;
-
-      if (this.y + this.height < GROUND_Y) {
-        this.velocityY += GRAVITY;
-        this.isJumping = true;
-      } else {
-        this.velocityY = 0;
-        this.y = GROUND_Y - this.height;
-        this.isJumping = false;
-      }
-
-      if (this.attackCooldown > 0) this.attackCooldown--;
-      
-      if (this.x < 0) this.x = 0;
-      if (this.x + this.width > CANVAS_WIDTH) this.x = CANVAS_WIDTH - this.width;
-    }
-
-    attack(type: 'punch' | 'kick' | 'shoot') {
-      if (this.attackCooldown === 0) {
-        this.isAttacking = true;
-        this.attackType = type;
-        
-        if (type === 'shoot' && this.weapon === 'gun') {
-            this.attackCooldown = 40;
-            bulletsRef.current.push({
-                x: this.x + (this.direction === 1 ? 60 : -20),
-                y: this.y + 35,
-                vx: 12 * this.direction,
-                ownerName: this.name,
-                color: this.color
-            });
-        } else {
-            this.attackCooldown = 25;
-        }
-
-        setTimeout(() => {
-          this.isAttacking = false;
-          this.attackType = null;
-        }, 150);
-      }
-    }
-  }
 
   const p1Ref = useRef<Fighter | null>(null);
   const p2Ref = useRef<Fighter | null>(null);
   const keys = useRef<Set<string>>(new Set());
+
+  // Load Background
+  useEffect(() => {
+    const img = new Image();
+    img.src = BATTLEFIELD_BG;
+    img.onload = () => { bgRef.current = img; };
+  }, []);
 
   const spawnParticles = (x: number, y: number, color: string) => {
       for (let i = 0; i < 10; i++) {
@@ -330,7 +336,10 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
   const gameLoop = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !p1Ref.current || !p2Ref.current) return;
+    if (!canvas || !p1Ref.current || !p2Ref.current) {
+        requestRef.current = requestAnimationFrame(gameLoop);
+        return;
+    }
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -346,8 +355,16 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
     ctx.save();
     ctx.translate(shakeX, shakeY);
-    ctx.fillStyle = '#05070a';
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    
+    // Draw Battlefield Background
+    if (bgRef.current) {
+        ctx.globalAlpha = 0.4;
+        ctx.drawImage(bgRef.current, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctx.globalAlpha = 1.0;
+    } else {
+        ctx.fillStyle = '#05070a';
+        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    }
     
     // Grid floor
     ctx.strokeStyle = 'rgba(48, 0, 255, 0.2)';
@@ -393,17 +410,17 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         } else {
           p2.direction = dx > 0 ? 1 : -1;
           if (p2.weapon === 'gun') {
-              if (Math.random() < 0.03) p2.attack('shoot');
+              if (Math.random() < 0.03) p2.attack('shoot', bulletsRef);
           } else {
-              if (Math.random() < 0.06) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick');
+              if (Math.random() < 0.06) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick', bulletsRef);
           }
           p2.isBlocking = p1.isAttacking && Math.random() < 0.8;
         }
         if (p1.isJumping && Math.random() < 0.02) p2.velocityY = -12;
       }
 
-      p1.update();
-      p2.update();
+      p1.update(CANVAS_WIDTH, GROUND_Y);
+      p2.update(CANVAS_WIDTH, GROUND_Y);
 
       // Combat Check
       const checkHit = (attacker: Fighter, defender: Fighter) => {
@@ -481,8 +498,8 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     particlesRef.current = particlesRef.current.filter(p => p.life > 0);
     ctx.globalAlpha = 1.0;
 
-    p1.draw(ctx);
-    p2.draw(ctx);
+    p1.draw(ctx, GROUND_Y);
+    p2.draw(ctx, GROUND_Y);
 
     const drawHP = (fighter: Fighter, x: number, align: 'left' | 'right') => {
       const w = 300;
@@ -529,12 +546,12 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       const p1 = p1Ref.current;
       const p2 = p2Ref.current;
       if (p1) {
-          if (e.key === 'j') p1.attack(p1.weapon === 'gun' ? 'shoot' : 'punch');
-          if (e.key === 'k') p1.attack('kick');
+          if (e.key === 'j') p1.attack(p1.weapon === 'gun' ? 'shoot' : 'punch', bulletsRef);
+          if (e.key === 'k') p1.attack('kick', bulletsRef);
       }
       if (gameMode === 'PvP' && p2) {
-        if (e.key === '1') p2.attack(p2.weapon === 'gun' ? 'shoot' : 'punch');
-        if (e.key === '2') p2.attack('kick');
+        if (e.key === '1') p2.attack(p2.weapon === 'gun' ? 'shoot' : 'punch', bulletsRef);
+        if (e.key === '2') p2.attack('kick', bulletsRef);
       }
       if (winner && e.code === 'Space') {
         if(p1) { p1.health = 100; p1.x = 100; p1.y = 200; }
@@ -570,6 +587,8 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       setP1Weapon(null);
       setP2Weapon(null);
       setWinner(null);
+      p1Ref.current = null;
+      p2Ref.current = null;
   };
 
   if (!gameMode) {
@@ -603,9 +622,9 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
               </h3>
               <div className="grid grid-cols-3 gap-6 w-full max-w-2xl">
                   {WEAPONS.map(w => (
-                      <Card 
+                      <div 
                         key={w.type} 
-                        className="bg-zinc-900 border-primary/30 hover:border-primary transition-all cursor-pointer group"
+                        className="bg-zinc-900 border border-primary/30 rounded-lg hover:border-primary transition-all cursor-pointer group"
                         onClick={() => isSelectingP2 ? setP2Weapon(w.type) : (gameMode === 'PvBot' ? (setP1Weapon(w.type), setP2Weapon('none')) : setP1Weapon(w.type))}
                       >
                           <div className="p-6 flex flex-col items-center text-center gap-4">
@@ -615,7 +634,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
                                   <p className="text-[10px] text-zinc-500">{w.description}</p>
                               </div>
                           </div>
-                      </Card>
+                      </div>
                   ))}
               </div>
               <Button variant="link" className="mt-6 text-zinc-500" onClick={resetSelection}>Change Mode</Button>
@@ -644,7 +663,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         </div>
         <div className="flex flex-col">
             <span className="text-pink-500 font-bold uppercase">
-                {gameMode === 'PvBot' ? `AI_UNIT (${p2Ref.current?.weapon})` : `AGENT_02 (${p2Weapon})`}
+                {gameMode === 'PvBot' ? `AI_UNIT (${p2Ref.current?.weapon || 'RND'})` : `AGENT_02 (${p2Weapon})`}
             </span>
             <span>{gameMode === 'PvBot' ? 'AUTONOMOUS' : `ARROWS: MOVE | 1: ${p2Weapon === 'gun' ? 'FIRE' : 'ATTACK'} | 2: KICK`}</span>
         </div>
@@ -652,7 +671,3 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     </div>
   );
 }
-
-const Card = ({ children, className, onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) => (
-    <div onClick={onClick} className={cn("rounded-lg border shadow-sm", className)}>{children}</div>
-);
