@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useContext, useEffect, useState } from "react";
@@ -9,14 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Loader2, ArrowRight } from "lucide-react";
 import { AnimatedIntro } from "@/components/animated-intro";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/context/ThemeContext";
 
 export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [introFinished, setIntroFinished] = useState(false);
   const router = useRouter();
   const game = useContext(GameContext) as GameContextType;
-  const { theme } = useTheme();
 
   useEffect(() => {
     if (game.currentUser) {
@@ -39,17 +36,11 @@ export default function LandingPage() {
       <AnimatedIntro onFinished={() => setIntroFinished(true)} />
       
       <div className={cn("transition-opacity duration-1000 mt-8", introFinished ? "opacity-100" : "opacity-0")}>
-        {theme === 'cyberpunk' ? (
-            <Link href="/login" className="btn-futuristic">
-                Enter Simulation
+        <Button asChild variant="cyber" size="lg" className="text-xl h-14 px-12">
+            <Link href="/login">
+                Enter Simulation <ArrowRight className="ml-2" />
             </Link>
-        ) : (
-            <Button asChild size="lg" className="text-xl h-14">
-                <Link href="/login">
-                    Enter Simulation <ArrowRight className="ml-2" />
-                </Link>
-            </Button>
-        )}
+        </Button>
       </div>
     </main>
   );

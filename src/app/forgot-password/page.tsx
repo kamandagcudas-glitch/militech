@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useContext } from 'react';
@@ -11,7 +10,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft } from 'lucide-react';
-import { useTheme } from '@/context/ThemeContext';
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -22,7 +20,6 @@ export default function ForgotPasswordPage() {
     const router = useRouter();
     const game = useContext(GameContext) as GameContextType;
     const { toast } = useToast();
-    const { theme } = useTheme();
 
     const handleSendCode = async () => {
         setError(null);
@@ -70,15 +67,9 @@ export default function ForgotPasswordPage() {
                                 />
                             </div>
                             {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
-                            {theme === 'cyberpunk' ? (
-                                <button onClick={handleSendCode} className="btn-futuristic w-full" disabled={isLoading || !email.trim()}>
-                                    {isLoading ? 'Sending...' : 'Send Reset Link'}
-                                </button>
-                            ) : (
-                                <Button onClick={handleSendCode} className="w-full" disabled={isLoading || !email.trim()}>
-                                    {isLoading ? 'Sending...' : 'Send Reset Link'}
-                                </Button>
-                            )}
+                            <Button variant="cyber" onClick={handleSendCode} className="w-full h-12" disabled={isLoading || !email.trim()}>
+                                {isLoading ? 'Sending...' : 'Send Reset Link'}
+                            </Button>
                         </div>
                     )}
                     <div className="mt-6 text-center">
