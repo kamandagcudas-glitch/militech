@@ -27,17 +27,11 @@ export default function DashboardPage() {
         if (query === 'BORED') {
             setShowSecretGame(true);
             setSearchQuery('');
-            if (game.addAchievement) {
-                game.addAchievement('certified-bored');
-            }
         } else if (query === 'BRAGA') {
             setShowChessGame(true);
             setSearchQuery('');
-            if (game.addAchievement) {
-                game.addAchievement('grandmaster-braga');
-            }
         }
-    }, [searchQuery, game]);
+    }, [searchQuery]);
 
     if (!game.currentUser) return null;
 
@@ -185,7 +179,14 @@ export default function DashboardPage() {
                     <DialogHeader className="sr-only">
                         <DialogTitle>Stickman Fighter Easter Egg</DialogTitle>
                     </DialogHeader>
-                    <StickmanFighter onExit={() => setShowSecretGame(false)} />
+                    <StickmanFighter 
+                        onExit={() => setShowSecretGame(false)} 
+                        onWin={() => {
+                            if (game.addAchievement) {
+                                game.addAchievement('certified-bored');
+                            }
+                        }}
+                    />
                 </DialogContent>
             </Dialog>
 
@@ -194,7 +195,14 @@ export default function DashboardPage() {
                     <DialogHeader className="sr-only">
                         <DialogTitle>Braga Mode Chess</DialogTitle>
                     </DialogHeader>
-                    <ChessGame onExit={() => setShowChessGame(false)} />
+                    <ChessGame 
+                        onExit={() => setShowChessGame(false)} 
+                        onWin={() => {
+                            if (game.addAchievement) {
+                                game.addAchievement('grandmaster-braga');
+                            }
+                        }}
+                    />
                 </DialogContent>
             </Dialog>
         </div>

@@ -511,6 +511,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
               if (target.health <= 0) {
                   target.health = 0;
                   setWinner(bullet.ownerName);
+                  if (bullet.ownerName === 'AGENT_01') onWin?.();
               }
               bulletsRef.current.splice(i, 1);
           }
