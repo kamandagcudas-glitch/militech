@@ -3,7 +3,7 @@
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { X, Sword, Shield, User, Bot, Trophy, Crosshair, Wand2 } from 'lucide-react';
+import { X, Sword, Shield, User, Bot, Trophy, Crosshair, Wand2, Zap, Skull, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface StickmanFighterProps {
@@ -13,6 +13,7 @@ interface StickmanFighterProps {
 
 type GameMode = 'PvP' | 'PvBot';
 type WeaponType = 'none' | 'sword' | 'spear' | 'gun';
+type Difficulty = 'Easy' | 'Hard' | 'Hell';
 
 interface Particle {
   x: number;
@@ -35,6 +36,12 @@ const WEAPONS: { type: WeaponType; icon: any; label: string; description: string
     { type: 'sword', icon: Sword, label: 'Sword', description: 'Balanced speed & reach' },
     { type: 'spear', icon: Wand2, label: 'Spear', description: 'Maximum melee range' },
     { type: 'gun', icon: Crosshair, label: 'Railgun', description: 'Long-range projectiles' },
+];
+
+const DIFFICULTIES: { type: Difficulty; icon: any; label: string; description: string; color: string }[] = [
+    { type: 'Easy', icon: Activity, label: 'EASY', description: 'Limited AI response', color: 'text-green-400' },
+    { type: 'Hard', icon: Zap, label: 'HARD', description: 'Aggressive tactical bot', color: 'text-orange-400' },
+    { type: 'Hell', icon: Skull, label: 'HELL', description: 'Absolute system dominance', color: 'text-destructive' },
 ];
 
 const BATTLEFIELD_BG = "https://images.unsplash.com/photo-1515339760107-1952b7a08454?q=80&w=1200";
@@ -297,6 +304,7 @@ class Fighter {
 export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameMode, setGameMode] = useState<GameMode | null>(null);
+  const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
   const [p1Weapon, setP1Weapon] = useState<WeaponType | null>(null);
   const [p2Weapon, setP2Weapon] = useState<WeaponType | null>(null);
   const [winner, setWinner] = useState<string | null>(null);
@@ -401,22 +409,29 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         if (keys.current.has('ArrowRight')) { p2.velocityX = 5; p2.direction = 1; }
         if (keys.current.has('ArrowUp') && !p2.isJumping) p2.velocityY = -15;
         p2.isBlocking = keys.current.has('ArrowDown');
-      } else if (gameMode === 'PvBot') {
+      } else if (gameMode === 'PvBot' && difficulty) {
         const dx = p1.x - p2.x;
         p2.velocityX = 0;
+        
+        // Scaled AI Properties
+        const aiSpeed = difficulty === 'Easy' ? 2.5 : difficulty === 'Hard' ? 4.5 : 6.5;
+        const aiAttackFreq = difficulty === 'Easy' ? 0.02 : difficulty === 'Hard' ? 0.08 : 0.15;
+        const aiBlockChance = difficulty === 'Easy' ? 0.3 : difficulty === 'Hard' ? 0.8 : 0.98;
+        const aiJumpFreq = difficulty === 'Easy' ? 0.01 : difficulty === 'Hard' ? 0.04 : 0.08;
+
         if (Math.abs(dx) > (p2.weapon === 'gun' ? 300 : 70)) {
-          p2.velocityX = dx > 0 ? 3.5 : -3.5;
+          p2.velocityX = dx > 0 ? aiSpeed : -aiSpeed;
           p2.direction = dx > 0 ? 1 : -1;
         } else {
           p2.direction = dx > 0 ? 1 : -1;
           if (p2.weapon === 'gun') {
-              if (Math.random() < 0.03) p2.attack('shoot', bulletsRef);
+              if (Math.random() < aiAttackFreq) p2.attack('shoot', bulletsRef);
           } else {
-              if (Math.random() < 0.06) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick', bulletsRef);
+              if (Math.random() < aiAttackFreq) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick', bulletsRef);
           }
-          p2.isBlocking = p1.isAttacking && Math.random() < 0.8;
+          p2.isBlocking = p1.isAttacking && Math.random() < aiBlockChance;
         }
-        if (p1.isJumping && Math.random() < 0.02) p2.velocityY = -12;
+        if (p1.isJumping && Math.random() < aiJumpFreq) p2.velocityY = -12;
       }
 
       p1.update(CANVAS_WIDTH, GROUND_Y);
@@ -432,7 +447,14 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
           const dist = Math.abs((attacker.x + attacker.width/2) - (defender.x + defender.width/2));
           if (dist < range && Math.abs(attacker.y - defender.y) < 60) {
-            const damage = attacker.attackType === 'punch' ? (attacker.weapon === 'gun' ? 2 : 8) : 12;
+            let damage = attacker.attackType === 'punch' ? (attacker.weapon === 'gun' ? 2 : 8) : 12;
+            
+            // Scaled Damage for AI
+            if (attacker.name === 'AI_UNIT') {
+                const multiplier = difficulty === 'Easy' ? 0.7 : difficulty === 'Hard' ? 1.2 : 2.0;
+                damage = Math.floor(damage * multiplier);
+            }
+
             defender.health -= damage;
             defender.hitFlash = 5;
             spawnParticles(defender.x + defender.width/2, defender.y + 40, attacker.color);
@@ -458,7 +480,12 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
           const dist = Math.abs(bullet.x - (target.x + target.width/2));
           if (dist < 30 && Math.abs(bullet.y - (target.y + 40)) < 40) {
               if (!target.isBlocking) {
-                  target.health -= 10;
+                  let damage = 10;
+                  if (bullet.ownerName === 'AI_UNIT') {
+                      const multiplier = difficulty === 'Easy' ? 0.7 : difficulty === 'Hard' ? 1.2 : 2.0;
+                      damage = Math.floor(damage * multiplier);
+                  }
+                  target.health -= damage;
                   target.hitFlash = 5;
                   spawnParticles(bullet.x, bullet.y, bullet.color);
                   setShake(5);
@@ -538,7 +565,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
     ctx.restore();
     requestRef.current = requestAnimationFrame(gameLoop);
-  }, [gameMode, winner, onWin, shake]);
+  }, [gameMode, difficulty, winner, onWin, shake]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -575,15 +602,16 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
   // Handle Game Initialization
   useEffect(() => {
-      if (gameMode && p1Weapon && p2Weapon) {
+      if (gameMode && p1Weapon && p2Weapon && (gameMode === 'PvP' || difficulty)) {
           p1Ref.current = new Fighter(100, 200, '#00f6ff', 1, 'AGENT_01', p1Weapon);
           const p2Wep = gameMode === 'PvBot' ? (['sword', 'spear', 'gun'][Math.floor(Math.random()*3)] as WeaponType) : p2Weapon;
           p2Ref.current = new Fighter(660, 200, '#ff0080', -1, gameMode === 'PvBot' ? 'AI_UNIT' : 'AGENT_02', p2Wep);
       }
-  }, [gameMode, p1Weapon, p2Weapon]);
+  }, [gameMode, difficulty, p1Weapon, p2Weapon]);
 
   const resetSelection = () => {
       setGameMode(null);
+      setDifficulty(null);
       setP1Weapon(null);
       setP2Weapon(null);
       setWinner(null);
@@ -611,6 +639,30 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         </Button>
       </div>
     );
+  }
+
+  if (gameMode === 'PvBot' && !difficulty) {
+      return (
+          <div className="flex flex-col items-center justify-center h-[400px] w-[800px] bg-black text-white p-8 relative overflow-hidden">
+              <h3 className="text-3xl font-cyber text-primary mb-8">SELECT DIFFICULTY</h3>
+              <div className="grid grid-cols-3 gap-6 w-full max-w-2xl">
+                  {DIFFICULTIES.map(d => (
+                      <div 
+                        key={d.type} 
+                        className="bg-zinc-900 border border-primary/30 rounded-lg hover:border-primary transition-all cursor-pointer group p-6 flex flex-col items-center text-center gap-4"
+                        onClick={() => setDifficulty(d.type)}
+                      >
+                          <d.icon className={cn("h-12 w-12 group-hover:scale-110 transition-transform", d.color)} />
+                          <div>
+                              <p className={cn("font-bold uppercase tracking-tighter", d.color)}>{d.label}</p>
+                              <p className="text-[10px] text-zinc-500">{d.description}</p>
+                          </div>
+                      </div>
+                  ))}
+              </div>
+              <Button variant="link" className="mt-6 text-zinc-500" onClick={resetSelection}>Back to Modes</Button>
+          </div>
+      )
   }
 
   if (!p1Weapon || (gameMode === 'PvP' && !p2Weapon)) {
@@ -663,7 +715,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         </div>
         <div className="flex flex-col">
             <span className="text-pink-500 font-bold uppercase">
-                {gameMode === 'PvBot' ? `AI_UNIT (${p2Ref.current?.weapon || 'RND'})` : `AGENT_02 (${p2Weapon})`}
+                {gameMode === 'PvBot' ? `AI_UNIT (${p2Ref.current?.weapon || 'RND'}) - ${difficulty}` : `AGENT_02 (${p2Weapon})`}
             </span>
             <span>{gameMode === 'PvBot' ? 'AUTONOMOUS' : `ARROWS: MOVE | 1: ${p2Weapon === 'gun' ? 'FIRE' : 'ATTACK'} | 2: KICK`}</span>
         </div>
