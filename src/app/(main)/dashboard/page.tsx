@@ -8,7 +8,7 @@ import { cocData } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck, Search, Trophy } from 'lucide-react';
+import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck, Search, Trophy, Presentation } from 'lucide-react';
 import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import AnimatedGlitchText from '@/components/animated-glitch-text';
 import { Input } from '@/components/ui/input';
@@ -61,6 +61,13 @@ export default function DashboardPage() {
             title: "Word Completion",
             description: "Guess the word by filling in the blanks.",
             buttonText: "Play Now"
+        },
+        {
+            href: "/presentations",
+            icon: <Presentation />,
+            title: "Presentation Vault",
+            description: "Store and manage your mission briefings and PowerPoints.",
+            buttonText: "Open Vault"
         },
         {
             href: "/profile",

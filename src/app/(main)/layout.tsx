@@ -35,6 +35,7 @@ import {
   Shield,
   Cog,
   MessageCircle,
+  Presentation,
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { GamifiedAvatar } from "@/components/ui/gamified-avatar";
@@ -88,6 +89,7 @@ export default function MainAppLayout({
     { href: "/system-viewer", icon: <Cpu />, label: "System Viewer" },
     { href: "/pc-builder", icon: <Wrench />, label: "PC Builder" },
     { href: "/files", icon: <Files />, label: "File Storage" },
+    { href: "/presentations", icon: <Presentation />, label: "Presentations" },
     { href: "/coc/coc1", icon: <BookCopy />, label: "COC 1" },
     { href: "/coc/coc2", icon: <BookCopy />, label: "COC 2" },
     { href: "/coc/coc3", icon: <BookCopy />, label: "COC 3" },
