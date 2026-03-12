@@ -40,7 +40,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   {
     "id": "coc2-step1",
     "description": "A coiled bundle of blue ethernet network cables.",
-    "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MTM1MjU5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MTM1MjU5NXww&ixlib=rb-4.1.0&q=80&w=1080",
     "imageHint": "network cables"
   },
   {
@@ -58,7 +58,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   {
     "id": "coc2-step4",
     "description": "A modern Wi-Fi router on a desk with glowing lights.",
-    "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
     "imageHint": "wifi router"
   },
   {
@@ -156,6 +156,90 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     "description": "Premium mid-tower computer chassis with tempered glass.",
     "imageUrl": "https://images.unsplash.com/photo-1547082299-de196ea013d6?auto=format&fit=crop&q=80&w=1080",
     "imageHint": "computer case"
+  },
+  {
+    "id": "working-cpu",
+    "description": "Powerful AMD Ryzen 9 processor for productivity.",
+    "imageUrl": "https://images.unsplash.com/photo-1629725413175-396025477a04?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "ryzen 9 cpu"
+  },
+  {
+    "id": "working-gpu",
+    "description": "Balanced NVIDIA GeForce RTX 4070 graphics card.",
+    "imageUrl": "https://images.unsplash.com/photo-1706954777655-7cb60eb69f51?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "rtx 4070 gpu"
+  },
+  {
+    "id": "working-ram",
+    "description": "Professional high-capacity RAM for multitasking.",
+    "imageUrl": "https://images.unsplash.com/photo-1769085795297-b45cc8c92f5b?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "computer memory"
+  },
+  {
+    "id": "working-storage",
+    "description": "Combined NVMe and HDD storage solution.",
+    "imageUrl": "https://images.unsplash.com/photo-1686705562930-4f3e46f620d8?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "storage drives"
+  },
+  {
+    "id": "working-motherboard",
+    "description": "Reliable chipset motherboard for professional work.",
+    "imageUrl": "https://images.unsplash.com/photo-1684703153840-c26fe3056c41?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "motherboard hardware"
+  },
+  {
+    "id": "working-psu",
+    "description": "Efficient 850W Gold power supply unit.",
+    "imageUrl": "https://images.unsplash.com/photo-1740133306027-d05aa14ff579?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "power supply"
+  },
+  {
+    "id": "working-case",
+    "description": "Professional minimalist computer chassis.",
+    "imageUrl": "https://images.unsplash.com/photo-1673703154047-70b5a6e1431d?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "fractal pc case"
+  },
+  {
+    "id": "coding-cpu",
+    "description": "Efficient AMD Ryzen 7 processor for development.",
+    "imageUrl": "https://images.unsplash.com/photo-1611275484976-52812441218a?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "ryzen 7 cpu"
+  },
+  {
+    "id": "coding-gpu",
+    "description": "NVIDIA GeForce RTX 3050 for multi-monitor setups.",
+    "imageUrl": "https://images.unsplash.com/photo-1542292558-c59f6964ccbb?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "rtx 3050 gpu"
+  },
+  {
+    "id": "coding-ram",
+    "description": "Reliable DDR5 memory for coding environments.",
+    "imageUrl": "https://images.unsplash.com/photo-1601046885445-ae87bf6212fa?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "ddr5 ram"
+  },
+  {
+    "id": "coding-storage",
+    "description": "High-speed SSD for fast compilation.",
+    "imageUrl": "https://picsum.photos/seed/codessd/800/600",
+    "imageHint": "internal ssd"
+  },
+  {
+    "id": "coding-motherboard",
+    "description": "Compact mATX motherboard for development builds.",
+    "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "msi motherboard"
+  },
+  {
+    "id": "coding-psu",
+    "description": "Stable 650W power supply unit.",
+    "imageUrl": "https://picsum.photos/seed/codepsu/800/600",
+    "imageHint": "computer psu"
+  },
+  {
+    "id": "coding-case",
+    "description": "Compact computer case for space efficiency.",
+    "imageUrl": "https://images.unsplash.com/photo-1593152077897-2cc2dcbc041f?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "nzxt pc case"
   },
   {
     "id": "system-fans",
