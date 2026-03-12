@@ -52,7 +52,7 @@
     {
       "id": "coc2-step4",
       "description": "A modern Wi-Fi router on a desk with glowing lights.",
-      "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "wifi router"
     },
     {
@@ -106,8 +106,8 @@
     {
       "id": "system-unit-main",
       "description": "A high-fidelity internal view of a modern computer chassis with all components installed and RGB active.",
-      "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-      "imageHint": "computer build"
+      "imageUrl": "https://images.unsplash.com/photo-1624701928517-44c8ac49d93c?q=80&w=1080",
+      "imageHint": "computer internals"
     },
     {
       "id": "minigame1-pic1",
@@ -136,7 +136,7 @@
     {
       "id": "minigame2-pic1",
       "description": "Close-up of an ethernet port with a cable plugged in.",
-      "imageUrl": "https://images.unsplash.com/photo-1649269234528-6cf263c06ccc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxldGhlcm5ldCUyMHBvcnR8ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1649269234528-6cf263c06ccc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxldGhlcm5ldCUyMHBvcnR8ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "ethernet port"
     },
     {
@@ -250,7 +250,7 @@
     {
       "id": "profile-bg-glitch-red",
       "description": "An abstract digital art piece with red and black glitch effects.",
-      "imageUrl": "https://images.unsplash.com/photo-1729761137674-9a3a841f7cea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxnbGl0Y2glMjBhcnR8ZW58MHx8fHwxNzcxMzE1Njg3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1729761137674-9a3a841f7cea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnbGl0Y2glMjBhcnR8ZW58MHx8fHwxNzcxMzE1Njg3fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "glitch art"
     },
     {
@@ -304,7 +304,7 @@
     {
       "id": "working-gpu",
       "description": "Reliable NVIDIA GeForce RTX 4070 for creative workloads.",
-      "imageUrl": "https://images.unsplash.com/photo-1706954777655-7cb60eb69f51?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxydHglMjA0MDcwfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1706954777655-7cb60eb69f51?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxydHglMjA0MDcwfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "workstation gpu"
     },
     {
