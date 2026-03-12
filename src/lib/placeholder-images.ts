@@ -111,7 +111,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "system-unit-main",
       "description": "A comprehensive internal view of a fully assembled modern system unit with all components installed.",
-      "imageUrl": "https://images.unsplash.com/photo-1587202376732-817926e93a17?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?q=80&w=1080",
       "imageHint": "computer assembly"
     },
     {

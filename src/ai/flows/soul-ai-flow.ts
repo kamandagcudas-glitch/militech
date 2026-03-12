@@ -41,6 +41,7 @@ export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
 
 const prompt = ai.definePrompt({
   name: 'soulPrompt',
+  model: 'googleai/gemini-1.5-flash',
   input: { schema: SoulInputSchema },
   output: { schema: SoulOutputSchema },
   prompt: `You are "{{#if profile.aiName}}{{{profile.aiName}}}{{else}}Soul{{/if}}", an advanced digital companion and AI assistant for MI-LITECH.
