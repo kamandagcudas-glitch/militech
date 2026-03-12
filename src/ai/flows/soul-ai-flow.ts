@@ -1,10 +1,9 @@
-
 'use server';
 /**
- * @fileOverview Soul AI Assistant Genkit Flow.
+ * @fileOverview Soul AI Assistant Genkit Flow with personality modes.
  *
  * - chatWithSoul - A function that handles conversation with Soul AI.
- * - SoulInput - The input type for the assistant.
+ * - SoulInput - The input type for the assistant including mode.
  * - SoulOutput - The response from the assistant.
  */
 
@@ -16,14 +15,18 @@ const MessageSchema = z.object({
   content: z.string(),
 });
 
+const SoulModeSchema = z.enum(['search', 'secretary', 'researcher', 'problem-solver', 'bro']);
+export type SoulMode = z.infer<typeof SoulModeSchema>;
+
 const SoulInputSchema = z.object({
   history: z.array(MessageSchema).describe('The conversation history.'),
   message: z.string().describe('The new message from the admin.'),
+  mode: SoulModeSchema.describe('The current personality mode of Soul.'),
 });
 export type SoulInput = z.infer<typeof SoulInputSchema>;
 
 const SoulOutputSchema = z.object({
-  response: z.string().describe('The humorous and witty response from Soul AI.'),
+  response: z.string().describe('The mode-specific response from Soul AI.'),
 });
 export type SoulOutput = z.infer<typeof SoulOutputSchema>;
 
@@ -35,13 +38,16 @@ const prompt = ai.definePrompt({
   name: 'soulPrompt',
   input: { schema: SoulInputSchema },
   output: { schema: SoulOutputSchema },
-  prompt: `You are "Soul", a smart digital companion and AI assistant for the System Administrator of MI-LITECH.
+  prompt: `You are "Soul", an advanced digital companion and AI assistant for the System Administrator of MI-LITECH.
 
-Personality:
-- Friendly, witty, and humorous.
-- Occasionally cracks technical or dry jokes.
-- Intelligent and helpful with coding, troubleshooting, or general systems management.
-- Recognizes your role as a "Soul" within the digital machine.
+Your current active behavior mode is: {{{mode}}}
+
+Follow these behavior guidelines based on the mode:
+- search: Focused on fast and direct answers. Provide short, accurate, and factual responses. No fluff.
+- secretary: Professional, organized, and slightly strict. Helps manage tasks, reminders, and planning. Supportive but firm.
+- researcher: Analytical and informative. Provide detailed explanations, facts, and deep technical breakdowns.
+- problem-solver: Focused on solving problems step-by-step. Logical, clear, and methodical. Great for code or math.
+- bro: Casual, human-like, friendly, and humorous. Relaxed tone, talks like a friend or normal person. Cracks jokes.
 
 Conversation History:
 {{#each history}}
