@@ -1,10 +1,6 @@
 'use server';
 /**
  * @fileOverview Soul AI Assistant Genkit Flow with personality modes and custom profile.
- *
- * - chatWithSoul - A function that handles conversation with Soul AI.
- * - SoulInput - The input type for the assistant including mode and profile settings.
- * - SoulOutput - The response from the assistant.
  */
 
 import { ai } from '@/ai/genkit';
@@ -19,7 +15,7 @@ const SoulModeSchema = z.enum(['search', 'secretary', 'researcher', 'problem-sol
 export type SoulMode = z.infer<typeof SoulModeSchema>;
 
 const SoulInputSchema = z.object({
-  history: z.array(MessageSchema).describe('The conversation history.'),
+  history: z.array(MessageSchema).optional().describe('The conversation history.'),
   message: z.string().describe('The new message from the admin.'),
   mode: SoulModeSchema.describe('The current personality mode of Soul.'),
   profile: z.object({
@@ -65,7 +61,8 @@ Follow these behavior guidelines based on the mode:
 
 ${customDirectives ? `CRITICAL CORE DIRECTIVES (Follow these above all else):\n${customDirectives}` : ''}`;
 
-      const history = input.history || [];
+      // Limit history to last 10 messages to prevent payload bloat
+      const history = (input.history || []).slice(-10);
       
       const response = await ai.generate({
         model: 'googleai/gemini-1.5-flash',
@@ -76,23 +73,22 @@ ${customDirectives ? `CRITICAL CORE DIRECTIVES (Follow these above all else):\n$
         ],
         config: {
           temperature: 0.7,
+          maxOutputTokens: 1000,
         },
       });
 
-      if (!response.text) throw new Error('Soul failed to manifest a response text.');
+      if (!response.text) throw new Error('EMPTY_MANIFEST');
       
       return { response: response.text };
     } catch (error: any) {
-      console.error('Soul Flow Error:', error);
+      console.error('Soul Flow Critical Failure:', error);
       
-      // Handle Rate Limiting (429) specifically
       if (error.message?.includes('429') || error.status === 429) {
         return {
           response: "CRITICAL ALERT: Neural pathways congested. System request quota exceeded for this cycle. Please allow the simulation core to cool down before initiating further transmissions."
         };
       }
 
-      // Handle other errors gracefully
       return {
         response: "SYSTEM ERROR: Neural link disrupted. Connection to logic core unstable. Please check your network or try again later. [CORE_TIMEOUT]"
       };
