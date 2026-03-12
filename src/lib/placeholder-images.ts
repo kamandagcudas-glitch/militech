@@ -10,7 +10,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coc1-step1",
       "description": "PC components spread out on a workbench.",
-      "imageUrl": "https://images.unsplash.com/photo-1759836096305-b2e427f45506?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb21wdXRlciUyMGFzc2VtYmx5fGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1759836096305-b2e427f45506?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb21wdXRlciUyMGFzc2VtYmx5fGVufDB8fHx8MTc1MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "computer assembly"
     },
     {
@@ -82,7 +82,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coc3-step3",
       "description": "Firewall rules and network security configuration.",
-      "imageUrl": "https://images.unsplash.com/photo-1596625043546-89f548271e24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmaXJld2FsbCUyMHJ1bGVzfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1596625043546-89f548271e24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3HxmaXJld2FsbCUyMHJ1bGVzfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "firewall rules"
     },
     {
