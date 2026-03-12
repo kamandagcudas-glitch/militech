@@ -9,38 +9,38 @@ export type ImagePlaceholder = {
 export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coc1-step1",
-      "description": "Motherboard and internal components for PC assembly.",
-      "imageUrl": "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb21wdXRlciUyMGFzc2VtYmx5fGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "motherboard assembly"
+      "description": "PC components spread out on a workbench.",
+      "imageUrl": "https://images.unsplash.com/photo-1759836096305-b2e427f45506?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb21wdXRlciUyMGFzc2VtYmx5fGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer assembly"
     },
     {
       "id": "coc1-step2",
-      "description": "Technical BIOS/UEFI configuration interface.",
+      "description": "A person's finger pointing to a BIOS/UEFI screen on a monitor.",
       "imageUrl": "https://images.unsplash.com/photo-1561140676-3726fdac9bed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxiaW9zJTIwc2V0dXB8ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "bios setup"
     },
     {
       "id": "coc1-step3",
       "description": "USB flash drive used for creating bootable media.",
-      "imageUrl": "https://images.unsplash.com/photo-1599507591144-66ba397142c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx1c2IlMjBkcml2ZXxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://picsum.photos/seed/coc1s3/1080/720",
       "imageHint": "bootable usb"
     },
     {
       "id": "coc1-step4",
       "description": "Operating system installation process on a workstation.",
-      "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxvcyUyMGluc3RhbGxhdGlvbnxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1759956211655-d84c786a2e74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxvcyUyMGluc3RhbGxhdGlvbnxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "os installation"
     },
     {
       "id": "coc1-step5",
       "description": "Modern device manager showing hardware driver status.",
-      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1760139546356-0a90390364d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "device manager"
     },
     {
       "id": "coc2-step1",
       "description": "Bundles of blue Cat6 ethernet network cables.",
-      "imageUrl": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MTM1MjU5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MTM1MjU5NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "network cables"
     },
     {
@@ -52,7 +52,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coc2-step3",
       "description": "Network interface settings and IP configuration.",
-      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwY29uZmlndXJhdGlvbnxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1744868562210-fffb7fa882d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwY29uZmlndXJhdGlvbnxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "network configuration"
     },
     {
@@ -64,19 +64,19 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coc2-step5",
       "description": "Network diagnostic tools and connectivity testing.",
-      "imageUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxuZXR3b3JrJTIwdGVzdGluZ3xlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1761496704895-41ed21a3d4bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxuZXR3b3JrJTIwdGVzdGluZ3xlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "network testing"
     },
     {
       "id": "coc3-step1",
       "description": "Server rack in a data center for network services.",
-      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZXJ2ZXIlMjByYWNrfGVufDB8fHx8MTc3MTM4NzYwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1584169417032-d34e8d805e8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZXJ2ZXIlMjByYWNrfGVufDB8fHx8MTc3MTM4NzYwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "server rack"
     },
     {
       "id": "coc3-step2",
       "description": "Remote desktop session managing a network server.",
-      "imageUrl": "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyZW1vdGUlMjBkZXNrdG9wfGVufDB8fHx8MTc3MTMzMTg0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1760278041943-8b2ccec1e9e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyZW1vdGUlMjBkZXNrdG9wfGVufDB8fHx8MTc3MTMzMTg0OXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "remote desktop"
     },
     {
@@ -112,8 +112,134 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "system-unit-main",
       "description": "High-fidelity internal view of a modern computer chassis.",
-      "imageUrl": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvcGVuJTIwY29tcHV0ZXIlMjBjYXNlfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "computer case"
+      "imageUrl": "https://images.unsplash.com/photo-1760708825878-9e7ecf31565a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvcGVuJTIwY29tcHV0ZXIlMjBjYXNlfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "open computer case"
+    },
+    {
+      "id": "gaming-cpu",
+      "description": "High-end Intel Core i9 processor for gaming.",
+      "imageUrl": "https://images.unsplash.com/photo-1555617981-dac3880eac6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxpbnRlbCUyMGk5fGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "intel processor"
+    },
+    {
+      "id": "gaming-gpu",
+      "description": "High-performance NVIDIA GeForce RTX 4090 graphics card.",
+      "imageUrl": "https://images.unsplash.com/photo-1716967318503-05b7064afa41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxydHglMjA0MDkwfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graphics card"
+    },
+    {
+      "id": "gaming-ram",
+      "description": "RGB-lit high-speed gaming RAM modules.",
+      "imageUrl": "https://images.unsplash.com/photo-1612099019342-10536423b077?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxnYW1pbmclMjByYW18ZW58MHx8fHwxNzcxMzg3NjA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming ram"
+    },
+    {
+      "id": "gaming-storage",
+      "description": "Ultrafast NVMe M.2 SSD for rapid loading.",
+      "imageUrl": "https://images.unsplash.com/photo-1760623227551-2eae8f9cb675?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z2FtaW5nJTIwc3NkfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nvme ssd"
+    },
+    {
+      "id": "gaming-motherboard",
+      "description": "Feature-rich Z790 gaming motherboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1617181218772-1be04dfc9d70?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxnYW1pbmclMjBtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming motherboard"
+    },
+    {
+      "id": "gaming-psu",
+      "description": "1000W 80+ Gold modular power supply.",
+      "imageUrl": "https://images.unsplash.com/photo-1648615112415-acc262b6461e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnYW1pbmclMjBwc3V8ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "power supply"
+    },
+    {
+      "id": "gaming-case",
+      "description": "Sleek ATX case with high airflow and tempered glass.",
+      "imageUrl": "https://images.unsplash.com/photo-1640036948080-99d48ca959b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsaWFubGklMjBjYXNlfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gaming case"
+    },
+    {
+      "id": "working-cpu",
+      "description": "Powerful AMD Ryzen 9 processor for productivity.",
+      "imageUrl": "https://images.unsplash.com/photo-1629725413175-396025477a04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhbWQlMjByeXplbiUyMDl8ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "amd processor"
+    },
+    {
+      "id": "working-gpu",
+      "description": "Reliable NVIDIA GeForce RTX 4070 for creative workloads.",
+      "imageUrl": "https://images.unsplash.com/photo-1706954777655-7cb60eb69f51?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxydHglMjA0MDcwfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "workstation gpu"
+    },
+    {
+      "id": "working-ram",
+      "description": "High-capacity DDR5 Pro RAM modules.",
+      "imageUrl": "https://images.unsplash.com/photo-1769085795297-b45cc8c92f5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwwfHxwcm8lMjByYW18ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pro ram"
+    },
+    {
+      "id": "working-storage",
+      "description": "Fast NVMe SSD for application responsiveness.",
+      "imageUrl": "https://images.unsplash.com/photo-1686705562930-4f3e46f620d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxudm1lJTIwc3NkfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "internal ssd"
+    },
+    {
+      "id": "working-motherboard",
+      "description": "Robust B650 motherboard for workstation stability.",
+      "imageUrl": "https://images.unsplash.com/photo-1684703153840-c26fe3056c41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxnaWdhYnl0ZSUyMG1vdGhlcmJvYXJkfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pro motherboard"
+    },
+    {
+      "id": "working-psu",
+      "description": "Efficient 850W power supply for heavy multitasking.",
+      "imageUrl": "https://images.unsplash.com/photo-1740133306027-d05aa14ff579?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWFzb25pYyUyMHBzdXxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "power supply"
+    },
+    {
+      "id": "working-case",
+      "description": "Minimalist case designed for a professional work environment.",
+      "imageUrl": "https://images.unsplash.com/photo-1673703154047-70b5a6e1431d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmcmFjdGFsJTIwY2FzZXxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "workstation case"
+    },
+    {
+      "id": "coding-cpu",
+      "description": "Balanced AMD Ryzen 7 processor for software development.",
+      "imageUrl": "https://images.unsplash.com/photo-1611275484976-52812441218a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhbWQlMjByeXplbiUyMDd8ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ryzen processor"
+    },
+    {
+      "id": "coding-gpu",
+      "description": "Entry-level GPU for driving high-resolution development monitors.",
+      "imageUrl": "https://images.unsplash.com/photo-1542292558-c59f6964ccbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxydHglMjAzMDUwfGVufDB8fHx8MTc3MTM4NzYwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "graphics card"
+    },
+    {
+      "id": "coding-ram",
+      "description": "Efficient DDR5 RAM for compiling and virtual machines.",
+      "imageUrl": "https://images.unsplash.com/photo-1601046885445-ae87bf6212fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnc2tpbGwlMjByYW18ZW58MHx8fHwxNzcxMzg3NjA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black ram"
+    },
+    {
+      "id": "coding-storage",
+      "description": "Reliable 1TB SSD for quick project access.",
+      "imageUrl": "https://images.unsplash.com/photo-1602526431715-81a7851b96d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c29saWQlMjBzdGF0ZSUyMGRyaXZlfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sata ssd"
+    },
+    {
+      "id": "coding-motherboard",
+      "description": "Compact mATX motherboard for a tidy development setup.",
+      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtc2klMjBtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "matx motherboard"
+    },
+    {
+      "id": "coding-psu",
+      "description": "Reliable 650W PSU focused on efficiency and stability.",
+      "imageUrl": "https://images.unsplash.com/photo-1648615112415-acc262b6461e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnYW1pbmclMjBwc3V8ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "power supply"
+    },
+    {
+      "id": "coding-case",
+      "description": "Compact mATX case to save desk space.",
+      "imageUrl": "https://images.unsplash.com/photo-1593152077897-2cc2dcbc041f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuenh0JTIwY2FzZXxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "compact case"
     },
     {
       "id": "minigame1-pic1", "description": "Computer mouse", "imageUrl": "https://picsum.photos/seed/mg1p1/600/600", "imageHint": "computer mouse"
@@ -186,68 +312,5 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     },
     {
       "id": "profile-bg-glitch-red", "description": "Glitch Art", "imageUrl": "https://picsum.photos/seed/pbg4/1080/720", "imageHint": "glitch art"
-    },
-    {
-      "id": "gaming-cpu", "description": "Intel Core i9", "imageUrl": "https://picsum.photos/seed/gcpu/800/600", "imageHint": "processor"
-    },
-    {
-      "id": "gaming-gpu", "description": "RTX 4090", "imageUrl": "https://picsum.photos/seed/ggpu/800/600", "imageHint": "graphics card"
-    },
-    {
-      "id": "gaming-ram", "description": "Gaming RAM", "imageUrl": "https://picsum.photos/seed/gram/800/600", "imageHint": "ram module"
-    },
-    {
-      "id": "gaming-storage", "description": "Gaming SSD", "imageUrl": "https://picsum.photos/seed/gssd/800/600", "imageHint": "nvme ssd"
-    },
-    {
-      "id": "gaming-motherboard", "description": "Gaming Motherboard", "imageUrl": "https://picsum.photos/seed/gmbo/800/600", "imageHint": "motherboard"
-    },
-    {
-      "id": "gaming-psu", "description": "Gaming PSU", "imageUrl": "https://picsum.photos/seed/gpsu/800/600", "imageHint": "power supply"
-    },
-    {
-      "id": "gaming-case", "description": "Gaming Case", "imageUrl": "https://picsum.photos/seed/gcase/800/600", "imageHint": "pc case"
-    },
-    {
-      "id": "working-cpu", "description": "AMD Ryzen 9", "imageUrl": "https://picsum.photos/seed/wcpu/800/600", "imageHint": "processor"
-    },
-    {
-      "id": "working-gpu", "description": "RTX 4070", "imageUrl": "https://picsum.photos/seed/wgpu/800/600", "imageHint": "graphics card"
-    },
-    {
-      "id": "working-ram", "description": "Pro RAM", "imageUrl": "https://picsum.photos/seed/wram/800/600", "imageHint": "ram module"
-    },
-    {
-      "id": "working-storage", "description": "Work Storage", "imageUrl": "https://picsum.photos/seed/wssd/800/600", "imageHint": "hard drive"
-    },
-    {
-      "id": "working-motherboard", "description": "Work Motherboard", "imageUrl": "https://picsum.photos/seed/wmbo/800/600", "imageHint": "motherboard"
-    },
-    {
-      "id": "working-psu", "description": "Work PSU", "imageUrl": "https://picsum.photos/seed/wpsu/800/600", "imageHint": "power supply"
-    },
-    {
-      "id": "working-case", "description": "Work Case", "imageUrl": "https://picsum.photos/seed/wcase/800/600", "imageHint": "pc case"
-    },
-    {
-      "id": "coding-cpu", "description": "AMD Ryzen 7", "imageUrl": "https://picsum.photos/seed/ccpu/800/600", "imageHint": "processor"
-    },
-    {
-      "id": "coding-gpu", "description": "RTX 3050", "imageUrl": "https://picsum.photos/seed/cgpu/800/600", "imageHint": "graphics card"
-    },
-    {
-      "id": "coding-ram", "description": "Coding RAM", "imageUrl": "https://picsum.photos/seed/cram/800/600", "imageHint": "ram module"
-    },
-    {
-      "id": "coding-storage", "description": "Coding SSD", "imageUrl": "https://picsum.photos/seed/cssd/800/600", "imageHint": "nvme ssd"
-    },
-    {
-      "id": "coding-motherboard", "description": "Coding Motherboard", "imageUrl": "https://picsum.photos/seed/cmbo/800/600", "imageHint": "motherboard"
-    },
-    {
-      "id": "coding-psu", "description": "Coding PSU", "imageUrl": "https://picsum.photos/seed/cpsu/800/600", "imageHint": "power supply"
-    },
-    {
-      "id": "coding-case", "description": "Coding Case", "imageUrl": "https://picsum.photos/seed/ccase/800/600", "imageHint": "pc case"
     }
 ];
