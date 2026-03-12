@@ -103,8 +103,6 @@ export interface ChatMessage {
   timestamp: any; // Use 'any' for Firestore ServerTimestamp
 }
 
-// This is the main data structure for a user account, stored in a Firestore document.
-// It combines all user-related data into a single object.
 export interface UserAccount {
   player: Player;
   stats: PlayerStats;
@@ -155,9 +153,10 @@ export interface WordCompletionGameRound {
 export interface SystemPart {
   id: string;
   name: string;
-  description: string;
-  installation: string;
-  // Position on the main image, in percentages
+  definition: string;
+  purpose: string;
+  howItWorks: string;
+  installation: string[];
   position: { top: string; left: string; width: string; height: string; };
 }
 

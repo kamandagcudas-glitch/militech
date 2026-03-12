@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Soul AI Assistant Genkit Flow with personality modes and custom profile.
@@ -80,11 +81,8 @@ const soulFlow = ai.defineFlow(
   },
   async (input) => {
     try {
-      // Use the prompt object for a more stable neural link
-      const { output } = await soulPrompt(input, {
-        model: 'googleai/gemini-1.5-flash',
-        // Pass history separately to messages if supported, otherwise woven in prompt
-      });
+      // Use standard generation pattern for Genkit 1.x
+      const { output } = await soulPrompt(input);
 
       if (!output || !output.response) {
         throw new Error('EMPTY_SIGNAL');

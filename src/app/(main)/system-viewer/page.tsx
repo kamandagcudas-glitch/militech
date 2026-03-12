@@ -1,14 +1,14 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { systemPartsData } from '@/lib/system-parts-data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ChevronLeft, ChevronRight, Cpu, Play, Square, CheckCircle2, Circle, Info, Settings } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Cpu, Play, Square, CheckCircle2, Circle, Info, Settings, BookOpen, Wrench, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import {
@@ -25,6 +25,7 @@ export default function SystemViewerPage() {
   const [isAutoScanning, setIsAutoScanning] = useState(false);
   const [viewedParts, setViewedParts] = useState<Set<string>>(new Set(['motherboard']));
   const [scanProgress, setScanProgress] = useState(0);
+  const detailPanelRef = useRef<HTMLDivElement>(null);
 
   const mainImage = PlaceHolderImages.find(img => img.id === 'system-unit-main');
   const selectedPart = systemPartsData[selectedIndex];
@@ -36,6 +37,11 @@ export default function SystemViewerPage() {
       next.add(selectedPart.id);
       return next;
     });
+    
+    // Smooth scroll to top of details when part changes
+    if (detailPanelRef.current) {
+        detailPanelRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [selectedPart.id]);
 
   const handleNext = useCallback(() => {
@@ -58,7 +64,7 @@ export default function SystemViewerPage() {
             handleNext();
             return 0;
           }
-          return prev + 2; // Speed of the scan
+          return prev + 1.5; // Speed of the scan
         });
       }, 100);
     }
@@ -84,7 +90,7 @@ export default function SystemViewerPage() {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                <BreadcrumbPage>System Showcase</BreadcrumbPage>
+                <BreadcrumbPage>Interactive System Showcase</BreadcrumbPage>
                 </BreadcrumbItem>
             </BreadcrumbList>
         </Breadcrumb>
@@ -93,9 +99,9 @@ export default function SystemViewerPage() {
         <div>
             <h1 className="font-headline text-4xl font-bold flex items-center gap-3">
                 <Cpu className="text-primary animate-pulse" /> 
-                System Architecture Showcase
+                Hardware Architecture Showcase
             </h1>
-            <p className="text-muted-foreground mt-1">Full-scale diagnostic of a modern computing unit. Select nodes to inspect hardware details.</p>
+            <p className="text-muted-foreground mt-1">Interactive 2D Technical Diagnostic. Select nodes to learn purpose and installation.</p>
         </div>
         <div className="flex gap-2">
             <Button 
@@ -103,7 +109,7 @@ export default function SystemViewerPage() {
                 onClick={() => setIsAutoScanning(!isAutoScanning)}
                 className="gap-2 min-w-[160px]"
             >
-                {isAutoScanning ? <><Square className="h-4 w-4" /> Stop Scan</> : <><Play className="h-4 w-4" /> Start Auto-Scan</>}
+                {isAutoScanning ? <><Square className="h-4 w-4" /> Stop Showcase</> : <><Play className="h-4 w-4" /> Start Auto-Scan</>}
             </Button>
         </div>
       </div>
@@ -111,13 +117,13 @@ export default function SystemViewerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* SIDEBAR: Checklist */}
         <div className="lg:col-span-3 order-2 lg:order-1">
-            <Card className="bg-card/50 backdrop-blur-sm border-primary/10 h-full">
+            <Card className="bg-card/50 backdrop-blur-sm border-primary/10 h-full flex flex-col">
                 <CardHeader className="pb-2 border-b border-white/5 mb-4">
                     <CardTitle className="text-sm font-cyber uppercase tracking-widest flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-primary" /> Inspection Log
+                        <CheckCircle2 className="h-4 w-4 text-primary" /> Component Log
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-1">
+                <CardContent className="space-y-1 flex-grow overflow-auto custom-scrollbar">
                     {systemPartsData.map((part, index) => (
                         <button
                             key={part.id}
@@ -134,36 +140,39 @@ export default function SystemViewerPage() {
                                 }
                                 {part.name.split(' (')[0]}
                             </span>
-                            <span className="font-mono opacity-0 group-hover:opacity-100 transition-opacity">0{index + 1}</span>
+                            <span className="font-mono opacity-0 group-hover:opacity-100 transition-opacity">{(index + 1).toString().padStart(2, '0')}</span>
                         </button>
                     ))}
-                    <div className="mt-6 pt-4 border-t border-white/5">
-                        <div className="flex justify-between text-[10px] font-mono mb-1 text-muted-foreground uppercase">
-                            <span>Diagnostic Progress</span>
-                            <span>{Math.round((viewedParts.size / systemPartsData.length) * 100)}%</span>
-                        </div>
-                        <Progress value={(viewedParts.size / systemPartsData.length) * 100} className="h-1" />
-                    </div>
                 </CardContent>
+                <div className="p-4 border-t border-white/5 bg-black/20">
+                    <div className="flex justify-between text-[10px] font-mono mb-1 text-muted-foreground uppercase">
+                        <span>Showcase Completion</span>
+                        <span>{Math.round((viewedParts.size / systemPartsData.length) * 100)}%</span>
+                    </div>
+                    <Progress value={(viewedParts.size / systemPartsData.length) * 100} className="h-1" />
+                </div>
             </Card>
         </div>
 
         {/* CENTER: Image Viewer */}
         <div className="lg:col-span-6 order-1 lg:order-2">
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-primary/30 shadow-[0_0_30px_rgba(var(--primary),0.1)] group">
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-primary/30 shadow-[0_0_40px_rgba(var(--primary),0.15)] group bg-black">
                 <Image
                     src={mainImage.imageUrl}
                     alt={mainImage.description}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className={cn(
+                        "object-cover transition-all duration-700",
+                        isAutoScanning ? "scale-105" : "scale-100"
+                    )}
                     data-ai-hint={mainImage.imageHint}
                     priority
                 />
                 
                 {/* Visual Overlays */}
-                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-10 opacity-30" />
+                <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-10 opacity-20" />
                 
-                {/* Hotspots */}
+                {/* Interactive Hotspots */}
                 {systemPartsData.map((part, index) => (
                     <button
                     key={part.id}
@@ -171,83 +180,105 @@ export default function SystemViewerPage() {
                     className={cn(
                         "absolute transition-all duration-500 border-2 rounded-full flex items-center justify-center z-20",
                         selectedIndex === index 
-                        ? 'bg-primary/40 border-primary scale-125 shadow-[0_0_20px] shadow-primary animate-pulse' 
-                        : 'bg-black/20 border-white/40 hover:border-primary hover:bg-primary/20 scale-100'
+                        ? 'bg-primary border-white scale-125 shadow-[0_0_25px_hsl(var(--primary))] animate-pulse' 
+                        : 'bg-black/40 border-primary/60 hover:border-primary hover:bg-primary/20 scale-100'
                     )}
                     style={{ 
                         top: part.position.top, 
                         left: part.position.left, 
-                        width: '32px', 
-                        height: '32px' 
+                        width: '36px', 
+                        height: '36px' 
                     }}
                     title={part.name}
                     >
-                        <span className="text-[10px] font-bold text-white">{index + 1}</span>
+                        <span className={cn(
+                            "text-[11px] font-bold",
+                            selectedIndex === index ? "text-white" : "text-primary"
+                        )}>{index + 1}</span>
                     </button>
                 ))}
 
-                {/* Tactical Reticle Overlay */}
-                <div className="absolute top-4 left-4 z-20 flex flex-col gap-1 font-mono text-[10px] text-primary/70">
-                    <div className="flex gap-2"><span>MODE:</span> <span className="text-white">DIAGNOSTIC_V4</span></div>
-                    <div className="flex gap-2"><span>SOURCE:</span> <span className="text-white">LOCAL_STORAGE</span></div>
-                    <div className="flex gap-2"><span>ENCRYPTION:</span> <span className="text-white">AES-256</span></div>
+                {/* HUD Overlay */}
+                <div className="absolute top-4 left-4 z-20 flex flex-col gap-1 font-mono text-[10px] text-primary/70 pointer-events-none">
+                    <div className="flex gap-2"><span>SOURCE:</span> <span className="text-white">SIM_NODE_01</span></div>
+                    <div className="flex gap-2"><span>ENCRYPTION:</span> <span className="text-white">MIL-SPEC</span></div>
+                    <div className="flex gap-2"><span>MODE:</span> <span className="text-white">{isAutoScanning ? 'AUTO_SCAN' : 'MANUAL_OVERRIDE'}</span></div>
                 </div>
 
                 {isAutoScanning && (
                     <div className="absolute bottom-0 left-0 w-full z-30">
-                        <div className="h-1 bg-primary animate-pulse" style={{ width: `${scanProgress}%` }} />
+                        <div className="h-1.5 bg-primary shadow-[0_0_10px_hsl(var(--primary))] transition-all" style={{ width: `${scanProgress}%` }} />
                     </div>
                 )}
             </div>
         </div>
 
-        {/* RIGHT: Detail Panel */}
+        {/* RIGHT: High-Fidelity Detail Panel */}
         <div className="lg:col-span-3 order-3">
-          <Card className="bg-card/80 backdrop-blur-xl border-primary/20 h-full flex flex-col">
-            <CardHeader className="border-b border-white/5 bg-white/5">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-mono text-primary uppercase tracking-tighter">Part Index: 0{selectedIndex + 1}</span>
-                <Settings className="h-3 w-3 text-muted-foreground animate-spin-slow" />
+          <Card className="bg-card/80 backdrop-blur-xl border-primary/20 h-full flex flex-col overflow-hidden animate-in slide-in-from-right duration-500">
+            <CardHeader className="border-b border-white/5 bg-white/5 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono text-primary uppercase tracking-widest">TECHNICAL NODE {(selectedIndex + 1).toString().padStart(2, '0')}</span>
+                <Activity className="h-3 w-3 text-primary animate-pulse" />
               </div>
-              <CardTitle className="font-headline text-xl text-primary leading-tight">{selectedPart.name}</CardTitle>
+              <CardTitle className="font-headline text-2xl text-primary leading-tight uppercase tracking-tighter">{selectedPart.name}</CardTitle>
             </CardHeader>
-            <CardContent className="flex-grow flex flex-col p-4">
-              <div className="space-y-4 flex-grow overflow-auto custom-scrollbar pr-2">
-                <div className="space-y-2">
-                    <h3 className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1">
-                        <Info className="h-3 w-3" /> Technical Intelligence
-                    </h3>
-                    <p className="text-xs leading-relaxed text-foreground/90">{selectedPart.description}</p>
+            <CardContent ref={detailPanelRef} className="flex-grow flex flex-col p-4 overflow-auto custom-scrollbar space-y-6">
+              
+              {/* Definition Section */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Info className="h-4 w-4 text-primary" />
+                    <h3 className="text-xs font-bold uppercase tracking-widest">Intelligence Definition</h3>
                 </div>
-                
-                <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
-                    <h3 className="text-[10px] font-bold text-primary uppercase mb-2">Field Installation Protocol</h3>
-                    <p className="text-[11px] italic text-muted-foreground">{selectedPart.installation}</p>
-                </div>
+                <p className="text-sm leading-relaxed text-foreground/90 bg-white/5 p-3 rounded-md border border-white/5">{selectedPart.definition}</p>
+              </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                    <div className="p-2 bg-black/20 rounded border border-white/5 text-center">
-                        <span className="block text-[8px] text-muted-foreground uppercase">Stability</span>
-                        <span className="text-[10px] text-green-400 font-mono">NOMINAL</span>
+              {/* Purpose & How It Works */}
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <BookOpen className="h-4 w-4 text-accent" />
+                        <h3 className="text-xs font-bold uppercase tracking-widest">Core Purpose</h3>
                     </div>
-                    <div className="p-2 bg-black/20 rounded border border-white/5 text-center">
-                        <span className="block text-[8px] text-muted-foreground uppercase">Efficiency</span>
-                        <span className="text-[10px] text-primary font-mono">98.4%</span>
+                    <p className="text-xs italic text-muted-foreground">{selectedPart.purpose}</p>
+                </div>
+                <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <Settings className="h-4 w-4 text-primary" />
+                        <h3 className="text-xs font-bold uppercase tracking-widest">Operational Logic</h3>
                     </div>
+                    <p className="text-xs text-foreground/80 leading-relaxed">{selectedPart.howItWorks}</p>
                 </div>
               </div>
 
-              <div className="flex justify-between items-center mt-6 pt-4 border-t border-white/5">
-                <Button variant="outline" size="sm" onClick={() => { handlePrev(); setIsAutoScanning(false); }} className="h-8">
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <div className="flex gap-1">
-                    {systemPartsData.map((_, i) => (
-                        <div key={i} className={cn("h-1 w-2 rounded-full transition-all", i === selectedIndex ? "bg-primary w-4" : "bg-white/10")} />
+              {/* Installation Protocol */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Wrench className="h-4 w-4 text-yellow-500" />
+                    <h3 className="text-xs font-bold uppercase tracking-widest">Installation Protocol</h3>
+                </div>
+                <div className="space-y-2">
+                    {selectedPart.installation.map((step, i) => (
+                        <div key={i} className="flex gap-3 text-xs items-start group">
+                            <span className="font-mono text-primary bg-primary/10 w-5 h-5 flex items-center justify-center rounded shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">{i + 1}</span>
+                            <p className="pt-0.5 text-muted-foreground group-hover:text-foreground transition-colors">{step}</p>
+                        </div>
                     ))}
                 </div>
-                <Button variant="outline" size="sm" onClick={() => { handleNext(); setIsAutoScanning(false); }} className="h-8">
-                  <ChevronRight className="h-4 w-4" />
+              </div>
+
+              <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
+                <Button variant="outline" size="sm" onClick={() => { handlePrev(); setIsAutoScanning(false); }} className="h-10 w-10 p-0 border-primary/20">
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+                <div className="flex gap-1.5">
+                    {systemPartsData.map((_, i) => (
+                        <div key={i} className={cn("h-1.5 rounded-full transition-all duration-300", i === selectedIndex ? "bg-primary w-6" : "bg-white/10 w-2")} />
+                    ))}
+                </div>
+                <Button variant="outline" size="sm" onClick={() => { handleNext(); setIsAutoScanning(false); }} className="h-10 w-10 p-0 border-primary/20">
+                  <ChevronRight className="h-5 w-5" />
                 </Button>
               </div>
             </CardContent>
