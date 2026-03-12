@@ -8,11 +8,6 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-const MessageSchema = z.object({
-  role: z.enum(['user', 'model']),
-  content: z.string(),
-});
-
 export async function chatWithSoul(input: { history?: {role: 'user'|'model', content: string}[], message: string, mode?: string }) {
   console.log("[Soul] Neural link request received:", input.message);
   

@@ -7,7 +7,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ChevronLeft, ChevronRight, Cpu, Play, Square, CheckCircle2, Circle, Info, Settings, BookOpen, Wrench, Activity } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Cpu, Play, Square, CheckCircle2, Circle, Info, Settings, BookOpen, Wrench, Activity, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import {
@@ -24,24 +24,27 @@ export default function SystemViewerPage() {
   const [isAutoScanning, setIsAutoScanning] = useState(false);
   const [viewedParts, setViewedParts] = useState<Set<string>>(new Set(['motherboard']));
   const [scanProgress, setScanProgress] = useState(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const detailPanelRef = useRef<HTMLDivElement>(null);
 
   const mainImage = PlaceHolderImages.find(img => img.id === 'system-unit-main');
   const selectedPart = systemPartsData[selectedIndex];
 
-  // Logic to track viewed parts
+  // Track viewed parts for the completion progress
   useEffect(() => {
-    setViewedParts(prev => {
-      const next = new Set(prev);
-      next.add(selectedPart.id);
-      return next;
-    });
-    
-    // Smooth scroll to top of details when part changes
-    if (detailPanelRef.current) {
-        detailPanelRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    if (selectedPart) {
+      setViewedParts(prev => {
+        const next = new Set(prev);
+        next.add(selectedPart.id);
+        return next;
+      });
+      
+      // Smooth scroll to top of details when part changes
+      if (detailPanelRef.current) {
+          detailPanelRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
-  }, [selectedPart.id]);
+  }, [selectedPart?.id]);
 
   const handleNext = useCallback(() => {
     setSelectedIndex((prev) => (prev + 1) % systemPartsData.length);
@@ -53,7 +56,7 @@ export default function SystemViewerPage() {
     setScanProgress(0);
   }, []);
 
-  // Auto-Scan Logic
+  // Auto-Scan Sequence
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isAutoScanning) {
@@ -63,7 +66,7 @@ export default function SystemViewerPage() {
             handleNext();
             return 0;
           }
-          return prev + 1.5; // Speed of the scan
+          return prev + 1.5; 
         });
       }, 100);
     }
@@ -98,9 +101,9 @@ export default function SystemViewerPage() {
         <div>
             <h1 className="font-headline text-4xl font-bold flex items-center gap-3">
                 <Cpu className="text-primary animate-pulse" /> 
-                Hardware Architecture Showcase
+                System Unit Technical Showcase
             </h1>
-            <p className="text-muted-foreground mt-1">Interactive 2D Technical Diagnostic. Select nodes to learn purpose and installation.</p>
+            <p className="text-muted-foreground mt-1">Full-Tower Diagnostic. Select hardware nodes to review operational logic and installation protocols.</p>
         </div>
         <div className="flex gap-2">
             <Button 
@@ -108,13 +111,13 @@ export default function SystemViewerPage() {
                 onClick={() => setIsAutoScanning(!isAutoScanning)}
                 className="gap-2 min-w-[160px]"
             >
-                {isAutoScanning ? <><Square className="h-4 w-4" /> Stop Showcase</> : <><Play className="h-4 w-4" /> Start Auto-Scan</>}
+                {isAutoScanning ? <><Square className="h-4 w-4" /> Stop Scan</> : <><Play className="h-4 w-4" /> Start Auto-Scan</>}
             </Button>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* SIDEBAR: Checklist */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[600px]">
+        {/* SIDEBAR: Checklist / Component Log */}
         <div className="lg:col-span-3 order-2 lg:order-1">
             <Card className="bg-card/50 backdrop-blur-sm border-primary/10 h-full flex flex-col">
                 <CardHeader className="pb-2 border-b border-white/5 mb-4">
@@ -153,33 +156,41 @@ export default function SystemViewerPage() {
             </Card>
         </div>
 
-        {/* CENTER: Image Viewer */}
+        {/* CENTER: Main Technical Viewer */}
         <div className="lg:col-span-6 order-1 lg:order-2">
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-primary/30 shadow-[0_0_40px_rgba(var(--primary),0.15)] group bg-black">
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-primary/30 shadow-[0_0_40px_rgba(var(--primary),0.15)] group bg-black flex items-center justify-center">
+                {!imageLoaded && (
+                    <div className="flex flex-col items-center gap-4 text-primary font-cyber">
+                        <Loader2 className="h-12 w-12 animate-spin" />
+                        <span className="text-xs animate-pulse">SYNCHRONIZING VISUAL CORE...</span>
+                    </div>
+                )}
                 <Image
                     src={mainImage.imageUrl}
                     alt={mainImage.description}
                     fill
                     className={cn(
                         "object-cover transition-all duration-700",
-                        isAutoScanning ? "scale-105" : "scale-100"
+                        isAutoScanning ? "scale-105" : "scale-100",
+                        !imageLoaded ? "opacity-0" : "opacity-100"
                     )}
+                    onLoadingComplete={() => setImageLoaded(true)}
                     data-ai-hint={mainImage.imageHint}
                     priority
                 />
                 
-                {/* Visual Overlays */}
+                {/* Tactical HUD Overlays */}
                 <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] z-10 opacity-20" />
                 
-                {/* Interactive Hotspots */}
-                {systemPartsData.map((part, index) => (
+                {/* Interactive Hardware Nodes */}
+                {imageLoaded && systemPartsData.map((part, index) => (
                     <button
                     key={part.id}
                     onClick={() => { setSelectedIndex(index); setIsAutoScanning(false); }}
                     className={cn(
-                        "absolute transition-all duration-500 border-2 rounded-full flex items-center justify-center z-20",
+                        "absolute transition-all duration-500 border-2 rounded-full flex items-center justify-center z-20 group/node",
                         selectedIndex === index 
-                        ? 'bg-primary border-white scale-125 shadow-[0_0_25px_hsl(var(--primary))] animate-pulse' 
+                        ? 'bg-primary border-white scale-125 shadow-[0_0_25px_hsl(var(--primary))]' 
                         : 'bg-black/40 border-primary/60 hover:border-primary hover:bg-primary/20 scale-100'
                     )}
                     style={{ 
@@ -190,15 +201,18 @@ export default function SystemViewerPage() {
                     }}
                     title={part.name}
                     >
-                        {/* Numerical indicators removed per user request */}
+                        <div className={cn(
+                            "absolute inset-0 rounded-full border border-white opacity-0 transition-all",
+                            selectedIndex === index && "animate-ping opacity-40"
+                        )} />
                     </button>
                 ))}
 
-                {/* HUD Overlay */}
-                <div className="absolute top-4 left-4 z-20 flex flex-col gap-1 font-mono text-[10px] text-primary/70 pointer-events-none">
-                    <div className="flex gap-2"><span>SOURCE:</span> <span className="text-white">SIM_NODE_01</span></div>
-                    <div className="flex gap-2"><span>ENCRYPTION:</span> <span className="text-white">MIL-SPEC</span></div>
-                    <div className="flex gap-2"><span>MODE:</span> <span className="text-white">{isAutoScanning ? 'AUTO_SCAN' : 'MANUAL_OVERRIDE'}</span></div>
+                {/* HUD Data Overlay */}
+                <div className="absolute top-4 left-4 z-20 flex flex-col gap-1 font-mono text-[10px] text-primary/70 pointer-events-none uppercase tracking-tighter">
+                    <div className="flex gap-2"><span>ENTITY:</span> <span className="text-white">FULL_TOWER_ASSEMBLY</span></div>
+                    <div className="flex gap-2"><span>SOURCE:</span> <span className="text-white">SIM_NODE_CSS</span></div>
+                    <div className="flex gap-2"><span>STATUS:</span> <span className="text-white">{isAutoScanning ? 'AUTO_SCAN_ACTIVE' : 'IDLE'}</span></div>
                 </div>
 
                 {isAutoScanning && (
@@ -209,7 +223,7 @@ export default function SystemViewerPage() {
             </div>
         </div>
 
-        {/* RIGHT: High-Fidelity Detail Panel */}
+        {/* RIGHT: Educational Intelligence Panel */}
         <div className="lg:col-span-3 order-3">
           <Card className="bg-card/80 backdrop-blur-xl border-primary/20 h-full flex flex-col overflow-hidden animate-in slide-in-from-right duration-500">
             <CardHeader className="border-b border-white/5 bg-white/5 space-y-1">
@@ -221,16 +235,16 @@ export default function SystemViewerPage() {
             </CardHeader>
             <CardContent ref={detailPanelRef} className="flex-grow flex flex-col p-4 overflow-auto custom-scrollbar space-y-6">
               
-              {/* Definition Section */}
+              {/* Definition */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Info className="h-4 w-4 text-primary" />
-                    <h3 className="text-xs font-bold uppercase tracking-widest">Intelligence Definition</h3>
+                    <h3 className="text-xs font-bold uppercase tracking-widest">Technical Definition</h3>
                 </div>
                 <p className="text-sm leading-relaxed text-foreground/90 bg-white/5 p-3 rounded-md border border-white/5">{selectedPart.definition}</p>
               </div>
 
-              {/* Purpose & How It Works */}
+              {/* Purpose & Logic */}
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
                     <div className="flex items-center gap-2 text-muted-foreground">
