@@ -158,6 +158,7 @@ export interface SystemPart {
   howItWorks: string;
   installation: string[];
   position: { top: string; left: string; width: string; height: string; };
+  imageId?: string;
 }
 
 export interface PcPart {

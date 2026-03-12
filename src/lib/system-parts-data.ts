@@ -1,3 +1,4 @@
+
 import type { SystemPart } from './types';
 
 /**
@@ -18,6 +19,7 @@ export const systemPartsData: SystemPart[] = [
       'Maintain dust filters regularly.'
     ],
     position: { top: '50%', left: '5%', width: '24px', height: '24px' },
+    imageId: 'gaming-case'
   },
   {
     id: 'motherboard',
@@ -32,6 +34,7 @@ export const systemPartsData: SystemPart[] = [
       'Connect the main 24-pin power header.'
     ],
     position: { top: '45%', left: '40%', width: '24px', height: '24px' },
+    imageId: 'gaming-motherboard'
   },
   {
     id: 'cpu',
@@ -46,6 +49,7 @@ export const systemPartsData: SystemPart[] = [
       'Connect the fan header to the CPU_FAN port.'
     ],
     position: { top: '35%', left: '42%', width: '24px', height: '24px' },
+    imageId: 'gaming-cpu'
   },
   {
     id: 'ram',
@@ -60,6 +64,7 @@ export const systemPartsData: SystemPart[] = [
       'Press firmly until clips click into place.'
     ],
     position: { top: '35%', left: '55%', width: '24px', height: '24px' },
+    imageId: 'gaming-ram'
   },
   {
     id: 'gpu',
@@ -74,6 +79,7 @@ export const systemPartsData: SystemPart[] = [
       'Plug in required PCIe power cables.'
     ],
     position: { top: '58%', left: '45%', width: '24px', height: '24px' },
+    imageId: 'gaming-gpu'
   },
   {
     id: 'psu',
@@ -88,6 +94,7 @@ export const systemPartsData: SystemPart[] = [
       'Connect only the modular cables needed.'
     ],
     position: { top: '85%', left: '35%', width: '24px', height: '24px' },
+    imageId: 'gaming-psu'
   },
   {
     id: 'ssd',
@@ -102,6 +109,7 @@ export const systemPartsData: SystemPart[] = [
       'Re-apply the thermal heatsink if provided.'
     ],
     position: { top: '72%', left: '55%', width: '24px', height: '24px' },
+    imageId: 'gaming-storage'
   },
   {
     id: 'fans',
@@ -116,6 +124,7 @@ export const systemPartsData: SystemPart[] = [
       'Ensure cables are clear of blades.'
     ],
     position: { top: '40%', left: '15%', width: '24px', height: '24px' },
+    imageId: 'gaming-case'
   },
   {
     id: 'cables',
@@ -130,5 +139,6 @@ export const systemPartsData: SystemPart[] = [
       'Ensure side panels can close without stress.'
     ],
     position: { top: '70%', left: '25%', width: '24px', height: '24px' },
+    imageId: 'coc2-step1'
   },
 ];
