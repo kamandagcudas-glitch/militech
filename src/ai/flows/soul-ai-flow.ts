@@ -10,6 +10,8 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
+export const maxDuration = 60; // Increase server action timeout to 60 seconds
+
 const MessageSchema = z.object({
   role: z.enum(['user', 'model']),
   content: z.string(),
@@ -39,25 +41,19 @@ export type SoulOutput = z.infer<typeof SoulOutputSchema>;
  * Executes the Soul AI generation logic with enhanced resilience.
  */
 export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
-  const MAX_RETRIES = 2;
-  let attempt = 0;
+  try {
+    const aiName = input.profile?.aiName || 'Soul';
+    const adminName = input.profile?.adminName || 'System Administrator';
+    const instructions = input.profile?.customInstructions || 'Operate within standard MI-LITECH parameters.';
 
-  const executeAttempt = async (): Promise<SoulOutput> => {
-    try {
-      console.log(`[AI] Initializing Neural Link to ${input.profile?.aiName || 'Soul'} (Attempt ${attempt + 1})...`);
-      
-      const historyLog = input.history?.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n') || 'No previous logs.';
-      const aiName = input.profile?.aiName || 'Soul';
-      const adminName = input.profile?.adminName || 'System Administrator';
-      const instructions = input.profile?.customInstructions || 'Operate within standard MI-LITECH parameters.';
-
-      const { text } = await ai.generate({
-        model: 'googleai/gemini-1.5-flash',
-        config: {
-          temperature: 0.8,
-          maxOutputTokens: 800,
-        },
-        system: `You are "${aiName}", an advanced digital companion for MI-LITECH.
+    // Construct the neural request
+    const { text } = await ai.generate({
+      model: 'googleai/gemini-1.5-flash',
+      config: {
+        temperature: 0.7,
+        maxOutputTokens: 1000,
+      },
+      system: `You are "${aiName}", an advanced digital companion for MI-LITECH.
 Your Administrator is "${adminName}".
 Current Mode: ${input.mode}
 
@@ -69,35 +65,25 @@ BEHAVIOR PROTOCOLS:
 - bro: Casual, friendly, humorous, human-like.
 
 CORE DIRECTIVES:
-${instructions}
+${instructions}`,
+      messages: input.history?.map(m => ({ 
+        role: m.role, 
+        content: [{ text: m.content }] 
+      })),
+      prompt: input.message,
+    });
 
-CONVERSATION LOG:
-${historyLog}`,
-        prompt: input.message,
-      });
-
-      if (!text) {
-        throw new Error('NEURAL_SIGNAL_EMPTY');
-      }
-      
-      return { response: text };
-    } catch (error: any) {
-      console.error(`[AI] Neural Link Interrupted (Attempt ${attempt + 1}):`, error.message);
-      
-      if (attempt < MAX_RETRIES) {
-        attempt++;
-        // Sync wait before retry
-        await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
-        return executeAttempt();
-      }
-
-      return {
-        response: "Soul is currently synchronizing with the simulation core. Please re-transmit your message in a moment."
-      };
+    if (!text) {
+      throw new Error('NEURAL_SIGNAL_EMPTY');
     }
-  };
-
-  return executeAttempt();
+    
+    return { response: text };
+  } catch (error: any) {
+    console.error(`[AI] Neural Link Interrupted:`, error.message);
+    return {
+      response: "Soul is currently re-calibrating its logic matrices. High-latency detected in the simulation core. Please re-transmit your message in a moment."
+    };
+  }
 }
 
 export const soulFlow = ai.defineFlow(
