@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, Send, X, Bot, User, Loader2, Sparkles, Settings2, ShieldAlert } from 'lucide-react';
+import { MessageSquare, Send, X, Bot, User, Loader2, Sparkles, Settings2, ShieldAlert, PlusCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { chatWithSoul, type SoulMode } from '@/ai/flows/soul-ai-flow';
 import { useDoc, useMemoFirebase, useFirestore } from '@/firebase';
@@ -137,6 +137,12 @@ export default function SoulAiAssistant() {
     }
   };
 
+  const handleNewChat = () => {
+    if (historyDocRef) {
+      setDoc(historyDocRef, { messages: [] }, { merge: true });
+    }
+  };
+
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {!isOpen ? (
@@ -160,9 +166,20 @@ export default function SoulAiAssistant() {
                   <CardDescription className="text-[10px] uppercase tracking-widest font-mono">Administrator AI Assistant</CardDescription>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:text-destructive">
-                <X className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleNewChat} 
+                  className="hover:text-primary"
+                  title="New Chat"
+                >
+                  <PlusCircle className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:text-destructive">
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
             
             <div className="flex items-center gap-2">
