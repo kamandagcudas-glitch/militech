@@ -1,8 +1,9 @@
+
 import type { SystemPart } from './types';
 
 /**
  * Technical intelligence for the System Unit Showcase.
- * Calibrated for Unsplash photo-1587202376732-817926e93a17 (Full Internal Assembly)
+ * Calibrated for Unsplash photo-1591488320449-011701bb6704 (Full System Assembly)
  */
 export const systemPartsData: SystemPart[] = [
   {
@@ -17,118 +18,118 @@ export const systemPartsData: SystemPart[] = [
       'Secure the board using screws, ensuring it does not touch the metal chassis directly.',
       'Connect the 24-pin ATX and 8-pin CPU power cables.'
     ],
-    position: { top: '45%', left: '45%', width: '30%', height: '30%' },
+    position: { top: '50%', left: '50%', width: '30%', height: '30%' },
   },
   {
     id: 'cpu',
-    name: 'CPU (Central Processing Unit)',
-    definition: 'The "brain" of the computer responsible for executing instructions and processing data.',
-    purpose: 'To interpret and carry out the commands from the hardware and software.',
-    howItWorks: 'It fetches instructions from RAM, decodes them into mathematical operations, and executes them billions of times per second (Clock Speed).',
+    name: 'CPU & Cooling (Central Processing Unit)',
+    definition: 'The "brain" of the computer responsible for executing instructions, paired with a thermal management system.',
+    purpose: 'To carry out commands and maintain safe operating temperatures under load.',
+    howItWorks: 'The CPU processes data while the Liquid Cooler uses a pump and radiator to dissipate heat from the CPU lid.',
     installation: [
-      'Lift the retention lever on the motherboard socket.',
-      'Align the CPU notch or triangle with the socket mark.',
-      'Place it gently without force; it should drop in.',
-      'Close the retention lever and apply thermal paste.'
+      'Place the CPU in the motherboard socket carefully.',
+      'Apply a small amount of thermal paste to the center of the CPU.',
+      'Mount the cooler pump or heatsink firmly over the CPU.',
+      'Connect the pump/fan header to the CPU_FAN port.'
     ],
-    position: { top: '38%', left: '44%', width: '10%', height: '10%' },
+    position: { top: '35%', left: '45%', width: '10%', height: '10%' },
   },
   {
     id: 'ram',
     name: 'RAM (Random Access Memory)',
-    definition: 'A high-speed, volatile storage location for data the CPU needs to access quickly.',
-    purpose: 'Stores active programs and data currently being processed by the system.',
-    howItWorks: 'The CPU stores temporary data here instead of the slower hard drive, allowing for seamless multitasking and fast application response.',
+    definition: 'High-speed volatile memory used for short-term data storage.',
+    purpose: 'Provides the CPU with near-instant access to files and programs currently in use.',
+    howItWorks: 'Stores data in electrical charges that can be read and written much faster than permanent storage, cleared once power is lost.',
     installation: [
-      'Locate the DIMM slots on the motherboard.',
-      'Push down the tabs at the ends of the slots.',
-      'Align the notch on the RAM stick with the slot.',
-      'Press down firmly until the clips lock into place.'
+      'Locate the DIMM slots (usually right of the CPU).',
+      'Open the retention clips at the ends of the slots.',
+      'Align the notch on the memory stick with the slot.',
+      'Press down until the clips click into place.'
     ],
-    position: { top: '38%', left: '58%', width: '6%', height: '18%' },
+    position: { top: '35%', left: '58%', width: '6%', height: '18%' },
   },
   {
     id: 'gpu',
     name: 'GPU (Graphics Card)',
-    definition: 'A specialized processor designed to handle complex mathematical and geometric calculations for graphics.',
-    purpose: 'To render images, video, and 3D environments for display on a monitor.',
-    howItWorks: 'It processes thousands of simultaneous threads to calculate pixel data, offloading heavy graphical tasks from the main CPU.',
+    definition: 'A dedicated hardware unit for rendering visual data and 3D geometry.',
+    purpose: 'Offloads graphical processing from the CPU to provide high-fidelity visuals.',
+    howItWorks: 'Uses thousands of small cores to process pixel data in parallel, sending the resulting image to the monitor.',
     installation: [
-      'Remove the expansion slot covers on the rear of the case.',
-      'Align the GPU with the primary PCIe x16 slot.',
-      'Press down until the lock clicks.',
-      'Secure with screws and connect PCIe power cables.'
+      'Remove expansion covers on the case rear.',
+      'Insert the GPU into the top-most PCIe x16 slot.',
+      'Secure the bracket with screws to the chassis.',
+      'Connect the 6+2 pin PCIe power cables from the PSU.'
     ],
-    position: { top: '62%', left: '52%', width: '40%', height: '12%' },
+    position: { top: '55%', left: '50%', width: '40%', height: '12%' },
   },
   {
     id: 'psu',
     name: 'Power Supply Unit (PSU)',
-    definition: 'The hardware component that converts AC electricity from the wall into DC power.',
-    purpose: 'To provide stable and regulated voltage to all internal components.',
-    howItWorks: 'It transforms high-voltage AC into lower-voltage DC (+3.3V, +5V, +12V) required by the motherboard and peripherals.',
+    definition: 'The unit that converts wall AC to internal component DC power.',
+    purpose: 'Distributes stable voltage to the motherboard, GPU, and other nodes.',
+    howItWorks: 'A transformer and regulator system converts 110V/220V AC into +12V, +5V, and +3.3V DC rails.',
     installation: [
-      'Place the PSU into its bay (usually at the bottom).',
-      'Secure it to the back of the case using four screws.',
-      'Route cables through the cable management holes.',
-      'Connect cables to the motherboard, GPU, and drives.'
+      'Place the PSU in the bottom basement shroud.',
+      'Secure it with four screws to the rear of the case.',
+      'Route cables through the rear management holes.',
+      'Plug in all required modular or fixed cables.'
     ],
-    position: { top: '88%', left: '50%', width: '50%', height: '8%' },
+    position: { top: '88%', left: '40%', width: '50%', height: '8%' },
   },
   {
     id: 'ssd',
-    name: 'SSD (Solid State Drive)',
-    definition: 'A non-volatile storage device that uses flash memory to store permanent data.',
-    purpose: 'Stores the operating system, applications, and user files permanently.',
-    howItWorks: 'Unlike HDDs, it has no moving parts. It uses electrical charges to store data, resulting in near-instant access and high durability.',
+    name: 'M.2 SSD (Storage)',
+    definition: 'A compact, non-volatile storage device using flash memory.',
+    purpose: 'Stores the OS and files permanently with extremely high read/write speeds.',
+    howItWorks: 'Uses NAND flash cells to store data as electrical states, connected directly to the motherboard bus.',
     installation: [
-      'Locate the M.2 slot or 2.5-inch drive bay.',
-      'For M.2: Slide in at an angle and secure with a tiny screw.',
-      'For 2.5-inch: Mount in the bay and connect SATA data/power cables.',
-      'Ensure it is recognized in the BIOS.'
+      'Locate the M.2 slot on the motherboard.',
+      'Remove the thermal heatsink if present.',
+      'Slide the SSD in at a 30-degree angle.',
+      'Secure with the mounting screw and replace heatsink.'
     ],
-    position: { top: '55%', left: '48%', width: '4%', height: '4%' },
+    position: { top: '75%', left: '65%', width: '4%', height: '4%' },
   },
   {
     id: 'fans',
-    name: 'Cooling Fans',
-    definition: 'Mechanical devices used to move air throughout the computer case.',
-    purpose: 'To maintain optimal operating temperatures by removing heat from components.',
-    howItWorks: 'They create an airflow path, drawing cool air in through the front (intake) and pushing hot air out through the back (exhaust).',
+    name: 'Chassis Fans',
+    definition: 'Fans used to manage internal airflow within the chassis.',
+    purpose: 'Draws cool air in and pushes hot air out to prevent hardware throttling.',
+    howItWorks: 'Creates a pressure differential that forces air through the case in a designated direction.',
     installation: [
-      'Check the arrow on the fan frame for airflow direction.',
-      'Mount the fan to the chassis using four screws.',
-      'Connect the 3-pin or 4-pin PWM header to the motherboard.',
-      'Configure fan curves in the BIOS for noise/temp balance.'
+      'Identify the intake and exhaust directions (arrows on frame).',
+      'Screw fans onto the front, top, or rear chassis rails.',
+      'Plug headers into SYS_FAN or a fan controller.',
+      'Ensure cables do not obstruct the fan blades.'
     ],
-    position: { top: '42%', left: '22%', width: '8%', height: '12%' },
+    position: { top: '40%', left: '15%', width: '8%', height: '12%' },
   },
   {
     id: 'cables',
-    name: 'Internal Cabling',
-    definition: 'The network of wires that transmit data and power between hardware.',
-    purpose: 'To interconnect the PSU, motherboard, storage, and front-panel ports.',
-    howItWorks: 'Copper wires within insulated jackets carry electrical signals or power from source to destination.',
+    name: 'Cable Management',
+    definition: 'The organized routing of power and data lines.',
+    purpose: 'Improves airflow and makes the system easier to service.',
+    howItWorks: 'Uses channels, grommets, and zip-ties to keep the main chamber clear of obstruction.',
     installation: [
-      'Group similar cables together using zip ties.',
-      'Route cables behind the motherboard tray to keep the air path clear.',
-      'Ensure all connectors are fully seated and clicked in.',
-      'Avoid tight bends that could damage internal wiring.'
+      'Pull all main power cables through to the rear tray.',
+      'Connect front-panel headers (Power, Reset, Audio).',
+      'Use velcro straps to group similar cable runs.',
+      'Ensure side panels close without excessive force.'
     ],
-    position: { top: '75%', left: '40%', width: '15%', height: '10%' },
+    position: { top: '70%', left: '35%', width: '15%', height: '10%' },
   },
   {
     id: 'case',
-    name: 'Chassis (Computer Case)',
-    definition: 'The enclosure that contains and protects most of the components of a computer.',
-    purpose: 'Provides physical support, shielding, and a managed environment for airflow.',
-    howItWorks: 'It acts as a Faraday cage to block EMI and provides a structured layout for component mounting and cooling.',
+    name: 'Chassis (System Unit Case)',
+    definition: 'The enclosure that houses and protects all computer parts.',
+    purpose: 'Provides structural support, shielding, and cooling paths.',
+    howItWorks: 'Acts as a ground for components and manages the thermal environment through its internal layout.',
     installation: [
-      'Open side panels using thumbscrews.',
-      'Install standoffs required for your motherboard size.',
-      'Plan component placement for optimal cable management.',
-      'Keep dust filters clean for better airflow longevity.'
+      'Remove side panels using captive thumbscrews.',
+      'Ensure motherboard standoffs are installed correctly.',
+      'Plan the component installation order (PSU first is common).',
+      'Clean dust filters regularly to maintain airflow.'
     ],
-    position: { top: '50%', left: '10%', width: '5%', height: '80%' },
+    position: { top: '50%', left: '5%', width: '5%', height: '80%' },
   },
 ];

@@ -1,3 +1,4 @@
+
 export type ImagePlaceholder = {
   id: string;
   description: string;
@@ -111,7 +112,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "system-unit-main",
       "description": "High-density internal view of a fully assembled modern computer chassis.",
-      "imageUrl": "https://images.unsplash.com/photo-1587202376732-817926e93a17?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "computer assembly"
     },
     {

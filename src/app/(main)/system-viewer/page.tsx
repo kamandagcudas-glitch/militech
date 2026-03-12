@@ -186,15 +186,12 @@ export default function SystemViewerPage() {
                     style={{ 
                         top: part.position.top, 
                         left: part.position.left, 
-                        width: '36px', 
-                        height: '36px' 
+                        width: '24px', 
+                        height: '24px' 
                     }}
                     title={part.name}
                     >
-                        <span className={cn(
-                            "text-[11px] font-bold",
-                            selectedIndex === index ? "text-white" : "text-primary"
-                        )}>{index + 1}</span>
+                        {/* Numerical indicators removed per user request */}
                     </button>
                 ))}
 
