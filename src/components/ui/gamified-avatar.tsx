@@ -66,9 +66,11 @@ export function GamifiedAvatar({ account, className, imageClassName }: { account
     const avatarComponent = (
         <div className={cn("avatar-border-wrapper", className)} data-border={borderData.type}>
             <div className="avatar-border"></div>
-            <Avatar className={cn('relative z-10 overflow-hidden', imageClassName)}>
+            <Avatar className={cn('relative z-10 overflow-hidden bg-muted flex items-center justify-center', imageClassName)}>
                 <AvatarImage src={player.avatar} alt={player.username} className="object-cover w-full h-full" />
-                <AvatarFallback className="bg-muted text-foreground">{player.displayName.charAt(0)}</AvatarFallback>
+                <AvatarFallback className="bg-muted text-foreground flex items-center justify-center w-full h-full">
+                    {player.displayName.charAt(0)}
+                </AvatarFallback>
             </Avatar>
         </div>
     );
