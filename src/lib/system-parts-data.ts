@@ -18,7 +18,7 @@ export const systemPartsData: SystemPart[] = [
       'Plan component installation sequence.',
       'Maintain dust filters regularly.'
     ],
-    position: { top: '50%', left: '5%', width: '24px', height: '24px' },
+    position: { top: '50%', left: '10%', width: '24px', height: '24px' },
     imageId: 'gaming-case'
   },
   {
@@ -124,7 +124,7 @@ export const systemPartsData: SystemPart[] = [
       'Ensure cables are clear of blades.'
     ],
     position: { top: '40%', left: '15%', width: '24px', height: '24px' },
-    imageId: 'gaming-case'
+    imageId: 'system-fans'
   },
   {
     id: 'cables',
@@ -139,6 +139,6 @@ export const systemPartsData: SystemPart[] = [
       'Ensure side panels can close without stress.'
     ],
     position: { top: '70%', left: '25%', width: '24px', height: '24px' },
-    imageId: 'coc2-step1'
+    imageId: 'system-cables'
   },
 ];

@@ -8,7 +8,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ChevronLeft, ChevronRight, Cpu, Play, Square, CheckCircle2, Circle, Info, Settings, BookOpen, Wrench, Activity, Loader2, AlertCircle, LayoutGrid } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Cpu, Play, Square, CheckCircle2, Circle, Info, Settings, BookOpen, Wrench, Activity, Loader2, AlertCircle, LayoutGrid, ImageOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import {
@@ -120,7 +120,7 @@ export default function SystemViewerPage() {
                 <Cpu className="text-primary animate-pulse" /> 
                 System Unit Technical Showcase
             </h1>
-            <p className="text-muted-foreground mt-1">Full-Tower Diagnostic. Select hardware nodes to review operational logic and installation protocols.</p>
+            <p className="text-muted-foreground mt-1">Full-Tower Diagnostic. Select hardware nodes or log entries to review operational logic.</p>
         </div>
         <div className="flex gap-2">
             <Button 
@@ -141,7 +141,7 @@ export default function SystemViewerPage() {
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[600px]">
-        {/* SIDEBAR: Component Log */}
+        {/* SIDEBAR: Component Log with Thumbnails */}
         <div className="lg:col-span-3 order-2 lg:order-1">
             <Card className="bg-card/50 backdrop-blur-sm border-primary/10 h-full flex flex-col">
                 <CardHeader className="pb-2 border-b border-white/5 mb-4">
@@ -149,25 +149,33 @@ export default function SystemViewerPage() {
                         <CheckCircle2 className="h-4 w-4 text-primary" /> Component Log
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-1 flex-grow overflow-auto custom-scrollbar">
-                    {systemPartsData.map((part, index) => (
-                        <button
-                            key={part.id}
-                            onClick={() => { setSelectedIndex(index); setIsAutoScanning(false); }}
-                            className={cn(
-                                "w-full flex items-center justify-between p-2 rounded-md transition-all text-xs group",
-                                selectedIndex === index ? "bg-primary/20 text-white border-l-4 border-primary" : "hover:bg-white/5 text-muted-foreground"
-                            )}
-                        >
-                            <span className="flex items-center gap-2">
-                                {viewedParts.has(part.id) ? 
-                                    <CheckCircle2 className="h-3 w-3 text-green-500" /> : 
-                                    <Circle className="h-3 w-3 opacity-30" />
-                                }
-                                {part.name.split(' (')[0]}
-                            </span>
-                        </button>
-                    ))}
+                <CardContent className="space-y-1 flex-grow overflow-auto custom-scrollbar p-2">
+                    {systemPartsData.map((part, index) => {
+                        const partImage = PlaceHolderImages.find(img => img.id === part.imageId);
+                        return (
+                            <button
+                                key={part.id}
+                                onClick={() => { setSelectedIndex(index); setIsAutoScanning(false); }}
+                                className={cn(
+                                    "w-full flex items-center gap-3 p-2 rounded-md transition-all text-xs group",
+                                    selectedIndex === index ? "bg-primary/20 text-white border-l-4 border-primary" : "hover:bg-white/5 text-muted-foreground"
+                                )}
+                            >
+                                <div className="relative w-10 h-10 rounded border border-white/10 overflow-hidden bg-black shrink-0">
+                                    {partImage ? (
+                                        <Image src={partImage.imageUrl} alt="" fill className="object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                                    ) : (
+                                        <div className="flex items-center justify-center h-full"><ImageOff className="h-4 w-4 opacity-20" /></div>
+                                    )}
+                                </div>
+                                <div className="flex flex-col items-start overflow-hidden">
+                                    <span className="font-bold truncate w-full">{part.name.split(' (')[0]}</span>
+                                    <span className="text-[10px] opacity-50 uppercase tracking-tighter">Status: {viewedParts.has(part.id) ? 'Logged' : 'Pending'}</span>
+                                </div>
+                                {viewedParts.has(part.id) && <CheckCircle2 className="h-3 w-3 text-green-500 ml-auto shrink-0" />}
+                            </button>
+                        );
+                    })}
                 </CardContent>
                 <div className="p-4 border-t border-white/5 bg-black/20">
                     <div className="flex justify-between text-[10px] font-mono mb-1 text-muted-foreground uppercase">
@@ -330,7 +338,7 @@ export default function SystemViewerPage() {
                     <LayoutGrid className="h-16 w-16 text-primary/20" />
                     <div>
                         <h3 className="font-headline text-xl uppercase tracking-widest text-primary">Overview Active</h3>
-                        <p className="text-sm text-muted-foreground mt-2">Select a tactical node on the system unit to view specific hardware intelligence and installation protocols.</p>
+                        <p className="text-sm text-muted-foreground mt-2">Select a tactical node or sidebar entry to view hardware intelligence and installation protocols.</p>
                     </div>
                     <Button variant="cyber" className="w-full mt-4" onClick={() => setSelectedIndex(0)}>
                         Explore First Node
