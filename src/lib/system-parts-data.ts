@@ -48,7 +48,7 @@ export const systemPartsData: SystemPart[] = [
       'Mount the cooler firmly over the CPU.',
       'Connect the fan header to the CPU_FAN port.'
     ],
-    position: { top: '35%', left: '42%', width: '24px', height: '24px' },
+    position: { top: '32%', left: '42%', width: '24px', height: '24px' },
     imageId: 'gaming-cpu'
   },
   {
