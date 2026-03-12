@@ -82,13 +82,13 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coc3-step3",
       "description": "Firewall rules and network security configuration.",
-      "imageUrl": "https://images.unsplash.com/photo-1596625043546-89f548271e24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3HxmaXJld2FsbCUyMHJ1bGVzfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1596625043546-89f548271e24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmaXJld2FsbCUyMHJ1bGVzfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "firewall rules"
     },
     {
       "id": "coc4-step1",
       "description": "External storage device for system data backups.",
-      "imageUrl": "https://images.unsplash.com/photo-1624895608078-e9f564cbe3fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkYXRhJTIwYmFja3VwfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1624895608078-e9f564cbe3fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkYXRhJTIwYmFja3VwfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "data backup"
     },
     {
@@ -112,7 +112,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "system-unit-main",
       "description": "A high-fidelity internal view of a modern computer chassis with all components installed and RGB active.",
-      "imageUrl": "https://images.unsplash.com/photo-1624701928517-44c8ac49d93c?q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?q=80&w=1080",
       "imageHint": "computer internals"
     },
     {
@@ -241,5 +241,4 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
       "imageUrl": "https://images.unsplash.com/photo-1593152077897-2cc2dcbc041f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuenh0JTIwY2FzZXxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "compact case"
     }
-  ]
-}
+  ];
