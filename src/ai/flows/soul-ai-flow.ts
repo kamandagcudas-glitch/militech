@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview Soul AI Assistant Genkit Flow with personality modes and custom profile.
@@ -41,13 +40,14 @@ export type SoulOutput = z.infer<typeof SoulOutputSchema>;
  */
 const soulPrompt = ai.definePrompt({
   name: 'soulPrompt',
+  model: 'googleai/gemini-1.5-flash',
   input: { schema: SoulInputSchema },
   output: { schema: SoulOutputSchema },
   config: {
     temperature: 0.7,
     maxOutputTokens: 1000,
   },
-  prompt: `You are "{{#if profile.aiName}}{{profile.aiName}}{{else}}Soul{{/if}}", an advanced digital companion for MI-LITECH.
+  prompt: `You are "{{#if profile.aiName}}{{profile.aiName}}{{else}Soul{{/if}}", an advanced digital companion for MI-LITECH.
 Your Administrator identifies as: {{#if profile.adminName}}{{profile.adminName}}{{else}}the System Administrator{{/if}}.
 Your current active behavior mode is: {{mode}}
 
@@ -67,21 +67,14 @@ Admin Transmission: {{message}}`
 });
 
 /**
- * Executes the Soul AI flow with error resilience.
+ * Executes the Soul AI flow with error resilience and retries.
  */
 export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
-  return soulFlow(input);
-}
+  const MAX_RETRIES = 2;
+  let attempt = 0;
 
-const soulFlow = ai.defineFlow(
-  {
-    name: 'soulFlow',
-    inputSchema: SoulInputSchema,
-    outputSchema: SoulOutputSchema,
-  },
-  async (input) => {
+  const executeAttempt = async (): Promise<SoulOutput> => {
     try {
-      // Use standard generation pattern for Genkit 1.x
       const { output } = await soulPrompt(input);
 
       if (!output || !output.response) {
@@ -90,8 +83,16 @@ const soulFlow = ai.defineFlow(
       
       return output;
     } catch (error: any) {
-      console.error('Soul Flow Critical Failure:', error);
+      console.error(`Soul Flow Attempt ${attempt + 1} Failed:`, error);
       
+      if (attempt < MAX_RETRIES) {
+        attempt++;
+        // Small delay before retry
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        return executeAttempt();
+      }
+
+      // Handle specific error types
       if (error.message?.includes('429')) {
         return {
           response: "CRITICAL ALERT: Neural pathways congested. System request quota exceeded for this cycle. Please allow the simulation core to cool down."
@@ -99,8 +100,21 @@ const soulFlow = ai.defineFlow(
       }
 
       return {
-        response: "SYSTEM ERROR: Neural link disrupted. Connection to logic core unstable. [CORE_TIMEOUT_V2]"
+        response: "Soul is processing your request. Please try again in a moment."
       };
     }
+  };
+
+  return executeAttempt();
+}
+
+export const soulFlow = ai.defineFlow(
+  {
+    name: 'soulFlow',
+    inputSchema: SoulInputSchema,
+    outputSchema: SoulOutputSchema,
+  },
+  async (input) => {
+    return chatWithSoul(input);
   }
 );

@@ -143,6 +143,7 @@ export default function SoulAiAssistant() {
     };
 
     const newMessages = [...messages, userMessage];
+    const originalInput = input.trim();
     setInput('');
     setIsTyping(true);
 
@@ -151,6 +152,8 @@ export default function SoulAiAssistant() {
     }
 
     try {
+      console.log(`[AI] Dispatching neural request for: "${originalInput.substring(0, 20)}..."`);
+      
       const soulResult = await chatWithSoul({
         history: newMessages.map(m => ({ role: m.role, content: m.content })),
         message: userMessage.content,
@@ -172,11 +175,11 @@ export default function SoulAiAssistant() {
       if (historyDocRef) {
         setDoc(historyDocRef, { messages: finalMessages, lastMode: mode }, { merge: true });
       }
-    } catch (error) {
-      console.error('Soul Error:', error);
+    } catch (error: any) {
+      console.error('[AI] Neural link failure:', error);
       const errorMessage: AiMessage = {
         role: 'model',
-        content: "CRITICAL FAILURE: Logic core timed out. Internal circuitry requires reboot.",
+        content: "Soul is processing your request. Please try again in a moment.",
         timestamp: new Date().toISOString(),
       };
       const finalMessages = [...newMessages, errorMessage];
@@ -350,7 +353,7 @@ export default function SoulAiAssistant() {
                       <Loader2 className="h-4 w-4 text-white animate-spin" />
                     </div>
                     <div className="bg-muted p-3 rounded-lg border border-white/5">
-                      <p className="text-xs italic text-muted-foreground animate-pulse">{profile.aiName || 'Soul'} is processing in {mode} mode...</p>
+                      <p className="text-xs italic text-muted-foreground animate-pulse">{profile.aiName || 'Soul'} is thinking...</p>
                     </div>
                   </div>
                 )}
@@ -366,6 +369,7 @@ export default function SoulAiAssistant() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               className="bg-background border-primary/20"
+              disabled={isTyping}
             />
             <Button 
               onClick={handleSend} 
