@@ -1,5 +1,4 @@
 
-
 export interface Player {
   uid: string; // Firebase Auth User ID
   username: string;
@@ -59,6 +58,17 @@ export interface UserFile {
 }
 
 export interface FeedbackPost {
+  id: string;
+  userId: string;
+  username: string;
+  displayName: string;
+  avatar: string;
+  message: string;
+  timestamp: string;
+  specialInsignia?: 'black-flame';
+}
+
+export interface FeedbackReply {
   id: string;
   userId: string;
   username: string;
@@ -166,4 +176,3 @@ export interface PcBuild {
   description: string;
   parts: Record<PcPartCategory, PcPart>;
 }
-

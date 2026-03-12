@@ -15,6 +15,7 @@ import {
   UserAccount,
   UserFile,
   FeedbackPost,
+  FeedbackReply,
   LoginAttempt,
   ActivityLog,
 } from '@/lib/types';
@@ -96,6 +97,7 @@ export interface GameContextType {
   shareFile: (fileId: string, friendUsername: string) => void;
   feedbackPosts: FeedbackPost[];
   postFeedback: (message: string) => void;
+  replyToFeedback: (feedbackId: string, message: string) => void;
   banUser: (username: string) => void;
   unbanUser: (username: string) => void;
   muteUser: (username: string) => void;
@@ -834,7 +836,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     toast({ title: "File Shared!", description: `A copy of "${fileToShare.name}" has been sent to ${friendUsername}.` });
   };
   
-  const postFeedback = (message: string) => {
+  const postFeedback = async (message: string) => {
     if (!currentUser) return;
     if (currentUser.player.isBanned || currentUser.player.isMuted) {
       toast({ variant: 'destructive', title: 'Action Restricted' });
@@ -854,22 +856,48 @@ export function GameProvider({ children }: { children: ReactNode }) {
       feedbackData.specialInsignia = currentUser.player.specialInsignia;
     }
 
-    addDocumentNonBlocking(collection(firestore, 'feedback'), feedbackData);
+    const docRef = await addDoc(collection(firestore, 'feedback'), feedbackData);
 
     // AUTO-REPLY PROTOCOL
-    const soulAutoReply: any = {
-      userId: 'soul-system-bot',
-      username: 'Soul',
-      displayName: 'Soul',
-      avatar: 'https://picsum.photos/seed/soul/200/200',
-      message: 'Soul: Thank You For Your Feedback!!',
-      timestamp: new Date(Date.now() + 500).toISOString(), // 500ms offset for ordering
-    };
-    addDocumentNonBlocking(collection(firestore, 'feedback'), soulAutoReply);
+    replyToFeedback(docRef.id, 'Thank You For Your Feedback!!', true);
 
     logActivity('Feedback Posted', `Message: "${message.substring(0, 30)}..."`);
     toast({ title: "Feedback Submitted!" });
   };
+
+  const replyToFeedback = useCallback(async (feedbackId: string, message: string, isSoul = false) => {
+    if (!currentUser && !isSoul) return;
+    if (!isSoul && (currentUser?.player.isBanned || currentUser?.player.isMuted)) {
+      toast({ variant: 'destructive', title: 'Action Restricted' });
+      return;
+    }
+
+    const replyData: any = isSoul ? {
+      userId: 'soul-system-bot',
+      username: 'Soul',
+      displayName: 'Soul',
+      avatar: 'https://picsum.photos/seed/soul/200/200',
+      message,
+      timestamp: new Date().toISOString(),
+    } : {
+      userId: currentUser!.player.uid,
+      username: currentUser!.player.username,
+      displayName: currentUser!.player.displayName,
+      avatar: currentUser!.player.avatar,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+
+    if (!isSoul && currentUser?.player.specialInsignia) {
+      replyData.specialInsignia = currentUser.player.specialInsignia;
+    }
+
+    addDocumentNonBlocking(collection(firestore, 'feedback', feedbackId, 'replies'), replyData);
+    if (!isSoul) {
+        logActivity('Feedback Replied', `To ID: ${feedbackId}`);
+        toast({ title: "Reply Sent!" });
+    }
+  }, [currentUser, firestore, logActivity, toast]);
 
   const updateUserPropertyByUsername = async (username: string, updates: Partial<Player>) => {
     if (!isAdmin) {
@@ -978,7 +1006,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       loginHistory: loginHistory || [],
       activityLogs: activityLogs || [],
       feedbackPosts: feedbackPosts || [],
-      logActivity, register, login, signInWithGoogle, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle, sendMessage, clearChatHistory
+      logActivity, register, login, signInWithGoogle, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, replyToFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle, sendMessage, clearChatHistory
     }}>
       {children}
     </GameContext.Provider>
