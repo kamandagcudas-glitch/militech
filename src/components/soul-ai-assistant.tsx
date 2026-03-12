@@ -125,6 +125,16 @@ export default function SoulAiAssistant() {
       }
     } catch (error) {
       console.error('Soul Error:', error);
+      // Backup UI error handling if the flow itself crashes unexpectedly
+      const errorMessage: AiMessage = {
+        role: 'model',
+        content: "CRITICAL FAILURE: Logic core timed out. Internal circuitry requires reboot.",
+        timestamp: new Date().toISOString(),
+      };
+      const finalMessages = [...newMessages, errorMessage];
+      if (historyDocRef) {
+        setDoc(historyDocRef, { messages: finalMessages, lastMode: mode }, { merge: true });
+      }
     } finally {
       setIsTyping(false);
     }

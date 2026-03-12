@@ -65,8 +65,24 @@ const soulFlow = ai.defineFlow(
     outputSchema: SoulOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt(input);
-    if (!output) throw new Error('Soul failed to manifest a response.');
-    return output;
+    try {
+      const { output } = await prompt(input);
+      if (!output) throw new Error('Soul failed to manifest a response.');
+      return output;
+    } catch (error: any) {
+      console.error('Soul Flow Error:', error);
+      
+      // Handle Rate Limiting (429) specifically
+      if (error.message?.includes('429') || error.status === 429) {
+        return {
+          response: "CRITICAL ALERT: Neural pathways congested. System request quota exceeded for this cycle. Please allow the simulation core to cool down before initiating further transmissions."
+        };
+      }
+
+      // Handle other errors gracefully
+      return {
+        response: "SYSTEM ERROR: Neural link disrupted. Connection to logic core unstable. Please check your network or try again later."
+      };
+    }
   }
 );
