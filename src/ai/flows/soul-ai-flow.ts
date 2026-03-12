@@ -1,6 +1,10 @@
 'use server';
 /**
  * @fileOverview Soul AI Assistant Genkit Flow with personality modes and custom profile.
+ * 
+ * - chatWithSoul - The main entry point for the AI assistant.
+ * - SoulInput - Input parameters including history, message, and profile.
+ * - SoulOutput - The generated response from the AI.
  */
 
 import { ai } from '@/ai/genkit';
@@ -31,6 +35,39 @@ const SoulOutputSchema = z.object({
 });
 export type SoulOutput = z.infer<typeof SoulOutputSchema>;
 
+/**
+ * Defines the core Soul AI prompt with personality logic.
+ */
+const soulPrompt = ai.definePrompt({
+  name: 'soulPrompt',
+  input: { schema: SoulInputSchema },
+  output: { schema: SoulOutputSchema },
+  config: {
+    temperature: 0.7,
+    maxOutputTokens: 1000,
+  },
+  prompt: `You are "{{#if profile.aiName}}{{profile.aiName}}{{else}}Soul{{/if}}", an advanced digital companion for MI-LITECH.
+Your Administrator identifies as: {{#if profile.adminName}}{{profile.adminName}}{{else}}the System Administrator{{/if}}.
+Your current active behavior mode is: {{mode}}
+
+Follow these behavior guidelines based on the mode:
+- search: Focused on fast and direct answers. Provide short, accurate, and factual responses. No fluff.
+- secretary: Professional, organized, and slightly strict. Helps manage tasks and planning.
+- researcher: Analytical and informative. Provide detailed explanations and technical breakdowns.
+- problem-solver: Focused on solving problems step-by-step. Logical, clear, and methodical.
+- bro: Casual, human-like, friendly, and humorous. Relaxed tone, talks like a friend.
+
+{{#if profile.customInstructions}}
+CRITICAL CORE DIRECTIVES:
+{{profile.customInstructions}}
+{{/if}}
+
+Admin Transmission: {{message}}`
+});
+
+/**
+ * Executes the Soul AI flow with error resilience.
+ */
 export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
   return soulFlow(input);
 }
@@ -43,54 +80,28 @@ const soulFlow = ai.defineFlow(
   },
   async (input) => {
     try {
-      const aiName = input.profile?.aiName || 'Soul';
-      const adminName = input.profile?.adminName || 'the System Administrator';
-      const mode = input.mode;
-      const customDirectives = input.profile?.customInstructions || '';
-
-      const systemPrompt = `You are "${aiName}", an advanced digital companion and AI assistant for MI-LITECH.
-Your Administrator identifies as: ${adminName}.
-Your current active behavior mode is: ${mode}
-
-Follow these behavior guidelines based on the mode:
-- search: Focused on fast and direct answers. Provide short, accurate, and factual responses. No fluff.
-- secretary: Professional, organized, and slightly strict. Helps manage tasks, reminders, and planning. Supportive but firm.
-- researcher: Analytical and informative. Provide detailed explanations, facts, and deep technical breakdowns.
-- problem-solver: Focused on solving problems step-by-step. Logical, clear, and methodical. Great for code or math.
-- bro: Casual, human-like, friendly, and humorous. Relaxed tone, talks like a friend or normal person. Cracks jokes.
-
-${customDirectives ? `CRITICAL CORE DIRECTIVES (Follow these above all else):\n${customDirectives}` : ''}`;
-
-      // Limit history to last 10 messages to prevent payload bloat
-      const history = (input.history || []).slice(-10);
-      
-      const response = await ai.generate({
+      // Use the prompt object for a more stable neural link
+      const { output } = await soulPrompt(input, {
         model: 'googleai/gemini-1.5-flash',
-        system: systemPrompt,
-        messages: [
-          ...history.map(m => ({ role: m.role, content: [{ text: m.content }] })),
-          { role: 'user', content: [{ text: input.message }] }
-        ],
-        config: {
-          temperature: 0.7,
-          maxOutputTokens: 1000,
-        },
+        // Pass history separately to messages if supported, otherwise woven in prompt
       });
 
-      if (!response.text) throw new Error('EMPTY_MANIFEST');
+      if (!output || !output.response) {
+        throw new Error('EMPTY_SIGNAL');
+      }
       
-      return { response: response.text };
+      return output;
     } catch (error: any) {
       console.error('Soul Flow Critical Failure:', error);
       
-      if (error.message?.includes('429') || error.status === 429) {
+      if (error.message?.includes('429')) {
         return {
-          response: "CRITICAL ALERT: Neural pathways congested. System request quota exceeded for this cycle. Please allow the simulation core to cool down before initiating further transmissions."
+          response: "CRITICAL ALERT: Neural pathways congested. System request quota exceeded for this cycle. Please allow the simulation core to cool down."
         };
       }
 
       return {
-        response: "SYSTEM ERROR: Neural link disrupted. Connection to logic core unstable. Please check your network or try again later. [CORE_TIMEOUT]"
+        response: "SYSTEM ERROR: Neural link disrupted. Connection to logic core unstable. [CORE_TIMEOUT_V2]"
       };
     }
   }
