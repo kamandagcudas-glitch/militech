@@ -7,11 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, Send, X, Bot, User, Loader2, Sparkles, Settings2, ShieldAlert, PlusCircle, UserCog, Save, Image as ImageIcon } from 'lucide-react';
+import { MessageSquare, Send, X, Bot, User, Loader2, Sparkles, Settings2, ShieldAlert, PlusCircle, UserCog, Save, Image as ImageIcon, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { chatWithSoul, type SoulMode } from '@/ai/flows/soul-ai-flow';
 import { useDoc, useMemoFirebase, useFirestore } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { useToast } from '@/hooks/use-toast';
 import {
   Select,
   SelectContent,
@@ -60,6 +61,7 @@ const MODES: { value: SoulMode; label: string; icon: string }[] = [
 
 export default function SoulAiAssistant() {
   const { currentUser, isAdmin } = useContext(GameContext) as GameContextType;
+  const { toast } = useToast();
   const firestore = useFirestore();
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -199,10 +201,42 @@ export default function SoulAiAssistant() {
     }
   };
 
+  const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 800 * 1024) { // 800KB limit to stay safe with Firestore profile sync limits
+        toast({
+          variant: "destructive",
+          title: "Neural Image Too Large",
+          description: "Visual manifestation data must be under 800KB."
+        });
+        return;
+      }
+
+      if (file.type === 'image/jpeg' || file.type === 'image/png') {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setEditProfile(prev => ({ ...prev, aiAvatar: reader.result as string }));
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Invalid Data Stream",
+          description: "Only JPG or PNG visuals are accepted."
+        });
+      }
+    }
+  };
+
   const saveProfile = () => {
     if (profileDocRef) {
       setDoc(profileDocRef, editProfile, { merge: true });
       setIsProfileOpen(false);
+      toast({
+        title: "Neural Profile Updated",
+        description: `${editProfile.aiName}'s identity parameters have been synchronized.`
+      });
     }
   };
 
@@ -223,7 +257,7 @@ export default function SoulAiAssistant() {
               <div className="flex items-center gap-3">
                 <div className="bg-primary/10 p-1 rounded-lg">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={profile.aiAvatar} />
+                    <AvatarImage src={profile.aiAvatar} className="object-cover" />
                     <AvatarFallback className="bg-primary text-white"><Bot /></AvatarFallback>
                   </Avatar>
                 </div>
@@ -297,7 +331,7 @@ export default function SoulAiAssistant() {
                         <User className="h-4 w-4 text-white" />
                       ) : (
                         <Avatar className="h-full w-full">
-                          <AvatarImage src={profile.aiAvatar} />
+                          <AvatarImage src={profile.aiAvatar} className="object-cover" />
                           <AvatarFallback className="bg-primary text-white"><Bot className="h-4 w-4" /></AvatarFallback>
                         </Avatar>
                       )}
@@ -353,10 +387,33 @@ export default function SoulAiAssistant() {
               <UserCog className="text-primary" /> Soul Neural Profile
             </DialogTitle>
             <DialogDescription>
-              Redefine the identity and parameters of your digital companion.
+              Redefine the identity and visual manifestation of your digital companion.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
+          <div className="grid gap-6 py-4">
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative group">
+                <Avatar className="h-24 w-24 border-4 border-primary/50 shadow-lg">
+                  <AvatarImage src={editProfile.aiAvatar} className="object-cover" />
+                  <AvatarFallback className="bg-primary text-white"><Bot className="h-10 w-10" /></AvatarFallback>
+                </Avatar>
+                <Label 
+                  htmlFor="soul-avatar-upload" 
+                  className="absolute bottom-0 right-0 p-2 bg-background border border-primary/50 rounded-full cursor-pointer hover:bg-primary/10 transition-colors shadow-lg"
+                >
+                  <Pencil className="h-4 w-4 text-primary" />
+                  <input 
+                    id="soul-avatar-upload" 
+                    type="file" 
+                    accept="image/png, image/jpeg" 
+                    className="hidden" 
+                    onChange={handleAvatarFileChange}
+                  />
+                </Label>
+              </div>
+              <p className="text-[10px] text-muted-foreground uppercase font-mono tracking-widest">Neural Manifestation Link</p>
+            </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="aiName" className="text-right text-xs uppercase font-mono">AI Name</Label>
               <Input
@@ -367,21 +424,7 @@ export default function SoulAiAssistant() {
                 placeholder="e.g. Soul, Oracle, Jarvis"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="aiAvatar" className="text-right text-xs uppercase font-mono">Avatar URL</Label>
-              <div className="col-span-3 flex gap-2">
-                <Input
-                  id="aiAvatar"
-                  value={editProfile.aiAvatar}
-                  onChange={(e) => setEditProfile({ ...editProfile, aiAvatar: e.target.value })}
-                  className="flex-1 h-8 text-sm"
-                  placeholder="https://..."
-                />
-                <div className="h-8 w-8 rounded border flex items-center justify-center shrink-0 overflow-hidden bg-muted">
-                  {editProfile.aiAvatar ? <img src={editProfile.aiAvatar} className="h-full w-full object-cover" /> : <ImageIcon className="h-4 w-4 opacity-30" />}
-                </div>
-              </div>
-            </div>
+            
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="adminName" className="text-right text-xs uppercase font-mono">My Callsign</Label>
               <Input
@@ -392,14 +435,14 @@ export default function SoulAiAssistant() {
                 placeholder="How should I call you?"
               />
             </div>
-            <div className="flex flex-col gap-2 mt-2">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="directives" className="text-xs uppercase font-mono tracking-widest text-primary">Core Directives</Label>
               <Textarea
                 id="directives"
                 value={editProfile.customInstructions}
                 onChange={(e) => setEditProfile({ ...editProfile, customInstructions: e.target.value })}
                 className="text-xs min-h-[100px] bg-muted/30"
-                placeholder="Enter permanent behavioral overrides (e.g. Always be concise, use technical jargon...)"
+                placeholder="Enter permanent behavioral overrides..."
               />
             </div>
           </div>
