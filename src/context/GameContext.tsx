@@ -840,16 +840,24 @@ export function GameProvider({ children }: { children: ReactNode }) {
       toast({ variant: 'destructive', title: 'Action Restricted' });
       return;
     }
-    const newFeedback: Omit<FeedbackPost, 'id'> = {
+    
+    // Create the feedback object carefully.
+    // Firestore does not support 'undefined' field values.
+    const feedbackData: any = {
       userId: currentUser.player.uid,
       username: currentUser.player.username,
       displayName: currentUser.player.displayName,
       avatar: currentUser.player.avatar,
       message,
       timestamp: new Date().toISOString(),
-      specialInsignia: currentUser.player.specialInsignia,
     };
-    addDocumentNonBlocking(collection(firestore, 'feedback'), newFeedback);
+
+    // Only add specialInsignia if it actually exists on the player object.
+    if (currentUser.player.specialInsignia) {
+      feedbackData.specialInsignia = currentUser.player.specialInsignia;
+    }
+
+    addDocumentNonBlocking(collection(firestore, 'feedback'), feedbackData);
     logActivity('Feedback Posted', `Message: "${message.substring(0, 30)}..."`);
     toast({ title: "Feedback Submitted!" });
   };
