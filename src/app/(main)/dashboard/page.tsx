@@ -8,11 +8,11 @@ import { cocData } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck, Search, Trophy, Presentation } from 'lucide-react';
+import { ArrowRight, Puzzle, User, Files, MessageSquare, SpellCheck, Search, Trophy, Presentation, Terminal } from 'lucide-react';
 import { CreatorBadgeIcon, AngelicPowerRuneIcon, BlackFlameIcon } from '@/components/icons';
 import AnimatedGlitchText from '@/components/animated-glitch-text';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import StickmanFighter from '@/components/stickman-fighter';
 import ChessGame from '@/components/chess-game';
 
@@ -21,6 +21,9 @@ export default function DashboardPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [showSecretGame, setShowSecretGame] = useState(false);
     const [showChessGame, setShowChessGame] = useState(false);
+    const [showJoystickCodes, setShowJoystickCodes] = useState(false);
+
+    const joystickCodes = ["444390", "498972", "496342", "458756", "Jafet", "361997", "466514", "510463", "546757", "364506"];
 
     useEffect(() => {
         const query = searchQuery.toUpperCase();
@@ -30,8 +33,16 @@ export default function DashboardPage() {
         } else if (query === 'BRAGA') {
             setShowChessGame(true);
             setSearchQuery('');
+        } else if (query === 'JOYSTICK') {
+            setShowJoystickCodes(true);
+            setSearchQuery('');
+        } else if (query === 'METAMORPHOSIS') {
+            if (game.addAchievement) {
+                game.addAchievement('metamorphosis-title');
+            }
+            setSearchQuery('');
         }
-    }, [searchQuery]);
+    }, [searchQuery, game]);
 
     if (!game.currentUser) return null;
 
@@ -210,6 +221,29 @@ export default function DashboardPage() {
                             }
                         }}
                     />
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={showJoystickCodes} onOpenChange={setShowJoystickCodes}>
+                <DialogContent className="max-w-md bg-card/95 backdrop-blur-xl border-primary/50">
+                    <DialogHeader>
+                        <DialogTitle className="font-cyber text-2xl text-primary flex items-center gap-2">
+                            <Terminal className="h-6 w-6" /> JOYSTICK OVERRIDE
+                        </DialogTitle>
+                        <DialogDescription className="text-muted-foreground">
+                            Classified access codes retrieved from simulation core.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid grid-cols-2 gap-4 py-6">
+                        {joystickCodes.map((code, index) => (
+                            <div key={index} className="bg-black/40 border border-primary/20 p-3 rounded text-center group hover:border-primary transition-colors">
+                                <code className="font-mono text-lg text-accent group-hover:text-white transition-colors">{code}</code>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="flex justify-center">
+                        <Button variant="cyber" onClick={() => setShowJoystickCodes(false)}>Close Terminal</Button>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
