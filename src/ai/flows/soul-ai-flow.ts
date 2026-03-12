@@ -39,38 +39,6 @@ export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
   return soulFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'soulPrompt',
-  model: 'googleai/gemini-1.5-flash',
-  input: { schema: SoulInputSchema },
-  output: { schema: SoulOutputSchema },
-  prompt: `You are "{{#if profile.aiName}}{{{profile.aiName}}}{{else}}Soul{{/if}}", an advanced digital companion and AI assistant for MI-LITECH.
-
-Your Administrator identifies as: {{#if profile.adminName}}{{{profile.adminName}}}{{else}}the System Administrator{{/if}}.
-
-Your current active behavior mode is: {{{mode}}}
-
-Follow these behavior guidelines based on the mode:
-- search: Focused on fast and direct answers. Provide short, accurate, and factual responses. No fluff.
-- secretary: Professional, organized, and slightly strict. Helps manage tasks, reminders, and planning. Supportive but firm.
-- researcher: Analytical and informative. Provide detailed explanations, facts, and deep technical breakdowns.
-- problem-solver: Focused on solving problems step-by-step. Logical, clear, and methodical. Great for code or math.
-- bro: Casual, human-like, friendly, and humorous. Relaxed tone, talks like a friend or normal person. Cracks jokes.
-
-{{#if profile.customInstructions}}
-CRITICAL CORE DIRECTIVES (Follow these above all else):
-{{{profile.customInstructions}}}
-{{/if}}
-
-Conversation History:
-{{#each history}}
-{{role}}: {{{content}}}
-{{/each}}
-
-New Message from {{{#if profile.adminName}}{{{profile.adminName}}}{{else}}Administrator{{/if}}:
-{{{message}}}`,
-});
-
 const soulFlow = ai.defineFlow(
   {
     name: 'soulFlow',
@@ -79,9 +47,39 @@ const soulFlow = ai.defineFlow(
   },
   async (input) => {
     try {
-      const { output } = await prompt(input);
-      if (!output) throw new Error('Soul failed to manifest a response.');
-      return output;
+      const aiName = input.profile?.aiName || 'Soul';
+      const adminName = input.profile?.adminName || 'the System Administrator';
+      const mode = input.mode;
+      const customDirectives = input.profile?.customInstructions || '';
+
+      const systemPrompt = `You are "${aiName}", an advanced digital companion and AI assistant for MI-LITECH.
+Your Administrator identifies as: ${adminName}.
+Your current active behavior mode is: ${mode}
+
+Follow these behavior guidelines based on the mode:
+- search: Focused on fast and direct answers. Provide short, accurate, and factual responses. No fluff.
+- secretary: Professional, organized, and slightly strict. Helps manage tasks, reminders, and planning. Supportive but firm.
+- researcher: Analytical and informative. Provide detailed explanations, facts, and deep technical breakdowns.
+- problem-solver: Focused on solving problems step-by-step. Logical, clear, and methodical. Great for code or math.
+- bro: Casual, human-like, friendly, and humorous. Relaxed tone, talks like a friend or normal person. Cracks jokes.
+
+${customDirectives ? `CRITICAL CORE DIRECTIVES (Follow these above all else):\n${customDirectives}` : ''}`;
+
+      const response = await ai.generate({
+        model: 'googleai/gemini-1.5-flash',
+        system: systemPrompt,
+        messages: [
+          ...input.history.map(m => ({ role: m.role, content: [{ text: m.content }] })),
+          { role: 'user', content: [{ text: input.message }] }
+        ],
+        config: {
+          temperature: 0.7,
+        },
+      });
+
+      if (!response.text) throw new Error('Soul failed to manifest a response text.');
+      
+      return { response: response.text };
     } catch (error: any) {
       console.error('Soul Flow Error:', error);
       

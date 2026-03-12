@@ -33,7 +33,7 @@
     {
       "id": "coc2-step1",
       "description": "A coiled bundle of blue ethernet network cables.",
-      "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MTM1MjU5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MTM1MjU5NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "network cables"
     },
     {
@@ -111,7 +111,7 @@
     {
       "id": "gaming-cpu",
       "description": "Intel Core i9 processor for gaming.",
-      "imageUrl": "https://images.unsplash.com/photo-1555617981-dac3880eac6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxpbnRlbCUyMGk5fGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1555617981-dac3880eac6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxpbnRlbCUyMGk5fGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "intel i9"
     },
     {
