@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 import { MessageSquare, Send } from 'lucide-react';
 import { BlackFlameIcon } from '@/components/icons';
+import { UserAccount } from '@/lib/types';
 
 const feedbackPageBackgroundUrl = "https://images.unsplash.com/photo-1514439827219-9137a0b99245?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjeWJlcnB1bmslMjBjaXR5fGVufDB8fHx8MTc3MDIyMDE0N3ww&ixlib=rb-4.1.0&q=80&w=1080";
 
@@ -80,7 +81,30 @@ export default function FeedbackPage() {
                             {game.feedbackPosts.length > 0 ? (
                                 game.feedbackPosts.map((post, index) => {
                                     const userAccount = game.accounts.find(acc => acc.player.username === post.username);
-                                    if (!userAccount) return null;
+                                    
+                                    // Construct a temporary account for system bots or missing users
+                                    const displayAccount: UserAccount = userAccount || {
+                                        player: {
+                                            uid: post.userId,
+                                            username: post.username,
+                                            displayName: post.displayName,
+                                            avatar: post.avatar,
+                                            emailVerified: true,
+                                            activeTitleId: null,
+                                            isBanned: false,
+                                            isMuted: false,
+                                            unlockedTitleIds: [],
+                                            badgeIds: [],
+                                            friendUsernames: [],
+                                            friendRequests: [],
+                                            isCreator: post.username === 'Soul' || post.username === 'Soul',
+                                            profileBackgroundId: 'profile-bg-dark-tech'
+                                        },
+                                        stats: { coc1: {attempts:0, resets:0}, coc2: {attempts:0, resets:0}, coc3: {attempts:0, resets:0}, coc4: {attempts:0, resets:0}, totalResets: 0},
+                                        progress: { coc1: {completedSteps:[], scores:{}}, coc2: {completedSteps:[], scores:{}}, coc3: {completedSteps:[], scores:{}}, coc4: {completedSteps:[], scores:{}}},
+                                        achievements: [],
+                                        files: []
+                                    };
 
                                     return (
                                     <div 
@@ -90,7 +114,7 @@ export default function FeedbackPage() {
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-center gap-3">
-                                                <GamifiedAvatar account={userAccount} />
+                                                <GamifiedAvatar account={displayAccount} />
                                                 <div>
                                                     <p className="font-semibold text-primary flex items-center gap-1.5">
                                                         {post.displayName}

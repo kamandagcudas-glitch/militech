@@ -841,8 +841,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return;
     }
     
-    // Create the feedback object carefully.
-    // Firestore does not support 'undefined' field values.
     const feedbackData: any = {
       userId: currentUser.player.uid,
       username: currentUser.player.username,
@@ -852,12 +850,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
       timestamp: new Date().toISOString(),
     };
 
-    // Only add specialInsignia if it actually exists on the player object.
     if (currentUser.player.specialInsignia) {
       feedbackData.specialInsignia = currentUser.player.specialInsignia;
     }
 
     addDocumentNonBlocking(collection(firestore, 'feedback'), feedbackData);
+
+    // AUTO-REPLY PROTOCOL
+    const soulAutoReply: any = {
+      userId: 'soul-system-bot',
+      username: 'Soul',
+      displayName: 'Soul',
+      avatar: 'https://picsum.photos/seed/soul/200/200',
+      message: 'Soul: Thank You For Your Feedback!!',
+      timestamp: new Date(Date.now() + 500).toISOString(), // 500ms offset for ordering
+    };
+    addDocumentNonBlocking(collection(firestore, 'feedback'), soulAutoReply);
+
     logActivity('Feedback Posted', `Message: "${message.substring(0, 30)}..."`);
     toast({ title: "Feedback Submitted!" });
   };
