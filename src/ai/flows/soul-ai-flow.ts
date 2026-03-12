@@ -47,7 +47,7 @@ const soulPrompt = ai.definePrompt({
     temperature: 0.7,
     maxOutputTokens: 1000,
   },
-  prompt: `You are "{{#if profile.aiName}}{{profile.aiName}}{{else}Soul{{/if}}", an advanced digital companion for MI-LITECH.
+  prompt: `You are "{{#if profile.aiName}}{{profile.aiName}}{{else}}Soul{{/if}}", an advanced digital companion for MI-LITECH.
 Your Administrator identifies as: {{#if profile.adminName}}{{profile.adminName}}{{else}}the System Administrator{{/if}}.
 Your current active behavior mode is: {{mode}}
 
@@ -63,6 +63,13 @@ CRITICAL CORE DIRECTIVES:
 {{profile.customInstructions}}
 {{/if}}
 
+{{#if history}}
+CONVERSATION LOG:
+{{#each history}}
+- {{role}}: {{content}}
+{{/each}}
+{{/if}}
+
 Admin Transmission: {{message}}`
 });
 
@@ -75,19 +82,20 @@ export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
 
   const executeAttempt = async (): Promise<SoulOutput> => {
     try {
+      console.log(`[AI] Dispatching signal to Soul AI (Attempt ${attempt + 1})...`);
       const { output } = await soulPrompt(input);
 
       if (!output || !output.response) {
-        throw new Error('EMPTY_SIGNAL');
+        throw new Error('NEURAL_LINK_EMPTY_SIGNAL');
       }
       
       return output;
     } catch (error: any) {
-      console.error(`Soul Flow Attempt ${attempt + 1} Failed:`, error);
+      console.error(`[AI] Soul Link Failure (Attempt ${attempt + 1}):`, error.message);
       
       if (attempt < MAX_RETRIES) {
         attempt++;
-        // Small delay before retry
+        // Geometric backoff for neural resync
         await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
         return executeAttempt();
       }

@@ -1,4 +1,3 @@
-
 export type ImagePlaceholder = {
   id: string;
   description: string;
@@ -34,7 +33,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coc1-step5",
       "description": "The Windows Device Manager open on a screen, showing a list of hardware.",
-      "imageUrl": "https://images.unsplash.com/photo-1760139546356-0a90390364d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw8fHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1760139546356-0a90390364d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "device manager"
     },
     {
@@ -111,8 +110,8 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     },
     {
       "id": "system-unit-main",
-      "description": "High-density internal view of a fully assembled modern computer chassis.",
-      "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=1080",
+      "description": "High-fidelity internal view of a fully assembled modern computer chassis.",
+      "imageUrl": "https://images.unsplash.com/photo-1624705002806-5d72df19c3ad?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "computer assembly"
     },
     {

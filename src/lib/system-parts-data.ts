@@ -1,9 +1,8 @@
-
 import type { SystemPart } from './types';
 
 /**
  * Technical intelligence for the System Unit Showcase.
- * Calibrated for Unsplash photo-1591488320449-011701bb6704 (Full System Assembly)
+ * Calibrated for Unsplash photo-1624705002806-5d72df19c3ad (Full System Assembly)
  */
 export const systemPartsData: SystemPart[] = [
   {
@@ -18,7 +17,7 @@ export const systemPartsData: SystemPart[] = [
       'Secure the board using screws, ensuring it does not touch the metal chassis directly.',
       'Connect the 24-pin ATX and 8-pin CPU power cables.'
     ],
-    position: { top: '50%', left: '50%', width: '30%', height: '30%' },
+    position: { top: '45%', left: '45%', width: '30%', height: '30%' },
   },
   {
     id: 'cpu',
@@ -32,7 +31,7 @@ export const systemPartsData: SystemPart[] = [
       'Mount the cooler pump or heatsink firmly over the CPU.',
       'Connect the pump/fan header to the CPU_FAN port.'
     ],
-    position: { top: '35%', left: '45%', width: '10%', height: '10%' },
+    position: { top: '35%', left: '48%', width: '10%', height: '10%' },
   },
   {
     id: 'ram',
@@ -46,7 +45,7 @@ export const systemPartsData: SystemPart[] = [
       'Align the notch on the memory stick with the slot.',
       'Press down until the clips click into place.'
     ],
-    position: { top: '35%', left: '58%', width: '6%', height: '18%' },
+    position: { top: '35%', left: '62%', width: '6%', height: '18%' },
   },
   {
     id: 'gpu',
@@ -60,7 +59,7 @@ export const systemPartsData: SystemPart[] = [
       'Secure the bracket with screws to the chassis.',
       'Connect the 6+2 pin PCIe power cables from the PSU.'
     ],
-    position: { top: '55%', left: '50%', width: '40%', height: '12%' },
+    position: { top: '58%', left: '50%', width: '40%', height: '12%' },
   },
   {
     id: 'psu',
@@ -74,7 +73,7 @@ export const systemPartsData: SystemPart[] = [
       'Route cables through the rear management holes.',
       'Plug in all required modular or fixed cables.'
     ],
-    position: { top: '88%', left: '40%', width: '50%', height: '8%' },
+    position: { top: '85%', left: '40%', width: '50%', height: '8%' },
   },
   {
     id: 'ssd',
@@ -88,7 +87,7 @@ export const systemPartsData: SystemPart[] = [
       'Slide the SSD in at a 30-degree angle.',
       'Secure with the mounting screw and replace heatsink.'
     ],
-    position: { top: '75%', left: '65%', width: '4%', height: '4%' },
+    position: { top: '72%', left: '60%', width: '4%', height: '4%' },
   },
   {
     id: 'fans',
@@ -102,7 +101,7 @@ export const systemPartsData: SystemPart[] = [
       'Plug headers into SYS_FAN or a fan controller.',
       'Ensure cables do not obstruct the fan blades.'
     ],
-    position: { top: '40%', left: '15%', width: '8%', height: '12%' },
+    position: { top: '40%', left: '20%', width: '8%', height: '12%' },
   },
   {
     id: 'cables',
@@ -116,7 +115,7 @@ export const systemPartsData: SystemPart[] = [
       'Use velcro straps to group similar cable runs.',
       'Ensure side panels close without excessive force.'
     ],
-    position: { top: '70%', left: '35%', width: '15%', height: '10%' },
+    position: { top: '70%', left: '30%', width: '15%', height: '10%' },
   },
   {
     id: 'case',
@@ -130,6 +129,6 @@ export const systemPartsData: SystemPart[] = [
       'Plan the component installation order (PSU first is common).',
       'Clean dust filters regularly to maintain airflow.'
     ],
-    position: { top: '50%', left: '5%', width: '5%', height: '80%' },
+    position: { top: '50%', left: '10%', width: '5%', height: '80%' },
   },
 ];
