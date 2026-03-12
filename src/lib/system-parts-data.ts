@@ -1,10 +1,9 @@
-
 import type { SystemPart } from './types';
 
 /**
  * Data for the System Unit Parts Viewer.
  * Each part includes an ID, name, description, installation notes,
- * and its position on the main system unit image (photo-1624705002806-5d72df19c3ad).
+ * and its position on the main system unit image.
  */
 export const systemPartsData: SystemPart[] = [
   {
@@ -71,5 +70,3 @@ export const systemPartsData: SystemPart[] = [
     position: { top: '35%', left: '15%', width: '10%', height: '15%' },
   },
 ];
-
-    
