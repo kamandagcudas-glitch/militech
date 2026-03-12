@@ -89,6 +89,18 @@
         "role"
       ]
     },
+    "AiChatMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AiChatMessage",
+      "type": "object",
+      "description": "A single message in the AI conversation history.",
+      "properties": {
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["role", "content", "timestamp"]
+    },
     "AchievementLog": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "AchievementLog",
@@ -299,6 +311,25 @@
             "$ref": "#/backend/entities/UserProfile"
           },
           "description": "Stores a user's profile data.",
+          "params": [
+            { "name": "userId", "description": "UID" }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/aiHistory/history",
+        "definition": {
+          "entityName": "AiConversation",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "messages": {
+                "type": "array",
+                "items": { "$ref": "#/backend/entities/AiChatMessage" }
+              }
+            }
+          },
+          "description": "Stores AI conversation history for the user.",
           "params": [
             { "name": "userId", "description": "UID" }
           ]

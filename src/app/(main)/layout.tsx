@@ -40,6 +40,7 @@ import {
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { GamifiedAvatar } from "@/components/ui/gamified-avatar";
 import { CreatorBadgeIcon, GamepadIcon } from "@/components/icons";
+import SoulAiAssistant from "@/components/soul-ai-assistant";
 
 export default function MainAppLayout({
   children,
@@ -192,6 +193,7 @@ export default function MainAppLayout({
           </div>
         </header>
         <main className="relative flex-1 overflow-auto p-4 md:p-6">{children}</main>
+        {isAdmin && <SoulAiAssistant />}
       </SidebarInset>
     </SidebarProvider>
   );

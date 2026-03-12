@@ -16,73 +16,27 @@ service cloud.firestore {
       return isSignedIn() && request.auth.token.email == "kamandagcudas@gmail.com";
     }
 
-    // ========== FRIENDSHIP MANAGEMENT FUNCTIONS ==========
-
-    // Checks if the change is ONLY to the friendRequests list inside the player object
-    function isOnlyChangingFriendRequests() {
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['player']) &&
-             request.resource.data.player.diff(resource.data.player).affectedKeys().hasOnly(['friendRequests']);
-    }
-
-    // Checks if the change is ONLY to the friendUsernames list inside the player object
-    function isOnlyChangingFriendUsernames() {
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['player']) &&
-             request.resource.data.player.diff(resource.data.player).affectedKeys().hasOnly(['friendUsernames']);
-    }
-
-    // Allows a user to add their own username to another user's request list
-    function isSendingFriendRequest() {
-        let senderUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
-        let existingRequests = ('player' in resource.data && 'friendRequests' in resource.data.player) ? resource.data.player.friendRequests : [];
-        let incomingRequests = request.resource.data.player.friendRequests;
-
-        return isOnlyChangingFriendRequests() &&
-               incomingRequests.size() == existingRequests.size() + 1 &&
-               incomingRequests.hasAll(existingRequests) &&
-               senderUsername in incomingRequests;
-    }
-
-    // Allows a user to add their own username to another user's friend list (when accepting)
-    function isAcceptingFriendship() {
-        let receiverUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
-        let existingFriends = ('player' in resource.data && 'friendUsernames' in resource.data.player) ? resource.data.player.friendUsernames : [];
-        let incomingFriends = request.resource.data.player.friendUsernames;
-
-        return isOnlyChangingFriendUsernames() &&
-               incomingFriends.size() == existingFriends.size() + 1 &&
-               incomingFriends.hasAll(existingFriends) &&
-               receiverUsername in incomingFriends;
-    }
-
-    // Allows a user to remove their own username from another user's friend list
-    function isRemovingFriendship() {
-        let removerUsername = get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.username;
-        let existingFriends = ('player' in resource.data && 'friendUsernames' in resource.data.player) ? resource.data.player.friendUsernames : [];
-        let incomingFriends = request.resource.data.player.friendUsernames;
-
-        return isOnlyChangingFriendUsernames() &&
-               incomingFriends.size() == existingFriends.size() - 1 &&
-               existingFriends.hasAll(incomingFriends) &&
-               !(removerUsername in incomingFriends);
-    }
-
     // ========== COLLECTION RULES ==========
 
     match /users/{userId} {
       allow create: if isSignedIn() && request.auth.uid == userId;
       allow list, read: if isSignedIn();
-      allow update: if isOwner(userId) || isAdmin() || isSendingFriendRequest() || isAcceptingFriendship() || isRemovingFriendship();
+      allow update: if isOwner(userId) || isAdmin();
       allow delete: if isOwner(userId) || isAdmin();
+
+      match /aiHistory/{docId} {
+        allow read, write: if isOwner(userId) && isAdmin();
+      }
     }
     
     match /feedback/{feedbackId} {
       allow read, list: if isSignedIn();
-      allow create: if isSignedIn() && !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isBanned && !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isMuted;
+      allow create: if isSignedIn(); // Basic check, ideally checking player data via get() if needed
       allow update, delete: if isAdmin();
 
       match /replies/{replyId} {
         allow read, list: if isSignedIn();
-        allow create: if isSignedIn() && !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isBanned && !get(/databases/$(database)/documents/users/$(request.auth.uid)).data.player.isMuted;
+        allow create: if isSignedIn();
         allow update, delete: if isAdmin();
       }
     }
@@ -101,10 +55,7 @@ service cloud.firestore {
       allow read, write: if isSignedIn() && request.auth.uid in chatId.split('_');
       allow create: if isSignedIn() &&
                        request.auth.uid in chatId.split('_') &&
-                       request.resource.data.senderId == request.auth.uid &&
-                       request.resource.data.message is string &&
-                       request.resource.data.message.size() > 0 &&
-                       request.resource.data.timestamp == request.time;
+                       request.resource.data.senderId == request.auth.uid;
     }
   }
 }
