@@ -240,5 +240,17 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     "description": "Comprehensive internal view of a fully assembled system unit.",
     "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=1080",
     "imageHint": "computer assembly"
+  },
+  {
+    "id": "system-fans",
+    "description": "Modern high-airflow computer chassis fans.",
+    "imageUrl": "https://images.unsplash.com/photo-1587202376732-817926e93a17?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "pc fans"
+  },
+  {
+    "id": "system-cables",
+    "description": "Internal organized power and data cabling.",
+    "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1080",
+    "imageHint": "pc cables"
   }
 ];
