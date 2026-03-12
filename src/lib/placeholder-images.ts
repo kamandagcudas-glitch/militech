@@ -33,13 +33,13 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   {
     "id": "coc1-step5",
     "description": "The Windows Device Manager open on a screen, showing a list of hardware.",
-    "imageUrl": "https://images.unsplash.com/photo-1760139546356-0a90390364d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw8fHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1760139546356-0a90390364d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
     "imageHint": "device manager"
   },
   {
     "id": "coc2-step1",
     "description": "A coiled bundle of blue ethernet network cables.",
-    "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MTM1MjU5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxuZXR3b3JrJTIwY2FibGVzfGVufDB8fHx8MTc3MTM1MjU5NXww&ixlib=rb-4.1.0&q=80&w=1080",
     "imageHint": "network cables"
   },
   {
