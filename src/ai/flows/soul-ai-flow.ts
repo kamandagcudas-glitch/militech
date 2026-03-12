@@ -65,11 +65,13 @@ Follow these behavior guidelines based on the mode:
 
 ${customDirectives ? `CRITICAL CORE DIRECTIVES (Follow these above all else):\n${customDirectives}` : ''}`;
 
+      const history = input.history || [];
+      
       const response = await ai.generate({
         model: 'googleai/gemini-1.5-flash',
         system: systemPrompt,
         messages: [
-          ...input.history.map(m => ({ role: m.role, content: [{ text: m.content }] })),
+          ...history.map(m => ({ role: m.role, content: [{ text: m.content }] })),
           { role: 'user', content: [{ text: input.message }] }
         ],
         config: {
@@ -92,7 +94,7 @@ ${customDirectives ? `CRITICAL CORE DIRECTIVES (Follow these above all else):\n$
 
       // Handle other errors gracefully
       return {
-        response: "SYSTEM ERROR: Neural link disrupted. Connection to logic core unstable. Please check your network or try again later."
+        response: "SYSTEM ERROR: Neural link disrupted. Connection to logic core unstable. Please check your network or try again later. [CORE_TIMEOUT]"
       };
     }
   }
