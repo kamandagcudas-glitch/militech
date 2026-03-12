@@ -2,7 +2,7 @@ import type { SystemPart } from './types';
 
 /**
  * Technical intelligence for the System Unit Showcase.
- * Calibrated for Unsplash photo-1624705002806-5d72df19c3ad (Full System Assembly)
+ * Calibrated for Unsplash photo-1591488320449-011701bb6704 (Full System Assembly)
  */
 export const systemPartsData: SystemPart[] = [
   {

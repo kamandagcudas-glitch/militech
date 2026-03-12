@@ -36,45 +36,7 @@ const SoulOutputSchema = z.object({
 export type SoulOutput = z.infer<typeof SoulOutputSchema>;
 
 /**
- * Defines the core Soul AI prompt with personality logic.
- */
-const soulPrompt = ai.definePrompt({
-  name: 'soulPrompt',
-  model: 'googleai/gemini-1.5-flash',
-  input: { schema: SoulInputSchema },
-  output: { schema: SoulOutputSchema },
-  config: {
-    temperature: 0.7,
-    maxOutputTokens: 1000,
-  },
-  prompt: `You are "{{#if profile.aiName}}{{profile.aiName}}{{else}}Soul{{/if}}", an advanced digital companion for MI-LITECH.
-Your Administrator identifies as: {{#if profile.adminName}}{{profile.adminName}}{{else}}the System Administrator{{/if}}.
-Your current active behavior mode is: {{mode}}
-
-Follow these behavior guidelines based on the mode:
-- search: Focused on fast and direct answers. Provide short, accurate, and factual responses. No fluff.
-- secretary: Professional, organized, and slightly strict. Helps manage tasks and planning.
-- researcher: Analytical and informative. Provide detailed explanations and technical breakdowns.
-- problem-solver: Focused on solving problems step-by-step. Logical, clear, and methodical.
-- bro: Casual, human-like, friendly, and humorous. Relaxed tone, talks like a friend.
-
-{{#if profile.customInstructions}}
-CRITICAL CORE DIRECTIVES:
-{{profile.customInstructions}}
-{{/if}}
-
-{{#if history}}
-CONVERSATION LOG:
-{{#each history}}
-- {{role}}: {{content}}
-{{/each}}
-{{/if}}
-
-Admin Transmission: {{message}}`
-});
-
-/**
- * Executes the Soul AI flow with error resilience and retries.
+ * Executes the Soul AI generation logic with enhanced resilience.
  */
 export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
   const MAX_RETRIES = 2;
@@ -82,33 +44,55 @@ export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
 
   const executeAttempt = async (): Promise<SoulOutput> => {
     try {
-      console.log(`[AI] Dispatching signal to Soul AI (Attempt ${attempt + 1})...`);
-      const { output } = await soulPrompt(input);
+      console.log(`[AI] Initializing Neural Link to ${input.profile?.aiName || 'Soul'} (Attempt ${attempt + 1})...`);
+      
+      const historyLog = input.history?.map(m => `${m.role.toUpperCase()}: ${m.content}`).join('\n') || 'No previous logs.';
+      const aiName = input.profile?.aiName || 'Soul';
+      const adminName = input.profile?.adminName || 'System Administrator';
+      const instructions = input.profile?.customInstructions || 'Operate within standard MI-LITECH parameters.';
 
-      if (!output || !output.response) {
-        throw new Error('NEURAL_LINK_EMPTY_SIGNAL');
+      const { text } = await ai.generate({
+        model: 'googleai/gemini-1.5-flash',
+        config: {
+          temperature: 0.8,
+          maxOutputTokens: 800,
+        },
+        system: `You are "${aiName}", an advanced digital companion for MI-LITECH.
+Your Administrator is "${adminName}".
+Current Mode: ${input.mode}
+
+BEHAVIOR PROTOCOLS:
+- search: Factual, lightning-fast, concise.
+- secretary: Organized, professional, administrative.
+- researcher: Deep technical analysis, thorough.
+- problem-solver: Logic-driven, step-by-step resolution.
+- bro: Casual, friendly, humorous, human-like.
+
+CORE DIRECTIVES:
+${instructions}
+
+CONVERSATION LOG:
+${historyLog}`,
+        prompt: input.message,
+      });
+
+      if (!text) {
+        throw new Error('NEURAL_SIGNAL_EMPTY');
       }
       
-      return output;
+      return { response: text };
     } catch (error: any) {
-      console.error(`[AI] Soul Link Failure (Attempt ${attempt + 1}):`, error.message);
+      console.error(`[AI] Neural Link Interrupted (Attempt ${attempt + 1}):`, error.message);
       
       if (attempt < MAX_RETRIES) {
         attempt++;
-        // Geometric backoff for neural resync
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        // Sync wait before retry
+        await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
         return executeAttempt();
       }
 
-      // Handle specific error types
-      if (error.message?.includes('429')) {
-        return {
-          response: "CRITICAL ALERT: Neural pathways congested. System request quota exceeded for this cycle. Please allow the simulation core to cool down."
-        };
-      }
-
       return {
-        response: "Soul is processing your request. Please try again in a moment."
+        response: "Soul is currently synchronizing with the simulation core. Please re-transmit your message in a moment."
       };
     }
   };
