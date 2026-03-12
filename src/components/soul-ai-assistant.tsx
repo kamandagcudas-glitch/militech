@@ -6,20 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, Send, X, Bot, User, Loader2, Sparkles, ShieldAlert, PlusCircle, Settings2 } from 'lucide-react';
+import { MessageSquare, Send, X, Bot, User, Loader2, Sparkles, ShieldAlert, PlusCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { chatWithSoul } from '@/ai/flows/soul-ai-flow';
 import { useDoc, useMemoFirebase, useFirestore } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface AiMessage {
   role: 'user' | 'model';
@@ -27,35 +19,27 @@ interface AiMessage {
   timestamp: string;
 }
 
-const MODES = [
-  { value: 'bro', label: 'Bro Mode', icon: '😎' },
-  { value: 'search', label: 'Search Mode', icon: '🔍' },
-  { value: 'secretary', label: 'Secretary Mode', icon: '📋' },
-  { value: 'researcher', label: 'Researcher Mode', icon: '📚' },
-  { value: 'problem-solver', label: 'Problem Solver', icon: '⚙️' },
-];
+const ADMIN_EMAIL = "kamandagcudas@gmail.com";
 
 export default function SoulAiAssistant() {
-  const { currentUser, isAdmin } = useContext(GameContext) as GameContextType;
+  const { currentUser } = useContext(GameContext) as GameContextType;
   const { toast } = useToast();
   const firestore = useFirestore();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [mode, setMode] = useState('bro');
+  const [mode, setMode] = useState('Standard');
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const isAuthorized = currentUser?.player.email === ADMIN_EMAIL;
+
   const historyDocRef = useMemoFirebase(
-    () => (currentUser && isAdmin) ? doc(firestore, 'users', currentUser.player.uid, 'aiHistory', 'history') : null,
-    [firestore, currentUser, isAdmin]
+    () => (currentUser && isAuthorized) ? doc(firestore, 'users', currentUser.player.uid, 'aiHistory', 'history') : null,
+    [firestore, currentUser, isAuthorized]
   );
 
   const { data: historyData } = useDoc<{ messages: AiMessage[], lastMode?: string }>(historyDocRef);
   const messages = historyData?.messages || [];
-
-  useEffect(() => {
-    if (historyData?.lastMode) setMode(historyData.lastMode);
-  }, [historyData?.lastMode]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -67,6 +51,15 @@ export default function SoulAiAssistant() {
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
+
+    if (!isAuthorized) {
+        toast({
+            variant: "destructive",
+            title: "Access Denied",
+            description: "Soul is reserved for the system administrator."
+        });
+        return;
+    }
 
     const userMessage: AiMessage = {
       role: 'user',
@@ -82,6 +75,8 @@ export default function SoulAiAssistant() {
       setDoc(historyDocRef, { messages: newMessages, lastMode: mode }, { merge: true });
     }
 
+    console.log("[Soul] Sending message to AI core...");
+
     try {
       const result = await chatWithSoul({
         history: newMessages.map(m => ({ role: m.role, content: m.content })),
@@ -89,9 +84,11 @@ export default function SoulAiAssistant() {
         mode: mode,
       });
 
+      console.log("[Soul] Response received from AI core.");
+
       const modelMessage: AiMessage = {
         role: 'model',
-        content: result.response || "Neural link established but no data returned.",
+        content: result.response,
         timestamp: new Date().toISOString(),
       };
 
@@ -99,9 +96,10 @@ export default function SoulAiAssistant() {
         setDoc(historyDocRef, { messages: [...newMessages, modelMessage] }, { merge: true });
       }
     } catch (error: any) {
+      console.error("[Soul] Communication error:", error);
       const errorMessage: AiMessage = {
         role: 'model',
-        content: "Soul is recalibrating its neural circuits. Please try again.",
+        content: error.message || "Soul encountered a connection error. Please try again.",
         timestamp: new Date().toISOString(),
       };
       if (historyDocRef) {
@@ -112,8 +110,7 @@ export default function SoulAiAssistant() {
     }
   };
 
-  if (!isAdmin) {
-    if (!isOpen) return null;
+  if (!isAuthorized && isOpen) {
     return (
       <div className="fixed bottom-6 right-6 z-50">
         <Card className="w-[380px] border-destructive bg-destructive/10 backdrop-blur-xl">
@@ -146,41 +143,24 @@ export default function SoulAiAssistant() {
         </Button>
       ) : (
         <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border-primary/30 animate-in slide-in-from-bottom-4 duration-300">
-          <CardHeader className="flex flex-col border-b pb-4 gap-3">
-            <div className="flex flex-row items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-1 rounded-lg">
-                  <Bot className="h-8 w-8 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg font-cyber">Soul</CardTitle>
-                  <CardDescription className="text-[10px] uppercase tracking-widest font-mono">Sim Intelligence</CardDescription>
-                </div>
+          <CardHeader className="flex flex-row items-center justify-between border-b pb-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-1 rounded-lg">
+                <Bot className="h-8 w-8 text-primary" />
               </div>
-              <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" onClick={() => { if(historyDocRef) setDoc(historyDocRef, { messages: [] }, { merge: true }); }} title="New Chat">
-                  <PlusCircle className="h-5 w-5" />
-                </Button>
-                <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-                  <X className="h-5 w-5" />
-                </Button>
+              <div>
+                <CardTitle className="text-lg font-cyber">Soul</CardTitle>
+                <CardDescription className="text-[10px] uppercase tracking-widest font-mono">Sim Intelligence</CardDescription>
               </div>
             </div>
-            <Select value={mode} onValueChange={setMode}>
-              <SelectTrigger className="h-8 text-xs bg-muted/50 border-none">
-                <SelectValue placeholder="Select Mode" />
-              </SelectTrigger>
-              <SelectContent>
-                {MODES.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    <span className="flex items-center gap-2">
-                      <span>{m.icon}</span>
-                      <span>{m.label}</span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" onClick={() => { if(historyDocRef) setDoc(historyDocRef, { messages: [] }, { merge: true }); }} title="New Chat">
+                <PlusCircle className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
           </CardHeader>
           
           <CardContent className="flex-1 overflow-hidden p-0">
@@ -189,8 +169,7 @@ export default function SoulAiAssistant() {
                 {messages.length === 0 && (
                   <div className="text-center py-12 text-muted-foreground">
                     <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                    <p className="font-cyber text-xs">Soul [{mode.toUpperCase()}] Ready.</p>
-                    <p className="text-[10px] mt-1 opacity-50">Transmitting neural link established.</p>
+                    <p className="font-cyber text-xs">Neural link established. Awaiting input.</p>
                   </div>
                 )}
                 {messages.map((msg, i) => (

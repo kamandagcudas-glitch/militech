@@ -13,19 +13,14 @@ const MessageSchema = z.object({
   content: z.string(),
 });
 
-const SoulInputSchema = z.object({
-  history: z.array(MessageSchema).optional(),
-  message: z.string(),
-  mode: z.string().optional(),
-});
-
 export async function chatWithSoul(input: { history?: {role: 'user'|'model', content: string}[], message: string, mode?: string }) {
+  console.log("[AI] Request received:", input.message);
   try {
     const { text } = await ai.generate({
       model: 'googleai/gemini-1.5-flash',
       config: {
         temperature: 0.8,
-        maxOutputTokens: 800,
+        maxOutputTokens: 1000,
       },
       system: `You are Soul, an intelligent and witty AI assistant for the MI-LITECH simulation.
 Your Administrator is "System Administrator".
@@ -46,12 +41,14 @@ Help the administrator manage the simulation core, answer technical queries, and
     });
 
     if (!text) {
+      console.error("[AI] Empty response received.");
       throw new Error('NEURAL_SIGNAL_EMPTY');
     }
     
+    console.log("[AI] Response generated successfully.");
     return { response: text };
   } catch (error: any) {
     console.error(`[AI] Core Link Interrupted:`, error.message);
-    throw new Error('CORE_TIMEOUT_V2');
+    throw new Error('Soul encountered a connection error. Please try again.');
   }
 }

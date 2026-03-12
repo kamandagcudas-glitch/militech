@@ -1,4 +1,3 @@
-
 {
   "placeholderImages": [
     {
@@ -52,7 +51,7 @@
     {
       "id": "coc2-step4",
       "description": "A modern Wi-Fi router on a desk with glowing lights.",
-      "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "wifi router"
     },
     {
@@ -70,7 +69,7 @@
     {
       "id": "coc3-step2",
       "description": "A person using a laptop to remotely connect to another computer.",
-      "imageUrl": "https://images.unsplash.com/photo-1760278041943-8b2ccec1e9e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyZW1vdGUlMjBkZXNrdG9wfGVufDB8fHx8MTc3MTMzMTg0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1760278041943-8b2ccec1e9e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyZW1vdGUlMjBkZXNrdG9wfGVufDB8fHx8MTc3MTMzMTg0OXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "remote desktop"
     },
     {
@@ -105,7 +104,7 @@
     },
     {
       "id": "system-unit-main",
-      "description": "High-density internal view of a fully assembled modern computer chassis.",
+      "description": "High-fidelity internal view of a fully assembled modern computer chassis.",
       "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "computer assembly"
     },

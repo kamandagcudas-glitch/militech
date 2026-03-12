@@ -57,7 +57,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   {
     "id": "coc2-step4",
     "description": "A modern Wi-Fi router on a desk with glowing lights.",
-    "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
     "imageHint": "wifi router"
   },
   {
@@ -110,50 +110,8 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   },
   {
     "id": "system-unit-main",
-    "description": "High-fidelity internal view of a fully assembled modern computer chassis with RGB lighting.",
+    "description": "High-fidelity internal view of a fully assembled modern computer chassis.",
     "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=1080",
     "imageHint": "computer assembly"
-  },
-  {
-    "id": "gaming-cpu",
-    "description": "Intel Core i9 processor for gaming.",
-    "imageUrl": "https://images.unsplash.com/photo-1555617981-dac3880eac6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxpbnRlbCUyMGk5fGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-    "imageHint": "intel i9"
-  },
-  {
-    "id": "gaming-gpu",
-    "description": "NVIDIA GeForce RTX 4090 graphics card.",
-    "imageUrl": "https://images.unsplash.com/photo-1716967318503-05b7064afa41?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxydHglMjA0MDkwfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-    "imageHint": "rtx 4090"
-  },
-  {
-    "id": "gaming-ram",
-    "description": "Corsair Dominator Platinum RGB RAM.",
-    "imageUrl": "https://images.unsplash.com/photo-1612099019342-10536423b077?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxnYW1pbmclMjByYW18ZW58MHx8fHwxNzcxMzg3NjA1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    "imageHint": "gaming ram"
-  },
-  {
-    "id": "gaming-storage",
-    "description": "Samsung 980 Pro NVMe SSD.",
-    "imageUrl": "https://images.unsplash.com/photo-1760623227551-2eae8f9cb675?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Z2FtaW5nJTIwc3NkfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-    "imageHint": "gaming ssd"
-  },
-  {
-    "id": "gaming-motherboard",
-    "description": "ASUS ROG gaming motherboard.",
-    "imageUrl": "https://images.unsplash.com/photo-1617181218772-1be04dfc9d70?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxnYW1pbmclMjBtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    "imageHint": "gaming motherboard"
-  },
-  {
-    "id": "gaming-psu",
-    "description": "Corsair 1000W power supply unit.",
-    "imageUrl": "https://images.unsplash.com/photo-1648615112415-acc262b6461e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnYW1pbmclMjBwc3V8ZW58MHx8fHwxNzcxMzg3NjA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    "imageHint": "gaming psu"
-  },
-  {
-    "id": "gaming-case",
-    "description": "Lian Li gaming PC case.",
-    "imageUrl": "https://images.unsplash.com/photo-1640036948080-99d48ca959b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsaWFubGklMjBjYXNlfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-    "imageHint": "lianli case"
   }
 ];
