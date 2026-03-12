@@ -10,8 +10,6 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-export const maxDuration = 60; // Increase server action timeout to 60 seconds
-
 const MessageSchema = z.object({
   role: z.enum(['user', 'model']),
   content: z.string(),
@@ -39,15 +37,15 @@ export type SoulOutput = z.infer<typeof SoulOutputSchema>;
 
 /**
  * Executes the Soul AI generation logic with enhanced resilience.
+ * This is the primary server action exported for the UI.
  */
 export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
-  try {
-    const aiName = input.profile?.aiName || 'Soul';
-    const adminName = input.profile?.adminName || 'System Administrator';
-    const instructions = input.profile?.customInstructions || 'Operate within standard MI-LITECH parameters.';
+  const aiName = input.profile?.aiName || 'Soul';
+  const adminName = input.profile?.adminName || 'System Administrator';
+  const instructions = input.profile?.customInstructions || 'Operate within standard MI-LITECH parameters.';
 
-    // Construct the neural request
-    const { text } = await ai.generate({
+  try {
+    const response = await ai.generate({
       model: 'googleai/gemini-1.5-flash',
       config: {
         temperature: 0.7,
@@ -73,11 +71,11 @@ ${instructions}`,
       prompt: input.message,
     });
 
-    if (!text) {
+    if (!response.text) {
       throw new Error('NEURAL_SIGNAL_EMPTY');
     }
     
-    return { response: text };
+    return { response: response.text };
   } catch (error: any) {
     console.error(`[AI] Neural Link Interrupted:`, error.message);
     return {
@@ -85,14 +83,3 @@ ${instructions}`,
     };
   }
 }
-
-export const soulFlow = ai.defineFlow(
-  {
-    name: 'soulFlow',
-    inputSchema: SoulInputSchema,
-    outputSchema: SoulOutputSchema,
-  },
-  async (input) => {
-    return chatWithSoul(input);
-  }
-);

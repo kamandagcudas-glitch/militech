@@ -2,7 +2,7 @@ import type { SystemPart } from './types';
 
 /**
  * Technical intelligence for the System Unit Showcase.
- * Calibrated for Unsplash photo-1591488320449-011701bb6704 (Full System Assembly)
+ * Calibrated for Unsplash photo-1587202376732-817926e93a17 (Full System Unit)
  */
 export const systemPartsData: SystemPart[] = [
   {
@@ -79,7 +79,7 @@ export const systemPartsData: SystemPart[] = [
     id: 'psu',
     name: 'Power Supply Unit (PSU)',
     definition: 'The unit that converts high-voltage AC from the wall to stable DC power for the PC.',
-    purpose: 'Distributes specific voltages (+12V, +5V, +3.3V) to every component in the simulation.',
+    purpose: 'Distributes specific voltages (+12V, +5V, +33V) to every component in the simulation.',
     howItWorks: 'A transformer and regulator system converts external energy into the filtered, stable rails required by silicon components.',
     installation: [
       'Slide the PSU into the bottom basement shroud of the case.',

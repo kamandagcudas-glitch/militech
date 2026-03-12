@@ -33,7 +33,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   {
     "id": "coc1-step5",
     "description": "The Windows Device Manager open on a screen, showing a list of hardware.",
-    "imageUrl": "https://images.unsplash.com/photo-1760139546356-0a90390364d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1760139546356-0a90390364d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw8fHxkZXZpY2UlMjBtYW5hZ2VyfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
     "imageHint": "device manager"
   },
   {
@@ -57,7 +57,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   {
     "id": "coc2-step4",
     "description": "A modern Wi-Fi router on a desk with glowing lights.",
-    "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1606420187127-dae7c868fa7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aWZpJTIwcm91dGVyfGVufDB8fHx8MTc3MTM2NzcwMnww&ixlib=rb-4.1.0&q=80&w=1080",
     "imageHint": "wifi router"
   },
   {
@@ -111,7 +111,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   {
     "id": "system-unit-main",
     "description": "High-fidelity internal view of a fully assembled modern computer chassis.",
-    "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1587202376732-817926e93a17?auto=format&fit=crop&q=80&w=1080",
     "imageHint": "computer assembly"
   },
   {
@@ -351,7 +351,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
   {
     "id": "coding-gpu",
     "description": "NVIDIA GeForce RTX 3050 graphics card.",
-    "imageUrl": "https://images.unsplash.com/photo-1542292558-c59f6964ccbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxydHglMjAzMDUwfGVufDB8fHx8MTc3MTM4NzYwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+    "imageUrl": "https://images.unsplash.com/photo-1542292558-c59f6964ccbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxydHglMjAzMDUwfGVufDB8fHx8MTc3MTM4NzYwNXww&ixlib=rb-4.1.0&q=80&w=1080",
     "imageHint": "rtx 3050"
   },
   {
