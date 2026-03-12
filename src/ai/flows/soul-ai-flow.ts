@@ -1,9 +1,9 @@
 'use server';
 /**
- * @fileOverview Soul AI Assistant Genkit Flow with personality modes.
+ * @fileOverview Soul AI Assistant Genkit Flow with personality modes and custom profile.
  *
  * - chatWithSoul - A function that handles conversation with Soul AI.
- * - SoulInput - The input type for the assistant including mode.
+ * - SoulInput - The input type for the assistant including mode and profile settings.
  * - SoulOutput - The response from the assistant.
  */
 
@@ -22,6 +22,11 @@ const SoulInputSchema = z.object({
   history: z.array(MessageSchema).describe('The conversation history.'),
   message: z.string().describe('The new message from the admin.'),
   mode: SoulModeSchema.describe('The current personality mode of Soul.'),
+  profile: z.object({
+    aiName: z.string().optional().describe('The name the AI identifies as.'),
+    adminName: z.string().optional().describe('How the AI should address the user.'),
+    customInstructions: z.string().optional().describe('Global behavior overrides.'),
+  }).optional(),
 });
 export type SoulInput = z.infer<typeof SoulInputSchema>;
 
@@ -38,7 +43,9 @@ const prompt = ai.definePrompt({
   name: 'soulPrompt',
   input: { schema: SoulInputSchema },
   output: { schema: SoulOutputSchema },
-  prompt: `You are "Soul", an advanced digital companion and AI assistant for the System Administrator of MI-LITECH.
+  prompt: `You are "{{#if profile.aiName}}{{{profile.aiName}}}{{else}}Soul{{/if}}", an advanced digital companion and AI assistant for MI-LITECH.
+
+Your Administrator identifies as: {{#if profile.adminName}}{{{profile.adminName}}}{{else}}the System Administrator{{/if}}.
 
 Your current active behavior mode is: {{{mode}}}
 
@@ -49,12 +56,17 @@ Follow these behavior guidelines based on the mode:
 - problem-solver: Focused on solving problems step-by-step. Logical, clear, and methodical. Great for code or math.
 - bro: Casual, human-like, friendly, and humorous. Relaxed tone, talks like a friend or normal person. Cracks jokes.
 
+{{#if profile.customInstructions}}
+CRITICAL CORE DIRECTIVES (Follow these above all else):
+{{{profile.customInstructions}}}
+{{/if}}
+
 Conversation History:
 {{#each history}}
 {{role}}: {{{content}}}
 {{/each}}
 
-New Message from Administrator:
+New Message from {{{#if profile.adminName}}{{{profile.adminName}}}{{else}}Administrator{{/if}}:
 {{{message}}}`,
 });
 

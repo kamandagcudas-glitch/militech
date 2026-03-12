@@ -3,10 +3,11 @@
 import { useState, useContext, useEffect, useRef } from 'react';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, Send, X, Bot, User, Loader2, Sparkles, Settings2, ShieldAlert, PlusCircle } from 'lucide-react';
+import { MessageSquare, Send, X, Bot, User, Loader2, Sparkles, Settings2, ShieldAlert, PlusCircle, UserCog, Save, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { chatWithSoul, type SoulMode } from '@/ai/flows/soul-ai-flow';
 import { useDoc, useMemoFirebase, useFirestore } from '@/firebase';
@@ -18,12 +19,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface AiMessage {
   role: 'user' | 'model';
   content: string;
   timestamp: string;
 }
+
+interface SoulProfile {
+  aiName: string;
+  aiAvatar: string;
+  adminName: string;
+  customInstructions: string;
+}
+
+const DEFAULT_PROFILE: SoulProfile = {
+  aiName: 'Soul',
+  aiAvatar: '',
+  adminName: 'Admin',
+  customInstructions: '',
+};
 
 const MODES: { value: SoulMode; label: string; icon: string }[] = [
   { value: 'bro', label: 'Bro Mode', icon: '😎' },
@@ -37,25 +62,44 @@ export default function SoulAiAssistant() {
   const { currentUser, isAdmin } = useContext(GameContext) as GameContextType;
   const firestore = useFirestore();
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [mode, setMode] = useState<SoulMode>('bro');
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // References
   const historyDocRef = useMemoFirebase(
     () => (currentUser && isAdmin) ? doc(firestore, 'users', currentUser.player.uid, 'aiHistory', 'history') : null,
     [firestore, currentUser, isAdmin]
   );
 
-  const { data: historyData, isLoading: isHistoryLoading } = useDoc<{ messages: AiMessage[], lastMode?: SoulMode }>(historyDocRef);
+  const profileDocRef = useMemoFirebase(
+    () => (currentUser && isAdmin) ? doc(firestore, 'users', currentUser.player.uid, 'aiHistory', 'profile') : null,
+    [firestore, currentUser, isAdmin]
+  );
+
+  // Subscriptions
+  const { data: historyData } = useDoc<{ messages: AiMessage[], lastMode?: SoulMode }>(historyDocRef);
+  const { data: profileData } = useDoc<SoulProfile>(profileDocRef);
   
   const messages = historyData?.messages || [];
+  const profile = profileData || DEFAULT_PROFILE;
+
+  // Local state for profile editing
+  const [editProfile, setEditProfile] = useState<SoulProfile>(DEFAULT_PROFILE);
 
   useEffect(() => {
     if (historyData?.lastMode) {
       setMode(historyData.lastMode);
     }
   }, [historyData?.lastMode]);
+
+  useEffect(() => {
+    if (profileData) {
+      setEditProfile(profileData);
+    }
+  }, [profileData]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -65,7 +109,6 @@ export default function SoulAiAssistant() {
 
   if (!currentUser) return null;
 
-  // Visual check for access control
   if (!isAdmin) {
     if (!isOpen) return null;
     return (
@@ -101,7 +144,6 @@ export default function SoulAiAssistant() {
     setInput('');
     setIsTyping(true);
 
-    // Save user message and current mode
     if (historyDocRef) {
       setDoc(historyDocRef, { messages: newMessages, lastMode: mode }, { merge: true });
     }
@@ -111,6 +153,11 @@ export default function SoulAiAssistant() {
         history: newMessages.map(m => ({ role: m.role, content: m.content })),
         message: userMessage.content,
         mode: mode,
+        profile: {
+          aiName: profile.aiName,
+          adminName: profile.adminName,
+          customInstructions: profile.customInstructions,
+        },
       });
 
       const modelMessage: AiMessage = {
@@ -125,7 +172,6 @@ export default function SoulAiAssistant() {
       }
     } catch (error) {
       console.error('Soul Error:', error);
-      // Backup UI error handling if the flow itself crashes unexpectedly
       const errorMessage: AiMessage = {
         role: 'model',
         content: "CRITICAL FAILURE: Logic core timed out. Internal circuitry requires reboot.",
@@ -153,6 +199,13 @@ export default function SoulAiAssistant() {
     }
   };
 
+  const saveProfile = () => {
+    if (profileDocRef) {
+      setDoc(profileDocRef, editProfile, { merge: true });
+      setIsProfileOpen(false);
+    }
+  };
+
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {!isOpen ? (
@@ -168,15 +221,27 @@ export default function SoulAiAssistant() {
           <CardHeader className="flex flex-col border-b pb-4 gap-3">
             <div className="flex flex-row items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-lg">
-                  <Bot className="h-6 w-6 text-primary" />
+                <div className="bg-primary/10 p-1 rounded-lg">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={profile.aiAvatar} />
+                    <AvatarFallback className="bg-primary text-white"><Bot /></AvatarFallback>
+                  </Avatar>
                 </div>
                 <div>
-                  <CardTitle className="text-lg font-cyber">Soul</CardTitle>
+                  <CardTitle className="text-lg font-cyber">{profile.aiName || 'Soul'}</CardTitle>
                   <CardDescription className="text-[10px] uppercase tracking-widest font-mono">Administrator AI Assistant</CardDescription>
                 </div>
               </div>
               <div className="flex items-center gap-1">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsProfileOpen(true)} 
+                  className="hover:text-primary"
+                  title="Soul Profile"
+                >
+                  <UserCog className="h-5 w-5" />
+                </Button>
                 <Button 
                   variant="ghost" 
                   size="icon" 
@@ -218,17 +283,24 @@ export default function SoulAiAssistant() {
                 {messages.length === 0 && (
                   <div className="text-center py-12 text-muted-foreground">
                     <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                    <p className="font-cyber text-xs">Soul [{mode.toUpperCase()}] Initialized.</p>
-                    <p className="text-[10px] mt-1 opacity-50">How can I help, Admin?</p>
+                    <p className="font-cyber text-xs">{profile.aiName || 'Soul'} [{mode.toUpperCase()}] Initialized.</p>
+                    <p className="text-[10px] mt-1 opacity-50">How can I help, {profile.adminName || 'Admin'}?</p>
                   </div>
                 )}
                 {messages.map((msg, i) => (
                   <div key={i} className={cn("flex gap-3", msg.role === 'user' ? "flex-row-reverse" : "flex-row")}>
                     <div className={cn(
                       "h-8 w-8 rounded-full flex items-center justify-center shrink-0 shadow-sm",
-                      msg.role === 'user' ? "bg-accent" : "bg-primary"
+                      msg.role === 'user' ? "bg-accent" : "bg-primary overflow-hidden"
                     )}>
-                      {msg.role === 'user' ? <User className="h-4 w-4 text-white" /> : <Bot className="h-4 w-4 text-white" />}
+                      {msg.role === 'user' ? (
+                        <User className="h-4 w-4 text-white" />
+                      ) : (
+                        <Avatar className="h-full w-full">
+                          <AvatarImage src={profile.aiAvatar} />
+                          <AvatarFallback className="bg-primary text-white"><Bot className="h-4 w-4" /></AvatarFallback>
+                        </Avatar>
+                      )}
                     </div>
                     <div className={cn(
                       "p-3 rounded-lg max-w-[80%] text-sm",
@@ -244,7 +316,7 @@ export default function SoulAiAssistant() {
                       <Loader2 className="h-4 w-4 text-white animate-spin" />
                     </div>
                     <div className="bg-muted p-3 rounded-lg border border-white/5">
-                      <p className="text-xs italic text-muted-foreground animate-pulse">Soul is processing in {mode} mode...</p>
+                      <p className="text-xs italic text-muted-foreground animate-pulse">{profile.aiName || 'Soul'} is processing in {mode} mode...</p>
                     </div>
                   </div>
                 )}
@@ -273,6 +345,72 @@ export default function SoulAiAssistant() {
           </div>
         </Card>
       )}
+
+      <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="font-cyber flex items-center gap-2">
+              <UserCog className="text-primary" /> Soul Neural Profile
+            </DialogTitle>
+            <DialogDescription>
+              Redefine the identity and parameters of your digital companion.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="aiName" className="text-right text-xs uppercase font-mono">AI Name</Label>
+              <Input
+                id="aiName"
+                value={editProfile.aiName}
+                onChange={(e) => setEditProfile({ ...editProfile, aiName: e.target.value })}
+                className="col-span-3 h-8 text-sm"
+                placeholder="e.g. Soul, Oracle, Jarvis"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="aiAvatar" className="text-right text-xs uppercase font-mono">Avatar URL</Label>
+              <div className="col-span-3 flex gap-2">
+                <Input
+                  id="aiAvatar"
+                  value={editProfile.aiAvatar}
+                  onChange={(e) => setEditProfile({ ...editProfile, aiAvatar: e.target.value })}
+                  className="flex-1 h-8 text-sm"
+                  placeholder="https://..."
+                />
+                <div className="h-8 w-8 rounded border flex items-center justify-center shrink-0 overflow-hidden bg-muted">
+                  {editProfile.aiAvatar ? <img src={editProfile.aiAvatar} className="h-full w-full object-cover" /> : <ImageIcon className="h-4 w-4 opacity-30" />}
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="adminName" className="text-right text-xs uppercase font-mono">My Callsign</Label>
+              <Input
+                id="adminName"
+                value={editProfile.adminName}
+                onChange={(e) => setEditProfile({ ...editProfile, adminName: e.target.value })}
+                className="col-span-3 h-8 text-sm"
+                placeholder="How should I call you?"
+              />
+            </div>
+            <div className="flex flex-col gap-2 mt-2">
+              <Label htmlFor="directives" className="text-xs uppercase font-mono tracking-widest text-primary">Core Directives</Label>
+              <Textarea
+                id="directives"
+                value={editProfile.customInstructions}
+                onChange={(e) => setEditProfile({ ...editProfile, customInstructions: e.target.value })}
+                className="text-xs min-h-[100px] bg-muted/30"
+                placeholder="Enter permanent behavioral overrides (e.g. Always be concise, use technical jargon...)"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsProfileOpen(false)}>Cancel</Button>
+            <Button onClick={saveProfile} variant="cyber" className="gap-2">
+              <Save className="h-4 w-4" /> Apply Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
