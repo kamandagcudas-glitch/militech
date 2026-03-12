@@ -82,7 +82,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coc3-step3",
       "description": "Firewall rules and network security configuration.",
-      "imageUrl": "https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmaXJld2FsbCUyMHJ1bGVzfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1596625043546-89f548271e24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmaXJld2FsbCUyMHJ1bGVzfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "firewall rules"
     },
     {
@@ -111,9 +111,9 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     },
     {
       "id": "system-unit-main",
-      "description": "High-fidelity internal view of a modern computer chassis.",
-      "imageUrl": "https://images.unsplash.com/photo-1760708825878-9e7ecf31565a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvcGVuJTIwY29tcHV0ZXIlMjBjYXNlfGVufDB8fHx8MTc3MTM4NzYwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "open computer case"
+      "description": "A high-fidelity internal view of a modern computer chassis with all components installed and RGB active.",
+      "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageHint": "computer build"
     },
     {
       "id": "gaming-cpu",
@@ -226,7 +226,7 @@ export const PlaceHolderImages: ImagePlaceholder[] = [
     {
       "id": "coding-motherboard",
       "description": "Compact mATX motherboard for a tidy development setup.",
-      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtc2klMjBtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtc2klMjBtb3RoZXJib2FyZHxlbnwwfHx8fDE3NzEzODc2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "matx motherboard"
     },
     {
