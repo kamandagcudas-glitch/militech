@@ -1,9 +1,8 @@
-
 import type { SystemPart } from './types';
 
 /**
  * Technical intelligence for the System Unit Showcase.
- * Calibrated for Unsplash photo-1591488320449-011701bb6704 (Full Internal View)
+ * Calibrated for Unsplash photo-1587202376732-817926e93a17 (Full Internal Assembly)
  */
 export const systemPartsData: SystemPart[] = [
   {
