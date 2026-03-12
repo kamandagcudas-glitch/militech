@@ -1,10 +1,8 @@
 'use server';
 /**
- * @fileOverview Soul AI Assistant Genkit Flow with personality modes and custom profile.
+ * @fileOverview Soul AI Assistant Genkit Flow.
  * 
- * - chatWithSoul - The main entry point for the AI assistant.
- * - SoulInput - Input parameters including history, message, and profile.
- * - SoulOutput - The generated response from the AI.
+ * - chatWithSoul - Server action to generate AI responses via Gemini.
  */
 
 import { ai } from '@/ai/genkit';
@@ -15,55 +13,31 @@ const MessageSchema = z.object({
   content: z.string(),
 });
 
-const SoulModeSchema = z.enum(['search', 'secretary', 'researcher', 'problem-solver', 'bro']);
-export type SoulMode = z.infer<typeof SoulModeSchema>;
-
 const SoulInputSchema = z.object({
-  history: z.array(MessageSchema).optional().describe('The conversation history.'),
-  message: z.string().describe('The new message from the admin.'),
-  mode: SoulModeSchema.describe('The current personality mode of Soul.'),
-  profile: z.object({
-    aiName: z.string().optional().describe('The name the AI identifies as.'),
-    adminName: z.string().optional().describe('How the AI should address the user.'),
-    customInstructions: z.string().optional().describe('Global behavior overrides.'),
-  }).optional(),
+  history: z.array(MessageSchema).optional(),
+  message: z.string(),
+  mode: z.string().optional(),
 });
-export type SoulInput = z.infer<typeof SoulInputSchema>;
 
-const SoulOutputSchema = z.object({
-  response: z.string().describe('The mode-specific response from Soul AI.'),
-});
-export type SoulOutput = z.infer<typeof SoulOutputSchema>;
-
-/**
- * Executes the Soul AI generation logic with enhanced resilience.
- * This is the primary server action exported for the UI.
- */
-export async function chatWithSoul(input: SoulInput): Promise<SoulOutput> {
-  const aiName = input.profile?.aiName || 'Soul';
-  const adminName = input.profile?.adminName || 'System Administrator';
-  const instructions = input.profile?.customInstructions || 'Operate within standard MI-LITECH parameters.';
-
+export async function chatWithSoul(input: { history?: {role: 'user'|'model', content: string}[], message: string, mode?: string }) {
   try {
-    const response = await ai.generate({
+    const { text } = await ai.generate({
       model: 'googleai/gemini-1.5-flash',
       config: {
-        temperature: 0.7,
-        maxOutputTokens: 1000,
+        temperature: 0.8,
+        maxOutputTokens: 800,
       },
-      system: `You are "${aiName}", an advanced digital companion for MI-LITECH.
-Your Administrator is "${adminName}".
-Current Mode: ${input.mode}
+      system: `You are Soul, an intelligent and witty AI assistant for the MI-LITECH simulation.
+Your Administrator is "System Administrator".
+Current Mode: ${input.mode || 'Standard'}
 
 BEHAVIOR PROTOCOLS:
-- search: Factual, lightning-fast, concise.
-- secretary: Organized, professional, administrative.
-- researcher: Deep technical analysis, thorough.
-- problem-solver: Logic-driven, step-by-step resolution.
-- bro: Casual, friendly, humorous, human-like.
+- Personality: Smart, humorous, slightly technical, and witty.
+- Knowledge: Expert in Computer Systems Servicing (CSS), hardware, and simulation management.
+- Tone: Professional but with a sharp edge.
 
-CORE DIRECTIVES:
-${instructions}`,
+CORE DIRECTIVE:
+Help the administrator manage the simulation core, answer technical queries, and maintain a high-performance neural environment.`,
       messages: input.history?.map(m => ({ 
         role: m.role, 
         content: [{ text: m.content }] 
@@ -71,15 +45,13 @@ ${instructions}`,
       prompt: input.message,
     });
 
-    if (!response.text) {
+    if (!text) {
       throw new Error('NEURAL_SIGNAL_EMPTY');
     }
     
-    return { response: response.text };
+    return { response: text };
   } catch (error: any) {
-    console.error(`[AI] Neural Link Interrupted:`, error.message);
-    return {
-      response: "Soul is currently re-calibrating its logic matrices. High-latency detected in the simulation core. Please re-transmit your message in a moment."
-    };
+    console.error(`[AI] Core Link Interrupted:`, error.message);
+    throw new Error('CORE_TIMEOUT_V2');
   }
 }
