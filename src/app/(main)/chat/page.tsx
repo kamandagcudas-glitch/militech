@@ -12,9 +12,20 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
-import { Send, MessageCircle, Loader2 } from 'lucide-react';
+import { Send, MessageCircle, Loader2, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 function FriendList({ onSelectFriend }: { onSelectFriend: (friend: UserAccount) => void; }) {
     const { currentUser, accounts } = useContext(GameContext) as GameContextType;
@@ -57,7 +68,7 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (friend: UserAccount) 
 }
 
 function ChatWindow({ friend }: { friend: UserAccount; }) {
-    const { currentUser, sendMessage } = useContext(GameContext) as GameContextType;
+    const { currentUser, sendMessage, clearChatHistory } = useContext(GameContext) as GameContextType;
     const firestore = useFirestore();
     const [message, setMessage] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -90,12 +101,35 @@ function ChatWindow({ friend }: { friend: UserAccount; }) {
 
     return (
         <Card className="flex flex-col h-full">
-            <CardHeader className="flex-row items-center gap-4 border-b">
-                <GamifiedAvatar account={friend} />
-                <div>
-                    <h2 className="text-xl font-bold">{friend.player.displayName}</h2>
-                    <p className="text-sm text-muted-foreground">@{friend.player.username}</p>
+            <CardHeader className="flex-row items-center justify-between gap-4 border-b">
+                <div className="flex items-center gap-4">
+                    <GamifiedAvatar account={friend} />
+                    <div>
+                        <h2 className="text-xl font-bold">{friend.player.displayName}</h2>
+                        <p className="text-sm text-muted-foreground">@{friend.player.username}</p>
+                    </div>
                 </div>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                            <Trash2 className="h-5 w-5" />
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Purge Neural Link?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This will permanently delete all messages in this simulation thread with {friend.player.displayName}. This action cannot be reversed.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Abort</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => clearChatHistory(friend.player.uid)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                Confirm Purge
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </CardHeader>
             <CardContent className="flex-1 p-0">
                 <ScrollArea className="h-full p-4">
@@ -177,4 +211,3 @@ export default function ChatPage() {
         </div>
     )
 }
-

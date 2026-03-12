@@ -54,6 +54,8 @@ import {
   signInWithPopup,
 } from 'firebase/auth';
 import { updateDocumentNonBlocking, addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 
 const CREATOR_USERNAME = "Saint Silver Andre O Cudas";
@@ -100,6 +102,7 @@ export interface GameContextType {
   unmuteUser: (username: string) => void;
   setCustomTitle: (username: string, title: string) => void;
   sendMessage: (friendUid: string, message: string) => void;
+  clearChatHistory: (friendUid: string) => Promise<void>;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);
@@ -918,6 +921,37 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const clearChatHistory = async (friendUid: string) => {
+    if (!currentUser || !friendUid) return;
+
+    const uids = [currentUser.player.uid, friendUid].sort();
+    const chatId = uids.join('_');
+    const messagesCol = collection(firestore, 'chats', chatId, 'messages');
+
+    try {
+      const snapshot = await getDocs(messagesCol);
+      if (snapshot.empty) return;
+
+      const batch = writeBatch(firestore);
+      snapshot.docs.forEach((d) => {
+        batch.delete(d.ref);
+      });
+
+      batch.commit().catch(async (error) => {
+        errorEmitter.emit('permission-error', new FirestorePermissionError({
+          path: messagesCol.path,
+          operation: 'delete'
+        }));
+      });
+
+      toast({ title: "Neural Link Purged", description: "All communication logs for this session have been deleted." });
+      logActivity('Chat Cleared', `Wiped history with UID: ${friendUid}`);
+    } catch (error) {
+      console.error("Clear Chat Error:", error);
+      toast({ variant: "destructive", title: "Action Failed", description: "Could not clear history." });
+    }
+  };
+
   return (
     <GameContext.Provider value={{
       currentUser,
@@ -927,7 +961,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       loginHistory: loginHistory || [],
       activityLogs: activityLogs || [],
       feedbackPosts: feedbackPosts || [],
-      logActivity, register, login, signInWithGoogle, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle, sendMessage
+      logActivity, register, login, signInWithGoogle, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle, sendMessage, clearChatHistory
     }}>
       {children}
     </GameContext.Provider>
