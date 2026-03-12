@@ -21,7 +21,11 @@ const getBorderData = (player: Player, progress: UserAccount['progress']): { typ
         return { type: 'custom-no', name: 'Special Agent', requirement: 'Unique identity clearance.' };
     }
 
-    if (player.email?.toLowerCase() === 'jaynardandaya2233@gmail.com') {
+    // Special Agent Jay (Check email or username)
+    const isJay = player.email?.toLowerCase().includes('jaynardandaya2233') || 
+                  player.username?.toLowerCase() === 'jaynardandaya2233';
+                  
+    if (isJay) {
         return { type: 'custom-jay', name: 'Special Agent Jay', requirement: 'Unique identity clearance.' };
     }
 
@@ -68,7 +72,7 @@ export function GamifiedAvatar({ account, className, imageClassName }: { account
             <div className="avatar-border"></div>
             <Avatar className={cn('relative z-10 overflow-hidden bg-muted flex items-center justify-center', imageClassName)}>
                 <AvatarImage src={player.avatar} alt={player.username} className="object-cover w-full h-full" />
-                <AvatarFallback className="bg-muted text-foreground flex items-center justify-center w-full h-full">
+                <AvatarFallback className="bg-muted text-foreground flex items-center justify-center w-full h-full uppercase">
                     {player.displayName.charAt(0)}
                 </AvatarFallback>
             </Avatar>
