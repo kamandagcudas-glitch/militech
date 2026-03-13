@@ -603,66 +603,82 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   
     const receiverDocRef = doc(firestore, 'users', receiverAccount.player.uid);
+    const newFriendRequests = Array.from(new Set([...(receiverAccount.player.friendRequests || []), currentUser.player.username]));
   
-    const newFriendRequests = [...(receiverAccount.player.friendRequests || []), currentUser.player.username];
-  
-    try {
-      await updateDoc(receiverDocRef, {
-        'player.friendRequests': newFriendRequests
-      });
+    updateDoc(receiverDocRef, {
+      'player.friendRequests': newFriendRequests
+    }).then(() => {
       toast({
         title: 'Friend Request Sent!',
         description: `Your friend request has been sent to ${receiverAccount.player.displayName}.`
       });
       logActivity('Friend Request Sent', `To: ${receiverUsername}`);
-    } catch (error: any) {
-      console.error('Error sending friend request:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Could not send friend request. This might be a permissions issue.',
-      });
-    }
+    }).catch(async (error: any) => {
+      errorEmitter.emit('permission-error', new FirestorePermissionError({
+        path: receiverDocRef.path,
+        operation: 'update',
+        requestResourceData: { friendRequests: newFriendRequests }
+      }));
+    });
   };
 
   const acceptFriendRequest = async (senderUsername: string) => {
     if (!currentUser || !userDocRef || !accounts) return;
     
     const sender = accounts.find(acc => acc.player.username === senderUsername);
-    if (!sender) return;
+    if (!sender) {
+      toast({ variant: 'destructive', title: 'Sender profile not found.' });
+      return;
+    }
 
     const batch = writeBatch(firestore);
 
-    const newCurrentUserFriends = [...currentUser.player.friendUsernames, senderUsername];
-    const newCurrentUserRequests = currentUser.player.friendRequests.filter(req => req !== senderUsername);
+    const newCurrentUserFriends = Array.from(new Set([...(currentUser.player.friendUsernames || []), senderUsername]));
+    const newCurrentUserRequests = (currentUser.player.friendRequests || []).filter(req => req !== senderUsername);
+    
     batch.update(userDocRef, { 
       'player.friendUsernames': newCurrentUserFriends,
       'player.friendRequests': newCurrentUserRequests
     });
 
     const senderDocRef = doc(firestore, 'users', sender.player.uid);
-    const newSenderFriends = [...sender.player.friendUsernames, currentUser.player.username];
+    const newSenderFriends = Array.from(new Set([...(sender.player.friendUsernames || []), currentUser.player.username]));
+    
     batch.update(senderDocRef, {
         'player.friendUsernames': newSenderFriends
     });
 
-    await batch.commit();
-
-    toast({
-      title: 'Friend Added!',
-      description: `You and ${sender.player.displayName} are now friends.`,
+    batch.commit().then(() => {
+      toast({
+        title: 'Friend Added!',
+        description: `You and ${sender.player.displayName} are now friends.`,
+      });
+      logActivity('Friend Request Accepted', `From: ${senderUsername}`);
+    }).catch(async (error: any) => {
+      errorEmitter.emit('permission-error', new FirestorePermissionError({
+        path: senderDocRef.path,
+        operation: 'update',
+        requestResourceData: { friendUsernames: newSenderFriends }
+      }));
     });
   };
 
   const rejectFriendRequest = async (senderUsername: string) => {
     if (!currentUser || !userDocRef) return;
-    const newRequests = currentUser.player.friendRequests.filter(req => req !== senderUsername);
-    updateUserDoc({ 'player.friendRequests': newRequests });
-
-    const sender = accounts?.find(acc => acc.player.username === senderUsername);
-    toast({
-      title: 'Request Rejected',
-      description: `You have rejected the friend request from ${sender?.player.displayName || senderUsername}.`,
+    const newRequests = (currentUser.player.friendRequests || []).filter(req => req !== senderUsername);
+    
+    updateDoc(userDocRef, { 'player.friendRequests': newRequests }).then(() => {
+      const sender = accounts?.find(acc => acc.player.username === senderUsername);
+      toast({
+        title: 'Request Rejected',
+        description: `You have rejected the friend request from ${sender?.player.displayName || senderUsername}.`,
+      });
+    }).catch(async (error: any) => {
+       errorEmitter.emit('permission-error', new FirestorePermissionError({
+        path: userDocRef.path,
+        operation: 'update',
+        requestResourceData: { friendRequests: newRequests }
+      }));
     });
   };
 
@@ -670,23 +686,29 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (!currentUser || !userDocRef || !accounts) return;
 
     const friendAccount = accounts.find(acc => acc.player.username === friendUsername);
+    if (!friendAccount) return;
 
     const batch = writeBatch(firestore);
 
-    const newCurrentUserFriends = currentUser.player.friendUsernames.filter(f => f !== friendUsername);
+    const newCurrentUserFriends = (currentUser.player.friendUsernames || []).filter(f => f !== friendUsername);
     batch.update(userDocRef, { 'player.friendUsernames': newCurrentUserFriends });
 
-    if (friendAccount) {
-        const friendDocRef = doc(firestore, 'users', friendAccount.player.uid);
-        const newFriendFriends = friendAccount.player.friendUsernames.filter(f => f !== currentUser.player.username);
-        batch.update(friendDocRef, { 'player.friendUsernames': newFriendFriends });
-    }
+    const friendDocRef = doc(firestore, 'users', friendAccount.player.uid);
+    const newFriendFriends = (friendAccount.player.friendUsernames || []).filter(f => f !== currentUser.player.username);
+    batch.update(friendDocRef, { 'player.friendUsernames': newFriendFriends });
 
-    await batch.commit();
-
-    toast({
-      title: 'Friend Removed',
-      description: `${friendUsername} has been removed from your friends list.`,
+    batch.commit().then(() => {
+      toast({
+        title: 'Friend Removed',
+        description: `${friendUsername} has been removed from your friends list.`,
+      });
+      logActivity('Friend Removed', `Callsign: ${friendUsername}`);
+    }).catch(async (error: any) => {
+      errorEmitter.emit('permission-error', new FirestorePermissionError({
+        path: friendDocRef.path,
+        operation: 'update',
+        requestResourceData: { friendUsernames: newFriendFriends }
+      }));
     });
   };
 

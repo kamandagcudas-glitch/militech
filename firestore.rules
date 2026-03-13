@@ -21,7 +21,14 @@ service cloud.firestore {
     match /users/{userId} {
       allow create: if isSignedIn() && request.auth.uid == userId;
       allow list, read: if isSignedIn();
-      allow update: if isOwner(userId) || isAdmin();
+      
+      // Allow owner/admin full update.
+      // Allow others to update only friendRequests or friendUsernames for social features.
+      allow update: if isOwner(userId) || isAdmin() || 
+                    (isSignedIn() && 
+                     request.resource.data.diff(resource.data).affectedKeys().hasOnly(['player']) &&
+                     request.resource.data.player.diff(resource.data.player).affectedKeys().hasOnly(['friendRequests', 'friendUsernames']));
+      
       allow delete: if isOwner(userId) || isAdmin();
 
       match /aiHistory/{docId} {
