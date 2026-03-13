@@ -64,7 +64,7 @@
     {
       "id": "coc3-step1",
       "description": "Comprehensive view of a server rack in a data center.",
-      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010ca7382f?auto=format&fit=crop&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1584169417032-d34e8d805e8b?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "server rack"
     },
     {
@@ -76,7 +76,7 @@
     {
       "id": "coc3-step3",
       "description": "Security shield visualization for firewall configuration.",
-      "imageUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1596625043546-89f548271e24?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "firewall security"
     },
     {
