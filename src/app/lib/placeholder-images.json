@@ -3,9 +3,9 @@
   "placeholderImages": [
     {
       "id": "coc1-step1",
-      "description": "High-fidelity shot of a CPU installation on a motherboard.",
+      "description": "High-fidelity shot of computer component assembly.",
       "imageUrl": "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "cpu installation"
+      "imageHint": "pc assembly"
     },
     {
       "id": "coc1-step2",
@@ -21,19 +21,19 @@
     },
     {
       "id": "coc1-step4",
-      "description": "Close-up of internal computer circuitry during OS initialization.",
+      "description": "Operating system installation interface on a computer monitor.",
       "imageUrl": "https://images.unsplash.com/photo-1587202376732-817926e93a17?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "pc circuitry"
+      "imageHint": "os install"
     },
     {
       "id": "coc1-step5",
-      "description": "Professional technical view of computer hardware traces.",
+      "description": "Professional view of the Windows Device Manager interface.",
       "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "hardware traces"
+      "imageHint": "device manager"
     },
     {
       "id": "coc2-step1",
-      "description": "Bundle of high-quality blue Ethernet cables.",
+      "description": "A bundle of high-quality blue Ethernet cables.",
       "imageUrl": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "ethernet cables"
     },
@@ -47,7 +47,7 @@
       "id": "coc2-step3",
       "description": "Internal server rack components for network configuration.",
       "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010ca7382f?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "server components"
+      "imageHint": "network config"
     },
     {
       "id": "coc2-step4",
@@ -59,7 +59,7 @@
       "id": "coc2-step5",
       "description": "A technical diagnostic interface for network testing.",
       "imageUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "tech interface"
+      "imageHint": "network test"
     },
     {
       "id": "coc3-step1",
@@ -89,7 +89,7 @@
       "id": "coc4-step2",
       "description": "Internal computer view for system restore protocols.",
       "imageUrl": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "hardware maintenance"
+      "imageHint": "system maintenance"
     },
     {
       "id": "coc4-step3",
@@ -104,148 +104,292 @@
       "imageHint": "antivirus protection"
     },
     {
-      "id": "gaming-cpu",
-      "description": "Intel Core i9 high-performance processor.",
-      "imageUrl": "https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "intel i9"
-    },
-    {
-      "id": "gaming-gpu",
-      "description": "NVIDIA GeForce RTX 4090 with triple-fan array.",
-      "imageUrl": "https://images.unsplash.com/photo-1716967318503-05b7064afa41?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "rtx 4090"
-    },
-    {
-      "id": "gaming-ram",
-      "description": "High-speed RGB gaming RAM modules.",
-      "imageUrl": "https://images.unsplash.com/photo-1612099019342-10536423b077?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "gaming ram"
-    },
-    {
-      "id": "gaming-storage",
-      "description": "Ultra-fast NVMe M.2 SSD with heatsink.",
-      "imageUrl": "https://images.unsplash.com/photo-1760623227551-2eae8f9cb675?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "gaming ssd"
-    },
-    {
-      "id": "gaming-motherboard",
-      "description": "ASUS ROG high-end gaming motherboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1617181218772-1be04dfc9d70?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "gaming motherboard"
-    },
-    {
-      "id": "gaming-psu",
-      "description": "1000W modular power supply unit.",
-      "imageUrl": "https://images.unsplash.com/photo-1648615112415-acc262b6461e?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "gaming psu"
-    },
-    {
-      "id": "gaming-case",
-      "description": "Full-tower Lian Li case with tempered glass.",
-      "imageUrl": "https://images.unsplash.com/photo-1640036948080-99d48ca959b3?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "lianli case"
-    },
-    {
-      "id": "working-cpu",
-      "description": "AMD Ryzen 9 workstation processor.",
-      "imageUrl": "https://images.unsplash.com/photo-1629725413175-396025477a04?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "amd ryzen 9"
-    },
-    {
-      "id": "working-gpu",
-      "description": "NVIDIA GeForce RTX 4070 for productivity.",
-      "imageUrl": "https://images.unsplash.com/photo-1706954777655-7cb60eb69f51?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "rtx 4070"
-    },
-    {
-      "id": "working-ram",
-      "description": "Professional-grade high-capacity RAM modules.",
-      "imageUrl": "https://images.unsplash.com/photo-1769085795297-b45cc8c92f5b?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "pro ram"
-    },
-    {
-      "id": "working-storage",
-      "description": "WD Black high-performance NVMe SSD.",
-      "imageUrl": "https://images.unsplash.com/photo-1686705562930-4f3e46f620d8?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "nvme ssd"
-    },
-    {
-      "id": "working-motherboard",
-      "description": "Gigabyte reliable workstation motherboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1684703153840-c26fe3056c41?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "gigabyte motherboard"
-    },
-    {
-      "id": "working-psu",
-      "description": "Seasonic Focus high-efficiency PSU.",
-      "imageUrl": "https://images.unsplash.com/photo-1740133306027-d05aa14ff579?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "seasonic psu"
-    },
-    {
-      "id": "working-case",
-      "description": "Minimalist Fractal Design workstation case.",
-      "imageUrl": "https://images.unsplash.com/photo-1673703154047-70b5a6e1431d?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "fractal case"
-    },
-    {
-      "id": "coding-cpu",
-      "description": "AMD Ryzen 7 mid-range processor.",
-      "imageUrl": "https://images.unsplash.com/photo-1611275484976-52812441218a?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "amd ryzen 7"
-    },
-    {
-      "id": "coding-gpu",
-      "description": "NVIDIA GeForce RTX 3050 for development.",
-      "imageUrl": "https://images.unsplash.com/photo-1542292558-c59f6964ccbb?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "rtx 3050"
-    },
-    {
-      "id": "coding-ram",
-      "description": "G.Skill Ripjaws reliable DDR5 RAM.",
-      "imageUrl": "https://images.unsplash.com/photo-1601046885445-ae87bf6212fa?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "gskill ram"
-    },
-    {
-      "id": "coding-storage",
-      "description": "Reliable professional internal SSD unit.",
-      "imageUrl": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "internal ssd"
-    },
-    {
-      "id": "coding-motherboard",
-      "description": "MSI efficient development motherboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "msi motherboard"
-    },
-    {
-      "id": "coding-psu",
-      "description": "Professional-grade internal computer PSU components.",
-      "imageUrl": "https://images.unsplash.com/photo-1587202376732-817926e93a17?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "pc psu"
-    },
-    {
-      "id": "coding-case",
-      "description": "Compact NZXT development case.",
-      "imageUrl": "https://images.unsplash.com/photo-1593152077897-2cc2dcbc041f?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "nzxt case"
-    },
-    {
       "id": "system-unit-main",
-      "description": "Comprehensive internal view of a fully assembled system unit.",
+      "description": "Full Tower Assembly",
       "imageUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "computer assembly"
+      "imageHint": "computer case"
     },
     {
       "id": "system-fans",
-      "description": "Modern high-airflow computer chassis fans.",
+      "description": "High-Airflow Fans",
       "imageUrl": "https://images.unsplash.com/photo-1587202376732-817926e93a17?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "pc fans"
     },
     {
       "id": "system-cables",
-      "description": "Internal organized power and data cabling.",
+      "description": "Internal Cabling",
       "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "pc cables"
+    },
+    {
+      "id": "gaming-cpu",
+      "description": "Intel i9 Processor",
+      "imageUrl": "https://images.unsplash.com/photo-1555617981-dac3880eac6e?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "intel cpu"
+    },
+    {
+      "id": "gaming-gpu",
+      "description": "RTX 4090 Graphics Card",
+      "imageUrl": "https://images.unsplash.com/photo-1716967318503-05b7064afa41?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "nvidia gpu"
+    },
+    {
+      "id": "gaming-ram",
+      "description": "High-Speed RGB RAM",
+      "imageUrl": "https://images.unsplash.com/photo-1612099019342-10536423b077?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "gaming ram"
+    },
+    {
+      "id": "gaming-storage",
+      "description": "NVMe Gen4 SSD",
+      "imageUrl": "https://images.unsplash.com/photo-1760623227551-2eae8f9cb675?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "m2 ssd"
+    },
+    {
+      "id": "gaming-motherboard",
+      "description": "High-End Motherboard",
+      "imageUrl": "https://images.unsplash.com/photo-1617181218772-1be04dfc9d70?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "motherboard"
+    },
+    {
+      "id": "gaming-psu",
+      "description": "Modular Power Supply",
+      "imageUrl": "https://images.unsplash.com/photo-1648615112415-acc262b6461e?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "pc psu"
+    },
+    {
+      "id": "gaming-case",
+      "description": "Full Tower Chassis",
+      "imageUrl": "https://images.unsplash.com/photo-1640036948080-99d48ca959b3?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "pc case"
+    },
+    {
+      "id": "working-cpu",
+      "description": "AMD Ryzen 9 Processor",
+      "imageUrl": "https://images.unsplash.com/photo-1629725413175-396025477a04?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "amd cpu"
+    },
+    {
+      "id": "working-gpu",
+      "description": "RTX 4070 Workstation GPU",
+      "imageUrl": "https://images.unsplash.com/photo-1706954777655-7cb60eb69f51?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "gpu"
+    },
+    {
+      "id": "working-ram",
+      "description": "High-Capacity DDR5 RAM",
+      "imageUrl": "https://images.unsplash.com/photo-1769085795297-b45cc8c92f5b?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "ddr5 ram"
+    },
+    {
+      "id": "working-storage",
+      "description": "High-Reliability SSD",
+      "imageUrl": "https://images.unsplash.com/photo-1686705562930-4f3e46f620d8?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "ssd drive"
+    },
+    {
+      "id": "working-motherboard",
+      "description": "Workstation Mainboard",
+      "imageUrl": "https://images.unsplash.com/photo-1684703153840-c26fe3056c41?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "motherboard"
+    },
+    {
+      "id": "working-psu",
+      "description": "Efficiency PSU",
+      "imageUrl": "https://images.unsplash.com/photo-1740133306027-d05aa14ff579?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "psu"
+    },
+    {
+      "id": "working-case",
+      "description": "Professional Minimalist Case",
+      "imageUrl": "https://images.unsplash.com/photo-1673703154047-70b5a6e1431d?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "fractal case"
+    },
+    {
+      "id": "coding-cpu",
+      "description": "AMD Ryzen 7 Processor",
+      "imageUrl": "https://images.unsplash.com/photo-1611275484976-52812441218a?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "amd ryzen"
+    },
+    {
+      "id": "coding-gpu",
+      "description": "RTX 3050 Compact GPU",
+      "imageUrl": "https://images.unsplash.com/photo-1542292558-c59f6964ccbb?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "rtx gpu"
+    },
+    {
+      "id": "coding-ram",
+      "description": "Standard DDR5 RAM",
+      "imageUrl": "https://images.unsplash.com/photo-1601046885445-ae87bf6212fa?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "gskill ram"
+    },
+    {
+      "id": "coding-storage",
+      "description": "Standard Internal SSD",
+      "imageUrl": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "internal ssd"
+    },
+    {
+      "id": "coding-motherboard",
+      "description": "Compact Mainboard",
+      "imageUrl": "https://images.unsplash.com/photo-1723454190240-e696263741d1?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "msi motherboard"
+    },
+    {
+      "id": "coding-psu",
+      "description": "Standard Power Supply",
+      "imageUrl": "https://images.unsplash.com/photo-1587202376732-817926e93a17?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "pc psu"
+    },
+    {
+      "id": "coding-case",
+      "description": "Compact Tower Case",
+      "imageUrl": "https://images.unsplash.com/photo-1593152077897-2cc2dcbc041f?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "nzxt case"
+    },
+    {
+      "id": "profile-bg-cyberpunk-red",
+      "description": "Red City Skyline",
+      "imageUrl": "https://images.unsplash.com/photo-1533577116850-9cc66cad8a9b?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "cyberpunk red"
+    },
+    {
+      "id": "profile-bg-neon-grid",
+      "description": "Neon Digital Grid",
+      "imageUrl": "https://images.unsplash.com/photo-1769120062656-23adba3790b3?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "neon grid"
+    },
+    {
+      "id": "profile-bg-dark-tech",
+      "description": "Dark Technical Pattern",
+      "imageUrl": "https://images.unsplash.com/photo-1512998844734-cd2cca565822?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "dark tech"
+    },
+    {
+      "id": "profile-bg-glitch-red",
+      "description": "Red Glitch Art",
+      "imageUrl": "https://images.unsplash.com/photo-1729761137674-9a3a841f7cea?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "glitch red"
+    },
+    {
+      "id": "minigame1-pic1",
+      "description": "Peripheral Mouse",
+      "imageUrl": "https://images.unsplash.com/photo-1629121291243-7b5e885cce9b?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "pc mouse"
+    },
+    {
+      "id": "minigame1-pic2",
+      "description": "Peripheral Keyboard",
+      "imageUrl": "https://images.unsplash.com/photo-1637243218672-d338945efdf7?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "keyboard"
+    },
+    {
+      "id": "minigame1-pic3",
+      "description": "Peripheral Monitor",
+      "imageUrl": "https://images.unsplash.com/photo-1484788984921-03950022c9ef?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "monitor"
+    },
+    {
+      "id": "minigame1-pic4",
+      "description": "Peripheral Headphones",
+      "imageUrl": "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "headphones"
+    },
+    {
+      "id": "minigame2-pic1",
+      "description": "Network Port",
+      "imageUrl": "https://images.unsplash.com/photo-1649269234528-6cf263c06ccc?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "ethernet port"
+    },
+    {
+      "id": "minigame2-pic2",
+      "description": "Wireless WiFi",
+      "imageUrl": "https://images.unsplash.com/photo-1600238454024-bc8c1e49caba?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "wifi"
+    },
+    {
+      "id": "minigame2-pic3",
+      "description": "Network Switch",
+      "imageUrl": "https://images.unsplash.com/photo-1682559736721-c2e77ff4c650?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "network switch"
+    },
+    {
+      "id": "minigame2-pic4",
+      "description": "Network Diagram",
+      "imageUrl": "https://images.unsplash.com/photo-1664526937033-fe2c11f1be25?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "network map"
+    },
+    {
+      "id": "minigame3-pic1",
+      "description": "Dedicated Server",
+      "imageUrl": "https://images.unsplash.com/photo-1667984550809-ac2a63a4f7b4?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "server rack"
+    },
+    {
+      "id": "minigame3-pic2",
+      "description": "Server Administration",
+      "imageUrl": "https://images.unsplash.com/photo-1684661893103-aad19c0173c5?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "server admin"
+    },
+    {
+      "id": "minigame3-pic3",
+      "description": "Cloud Infrastructure",
+      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010ca7382f?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "cloud data"
+    },
+    {
+      "id": "minigame3-pic4",
+      "description": "File Services",
+      "imageUrl": "https://images.unsplash.com/photo-1715520530023-cc8a1b2044ab?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "file server"
+    },
+    {
+      "id": "minigame4-pic1",
+      "description": "Data Backup",
+      "imageUrl": "https://images.unsplash.com/photo-1659885785824-3e72856b8fef?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "data storage"
+    },
+    {
+      "id": "minigame4-pic2",
+      "description": "System Virus",
+      "imageUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "malware"
+    },
+    {
+      "id": "minigame4-pic3",
+      "description": "System Cleaning",
+      "imageUrl": "https://images.unsplash.com/photo-1464580148015-c844134b925f?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "clean pc"
+    },
+    {
+      "id": "minigame4-pic4",
+      "description": "Maintenance Calendar",
+      "imageUrl": "https://images.unsplash.com/photo-1768745595839-10fc76c8ac10?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "schedule"
+    },
+    {
+      "id": "minigame5-pic1",
+      "description": "Memory RAM",
+      "imageUrl": "https://images.unsplash.com/photo-1754820978729-39c2e2a15112?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "memory stick"
+    },
+    {
+      "id": "minigame5-pic2",
+      "description": "Main CPU",
+      "imageUrl": "https://images.unsplash.com/photo-1750365919878-2735d30fa3d8?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "processor"
+    },
+    {
+      "id": "minigame5-pic3",
+      "description": "Main Motherboard",
+      "imageUrl": "https://images.unsplash.com/photo-1631031509251-62a73758f9d3?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "logic board"
+    },
+    {
+      "id": "minigame5-pic4",
+      "description": "Internal SSD",
+      "imageUrl": "https://images.unsplash.com/photo-1602526431715-81a7851b96d8?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "flash storage"
     }
   ]
 }
