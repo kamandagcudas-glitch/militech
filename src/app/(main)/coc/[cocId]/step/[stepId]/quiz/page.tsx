@@ -11,11 +11,10 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Download } from 'lucide-react';
+import { Download, AlertCircle } from 'lucide-react';
 
 export default function QuizPage() {
   const params = useParams();
@@ -29,7 +28,6 @@ export default function QuizPage() {
   const coc = cocData.find(c => c.id === cocId);
   const step = coc?.steps.find(s => s.id === stepId);
   
-  // Progression Logic for route guard
   const isQuizUnlocked = useMemo(() => {
     if (!game.currentUser || !coc) return false;
     const cocs = ['coc1', 'coc2', 'coc3', 'coc4'];
@@ -66,7 +64,6 @@ export default function QuizPage() {
     }
   }, [isQuizUnlocked, game.isUserLoading, game.currentUser, router, cocId, stepId, toast]);
 
-  // This ref is attached to the main quiz container.
   const quizContainerRef = useRef<HTMLDivElement>(null);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -77,7 +74,6 @@ export default function QuizPage() {
   const [focusLost, setFocusLost] = useState(false);
 
   useEffect(() => {
-    // Do not show the emoji toast if the quiz was failed due to focus loss.
     if (outcome && !focusLost) {
         const emojis = { pass: '🎉', retry: '💪', reset: '😢' };
         const titles = { pass: 'Step Passed!', retry: 'Try Again!', reset: 'Step Reset!'};
@@ -87,27 +83,24 @@ export default function QuizPage() {
             reset: `Score: ${score}/20. You've been sent back to the start.`,
         };
         toast({
-            title: <div className="text-5xl text-center w-full">{emojis[outcome]}</div>,
-            description: <div className="text-center font-bold">{descriptions[outcome]}</div>,
+            title: <div className="text-4xl md:text-5xl text-center w-full">{emojis[outcome]}</div>,
+            description: <div className="text-center font-bold text-xs md:text-sm">{descriptions[outcome]}</div>,
             duration: 3000
         });
     }
   }, [outcome, score, toast, focusLost]);
 
-  // Quiz Focus Monitor Logic: This function fails the quiz if the user switches tabs or minimizes the window.
   const failQuizForLosingFocus = useCallback(() => {
-    // Check if the quiz is already over to prevent multiple triggers.
     if (showResult) return;
 
     setFocusLost(true);
     const finalScore = 0;
     setScore(finalScore);
     const result = game.completeQuiz(cocId, stepId, finalScore);
-    setOutcome(result); // This will always be 'reset'
+    setOutcome(result);
     setShowResult(true);
   }, [showResult, game, cocId, stepId]);
 
-  // This effect attaches the focus and visibility listeners.
   useEffect(() => {
     const handleVisibilityChange = () => {
         if (document.hidden) {
@@ -115,13 +108,11 @@ export default function QuizPage() {
         }
     };
 
-    // Only add listeners if the quiz is currently active.
     if (!showResult && isQuizUnlocked) {
         document.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('blur', failQuizForLosingFocus);
     }
 
-    // Cleanup listeners when the component unmounts or the quiz is finished.
     return () => {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
         window.removeEventListener('blur', failQuizForLosingFocus);
@@ -129,8 +120,6 @@ export default function QuizPage() {
   }, [showResult, failQuizForLosingFocus, isQuizUnlocked]);
 
 
-  // Anti-Cheat Logic: This effect adds event listeners to the quiz container
-  // to disable right-clicking, copying, and dragging. It also shows a warning toast.
   useEffect(() => {
     const container = quizContainerRef.current;
     if (!container) return;
@@ -145,12 +134,10 @@ export default function QuizPage() {
       });
     };
     
-    // Attaching event listeners to prevent cheating.
     container.addEventListener('contextmenu', preventAction);
     container.addEventListener('copy', preventAction);
     container.addEventListener('dragstart', preventAction);
 
-    // Cleanup function to remove event listeners when the component unmounts.
     return () => {
       container.removeEventListener('contextmenu', preventAction);
       container.removeEventListener('copy', preventAction);
@@ -160,8 +147,11 @@ export default function QuizPage() {
 
   if (!coc || !step || !isQuizUnlocked) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <p className="text-muted-foreground">Verifying access credentials...</p>
+      <div className="flex h-screen items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-4 text-center">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <p className="text-muted-foreground text-sm uppercase font-mono tracking-widest">Verifying access credentials...</p>
+        </div>
       </div>
     );
   }
@@ -203,7 +193,6 @@ export default function QuizPage() {
     const wrongAnswers = totalQuestions - score;
     const scorePercentage = (score / totalQuestions) * 100;
 
-    // Header
     doc.setFontSize(20);
     doc.text("IT MAZING - Quiz Results", 105, 20, { align: 'center' });
 
@@ -213,7 +202,6 @@ export default function QuizPage() {
     doc.setFontSize(10);
     doc.text(`Completed on: ${new Date().toLocaleDateString()}`, 105, 35, { align: 'center' });
     
-    // User Info & Score Summary
     doc.setFontSize(12);
     doc.text("Agent:", 14, 50);
     doc.text(`${player.displayName} (@${player.username})`, 50, 50);
@@ -229,7 +217,6 @@ export default function QuizPage() {
     doc.text("Incorrect Answers:", 14, 70);
     doc.text(`${wrongAnswers}`, 50, 70);
 
-    // Detailed Results Table
     const tableData = step.quiz.map((q, index) => {
         const userAnswer = answers[index] || "No Answer";
         const isCorrect = userAnswer === q.correctAnswer;
@@ -248,9 +235,9 @@ export default function QuizPage() {
         didParseCell: function (data) {
             if (data.column.index === 3 && data.cell.section === 'body') {
                 if (data.cell.text[0].includes('✅')) {
-                    data.cell.styles.textColor = [0, 128, 0]; // Green
+                    data.cell.styles.textColor = [0, 128, 0];
                 } else {
-                    data.cell.styles.textColor = [255, 0, 0]; // Red
+                    data.cell.styles.textColor = [255, 0, 0];
                 }
             }
         },
@@ -265,12 +252,10 @@ export default function QuizPage() {
         }
     });
 
-    // Footer
     const finalY = (doc as any).lastAutoTable.finalY;
     doc.setFontSize(10);
     doc.text("Note: Review the incorrect answers to improve your knowledge for the next attempt.", 14, finalY + 10);
     
-    // Save PDF
     doc.save(`IT_MAZING_Quiz_Results_${coc.id}_${step.id}.pdf`);
   };
   
@@ -295,79 +280,81 @@ export default function QuizPage() {
   const progressPercentage = ((currentQuestionIndex + 1) / totalQuestions) * 100;
   
   return (
-    <>
+    <div className="max-w-4xl mx-auto px-2 py-4">
       <Card 
         ref={quizContainerRef}
         id="quiz-container"
-        className={cn("w-full max-w-4xl mx-auto", "quiz-anti-cheat")}
+        className={cn("w-full bg-card/80 backdrop-blur-md border-primary/20", "quiz-anti-cheat")}
       >
-        <CardHeader>
-          <Progress value={progressPercentage} className="mb-4" />
-          <CardTitle className="font-headline text-2xl">{step.title} - Quiz</CardTitle>
-          <CardDescription>
+        <CardHeader className="pb-4">
+          <Progress value={progressPercentage} className="mb-4 h-1.5 md:h-2" />
+          <CardTitle className="font-headline text-lg md:text-2xl uppercase tracking-widest">{step.title} - Assessment</CardTitle>
+          <CardDescription className="text-[10px] md:text-sm">
             Question {currentQuestionIndex + 1} of {totalQuestions}
             <br />
-            <span className="font-bold text-destructive">Do not leave this tab or window, or your attempt will be failed.</span>
+            <span className="font-bold text-destructive flex items-center gap-1.5 mt-1">
+                <AlertCircle className="h-3 w-3" /> Focus Alert: Do not switch tabs or windows.
+            </span>
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="font-semibold text-xl mb-8 min-h-[3em]">{question.question}</p>
+          <p className="font-semibold text-sm md:text-xl mb-6 md:mb-8 min-h-[3em] leading-relaxed">{question.question}</p>
           
           <RadioGroup 
             value={answers[currentQuestionIndex] || ''} 
             onValueChange={handleAnswerSelect}
-            className="space-y-4"
+            className="space-y-2 md:space-y-4"
           >
             {question.options.map((option, index) => (
-              <Label key={index} htmlFor={`option-${index}`} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/10 cursor-pointer has-[:checked]:bg-accent has-[:checked]:text-accent-foreground has-[:checked]:border-accent">
-                <RadioGroupItem value={option} id={`option-${index}`} />
-                <span className="text-base font-medium">{option}</span>
+              <Label key={index} htmlFor={`option-${index}`} className="flex items-center space-x-3 p-3 md:p-4 border rounded-lg hover:bg-accent/10 cursor-pointer has-[:checked]:bg-primary/20 has-[:checked]:text-primary has-[:checked]:border-primary transition-all">
+                <RadioGroupItem value={option} id={`option-${index}`} className="shrink-0" />
+                <span className="text-xs md:text-base font-medium leading-tight">{option}</span>
               </Label>
             ))}
           </RadioGroup>
 
-          <div className="flex justify-end mt-8">
-            <Button variant="cyber" size="lg" onClick={handleNext} disabled={!answers[currentQuestionIndex]}>
-              {currentQuestionIndex < totalQuestions - 1 ? 'Next' : 'Submit'}
+          <div className="flex justify-end mt-6 md:mt-8">
+            <Button variant="cyber" size="lg" onClick={handleNext} disabled={!answers[currentQuestionIndex]} className="w-full md:w-auto h-11 md:h-14 uppercase text-xs tracking-widest">
+              {currentQuestionIndex < totalQuestions - 1 ? 'Next Step' : 'Submit Final'}
             </Button>
           </div>
         </CardContent>
       </Card>
 
       <Dialog open={showResult} onOpenChange={handleDialogClose}>
-        <DialogContent>
+        <DialogContent className="max-w-[90vw] md:max-w-md">
           <DialogHeader>
              {focusLost ? (
                 <div className="flex flex-col items-center text-center gap-4">
-                    <div className="text-7xl animate-shake-head">😠</div>
-                    <DialogTitle className="font-headline text-4xl text-destructive animate-pulse">
-                        Nuh uh!
+                    <div className="text-6xl md:text-7xl animate-shake-head">😠</div>
+                    <DialogTitle className="font-headline text-2xl md:text-4xl text-destructive animate-pulse uppercase tracking-widest">
+                        Neural Snap!
                     </DialogTitle>
-                    <DialogDescription className="text-lg">
-                        You navigated away from the quiz window.
+                    <DialogDescription className="text-base md:text-lg">
+                        You navigated away from the assessment.
                     </DialogDescription>
                 </div>
             ) : (
                 <>
-                    <DialogTitle className="text-center font-headline text-3xl">
-                        {outcome === 'pass' && '🎉 Step Passed! 🎉'}
-                        {outcome === 'retry' && '💪 Keep Going! 💪'}
-                        {outcome === 'reset' && '😢 Oh no... 😢'}
+                    <DialogTitle className="text-center font-headline text-xl md:text-3xl uppercase tracking-widest">
+                        {outcome === 'pass' && '🎉 Protocol Verified!'}
+                        {outcome === 'retry' && '💪 Signal Weak!'}
+                        {outcome === 'reset' && '😢 Link Severed!'}
                     </DialogTitle>
-                    <DialogDescription className="text-center text-lg">
-                      You scored {score} / {totalQuestions}.
+                    <DialogDescription className="text-center text-sm md:text-lg font-mono">
+                      SYNCHRONIZATION: {score} / {totalQuestions}
                     </DialogDescription>
                 </>
             )}
           </DialogHeader>
-          <div className="text-center my-4">
+          <div className="text-center my-4 text-xs md:text-sm text-muted-foreground leading-relaxed">
               {focusLost ? (
-                <p>Your attempt has been marked as failed. Focus is key, agent.</p>
+                <p>Focus is a requirement for tactical certification. Your attempt has been terminated.</p>
               ) : (
                 <>
-                  {outcome === 'pass' && <p>Excellent work! You're ready for the next step.</p>}
-                  {outcome === 'retry' && <p>You're close! Review the lesson and try again.</p>}
-                  {outcome === 'reset' && <p>Back to basics. Let's build a stronger foundation.</p>}
+                  {outcome === 'pass' && <p>Excellent technical proficiency. You are ready for the next uplink.</p>}
+                  {outcome === 'retry' && <p>You were close to certification. Review the technical logs and re-engage.</p>}
+                  {outcome === 'reset' && <p>Significant logic errors detected. Re-initializing training from root node.</p>}
                 </>
               )}
           </div>
@@ -376,15 +363,15 @@ export default function QuizPage() {
               variant="outline"
               onClick={handleDownloadPDF}
               disabled={focusLost}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto h-10 text-[10px] md:text-xs"
             >
               <Download className="mr-2 h-4 w-4" />
-              Download Results
+              Download Report
             </Button>
-            <Button variant="cyber" onClick={handleDialogClose} className="w-full sm:w-auto">Continue</Button>
+            <Button variant="cyber" onClick={handleDialogClose} className="w-full sm:w-auto h-10 text-[10px] md:text-xs">Continue</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

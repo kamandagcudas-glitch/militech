@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -8,7 +7,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ChevronLeft, ChevronRight, Cpu, Play, Square, CheckCircle2, Circle, Info, Settings, BookOpen, Wrench, Activity, Loader2, AlertCircle, LayoutGrid, ImageOff } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Cpu, Play, Square, CheckCircle2, Info, Settings, BookOpen, Wrench, Activity, Loader2, AlertCircle, LayoutGrid, ImageOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import {
@@ -126,14 +125,14 @@ export default function SystemViewerPage() {
             <Button 
                 variant="outline"
                 onClick={() => { setSelectedIndex(null); setIsAutoScanning(false); }}
-                className={cn("flex-1 lg:flex-none gap-2 h-9 text-xs", selectedIndex === null && "bg-primary/10 border-primary")}
+                className={cn("flex-1 lg:flex-none gap-2 h-9 text-[10px] md:text-xs", selectedIndex === null && "bg-primary/10 border-primary")}
             >
                 <LayoutGrid className="h-4 w-4" /> Overview
             </Button>
             <Button 
                 variant={isAutoScanning ? "destructive" : "cyber"} 
                 onClick={() => setIsAutoScanning(!isAutoScanning)}
-                className="flex-1 lg:flex-none gap-2 h-9 text-xs min-w-[140px]"
+                className="flex-1 lg:flex-none gap-2 h-9 text-[10px] md:text-xs min-w-[120px] md:min-w-[140px]"
             >
                 {isAutoScanning ? <><Square className="h-3 w-3" /> Stop Scan</> : <><Play className="h-3 w-3" /> Auto-Scan</>}
             </Button>
@@ -141,8 +140,8 @@ export default function SystemViewerPage() {
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[500px]">
-        {/* SIDEBAR: Component Log - Hidden/Collapsed on Mobile? No, standard responsive stacking */}
-        <div className="lg:col-span-3 order-3 lg:order-1 h-[300px] lg:h-auto">
+        {/* SIDEBAR: Component Log */}
+        <div className="lg:col-span-3 order-3 lg:order-1 h-[300px] lg:h-[600px]">
             <Card className="bg-card/50 backdrop-blur-sm border-primary/10 h-full flex flex-col">
                 <CardHeader className="py-3 px-4 border-b border-white/5 bg-white/5">
                     <CardTitle className="text-[10px] font-cyber uppercase tracking-widest flex items-center gap-2">
@@ -266,7 +265,7 @@ export default function SystemViewerPage() {
 
         {/* RIGHT: Intelligence Panel */}
         <div className="lg:col-span-3 order-2 lg:order-3">
-          <Card className="bg-card/80 backdrop-blur-xl border-primary/20 h-full flex flex-col overflow-hidden animate-in slide-in-from-right md:slide-in-from-bottom duration-500">
+          <Card className="bg-card/80 backdrop-blur-xl border-primary/20 h-full flex flex-col overflow-hidden animate-in slide-in-from-right md:slide-in-from-bottom duration-500 max-h-[500px] lg:max-h-none">
             {selectedPart ? (
                 <>
                     <CardHeader className="py-3 px-4 border-b border-white/5 bg-white/5">
@@ -321,9 +320,9 @@ export default function SystemViewerPage() {
                             <Button variant="outline" size="sm" onClick={() => { handlePrev(); setIsAutoScanning(false); }} className="h-8 w-8 p-0 border-primary/20">
                                 <ChevronLeft className="h-4 w-4" />
                             </Button>
-                            <div className="flex gap-1">
+                            <div className="flex gap-1 flex-wrap justify-center max-w-[100px]">
                                 {systemPartsData.map((_, i) => (
-                                    <div key={i} className={cn("h-1 rounded-full transition-all", i === selectedIndex ? "bg-primary w-4" : "bg-white/10 w-1")} />
+                                    <div key={i} className={cn("h-1 rounded-full transition-all mb-1", i === selectedIndex ? "bg-primary w-4" : "bg-white/10 w-1")} />
                                 ))}
                             </div>
                             <Button variant="outline" size="sm" onClick={() => { handleNext(); setIsAutoScanning(false); }} className="h-8 w-8 p-0 border-primary/20">
@@ -333,7 +332,7 @@ export default function SystemViewerPage() {
                     </CardContent>
                 </>
             ) : (
-                <div className="h-full flex flex-col items-center justify-center p-6 text-center gap-4">
+                <div className="h-full flex flex-col items-center justify-center p-6 text-center gap-4 min-h-[300px]">
                     <div className="bg-primary/5 p-6 rounded-full border border-primary/10 animate-pulse">
                         <LayoutGrid className="h-10 w-10 text-primary opacity-20" />
                     </div>

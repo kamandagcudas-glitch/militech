@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
@@ -82,7 +81,7 @@ class Fighter {
     if (this.hitFlash > 0) this.hitFlash--;
 
     ctx.strokeStyle = drawColor;
-    ctx.lineWidth = 5; // Thicker lines for visibility
+    ctx.lineWidth = 5;
     ctx.lineCap = 'round';
     ctx.shadowBlur = 20;
     ctx.shadowColor = this.color;
@@ -261,7 +260,7 @@ class Fighter {
     this.y += this.velocityY;
 
     if (this.y + this.height < GROUND_Y) {
-      this.velocityY += 0.7; // Slightly higher gravity
+      this.velocityY += 0.7;
       this.isJumping = true;
     } else {
       this.velocityY = 0;
@@ -296,7 +295,7 @@ class Fighter {
       setTimeout(() => {
         this.isAttacking = false;
         this.attackType = null;
-      }, 180); // Longer window for collision
+      }, 180);
     }
   }
 }
@@ -322,7 +321,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
   const p2Ref = useRef<Fighter | null>(null);
   const keys = useRef<Set<string>>(new Set());
 
-  // Load Background
   useEffect(() => {
     const img = new Image();
     img.src = BATTLEFIELD_BG;
@@ -364,7 +362,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     ctx.save();
     ctx.translate(shakeX, shakeY);
     
-    // Draw Battlefield Background
     if (bgRef.current) {
         ctx.globalAlpha = 0.5;
         ctx.drawImage(bgRef.current, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -374,7 +371,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
     
-    // Grid floor
     ctx.strokeStyle = 'rgba(0, 246, 255, 0.2)';
     ctx.lineWidth = 1;
     for (let i = 0; i < CANVAS_WIDTH; i += 40) {
@@ -402,7 +398,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       if (keys.current.has('w') && !p1.isJumping) p1.velocityY = -16;
       p1.isBlocking = keys.current.has('s');
 
-      // P2 / Bot Input
       if (gameMode === 'PvP') {
         p2.velocityX = 0;
         if (keys.current.has('ArrowLeft')) { p2.velocityX = -6; p2.direction = -1; }
@@ -413,7 +408,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         const dx = p1.x - p2.x;
         p2.velocityX = 0;
         
-        // Scaled AI Properties
         const aiSpeed = difficulty === 'Easy' ? 3.0 : difficulty === 'Hard' ? 5.5 : 7.5;
         const aiAttackFreq = difficulty === 'Easy' ? 0.02 : difficulty === 'Hard' ? 0.08 : 0.18;
         const aiBlockChance = difficulty === 'Easy' ? 0.3 : difficulty === 'Hard' ? 0.7 : 0.95;
@@ -429,7 +423,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
           } else {
               if (Math.random() < aiAttackFreq) p2.attack(Math.random() > 0.4 ? 'punch' : 'kick', bulletsRef);
           }
-          // AI Reactive Block
           if (p1.isAttacking && Math.random() < aiBlockChance) {
               p2.isBlocking = true;
           } else {
@@ -442,7 +435,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       p1.update(CANVAS_WIDTH, GROUND_Y);
       p2.update(CANVAS_WIDTH, GROUND_Y);
 
-      // Combat Check
       const checkHit = (attacker: Fighter, defender: Fighter) => {
         if (attacker.isAttacking) {
           let range = 60;
@@ -457,12 +449,10 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
           if (isFacing && dist < range && Math.abs(attacker.y - defender.y) < 80) {
             let damage = attacker.attackType === 'punch' ? (attacker.weapon === 'gun' ? 3 : 10) : 15;
             
-            // Damage Mitigation through blocking
             if (defender.isBlocking) {
-                damage = Math.floor(damage * 0.15); // Chip damage exists
+                damage = Math.floor(damage * 0.15);
             }
 
-            // Scaled Damage for AI
             if (attacker.name === 'AI_UNIT') {
                 const multiplier = difficulty === 'Easy' ? 0.6 : difficulty === 'Hard' ? 1.3 : 2.5;
                 damage = Math.floor(damage * multiplier);
@@ -475,7 +465,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
                 setShake(Math.min(damage, 15));
             }
             
-            attacker.isAttacking = false; // consume the attack
+            attacker.isAttacking = false;
             if (defender.health <= 0) {
               defender.health = 0;
               setWinner(attacker.name);
@@ -488,7 +478,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       checkHit(p1, p2);
       checkHit(p2, p1);
 
-      // Bullet logic
       bulletsRef.current.forEach((bullet, i) => {
           bullet.x += bullet.vx;
           
@@ -498,7 +487,7 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
           if (distToTarget < 35 && Math.abs(bullet.y - (target.y + 40)) < 50) {
               let damage = 12;
               if (target.isBlocking) {
-                  damage = 2; // minor chip damage
+                  damage = 2;
               }
               if (bullet.ownerName === 'AI_UNIT') {
                   const multiplier = difficulty === 'Easy' ? 0.6 : difficulty === 'Hard' ? 1.3 : 2.5;
@@ -522,7 +511,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
       });
     }
 
-    // Draw Bullets
     bulletsRef.current.forEach(bullet => {
         ctx.fillStyle = bullet.color;
         ctx.shadowBlur = 12;
@@ -531,7 +519,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
         ctx.shadowBlur = 0;
     });
 
-    // Particles
     particlesRef.current.forEach((p, i) => {
         p.x += p.vx;
         p.y += p.vy;
@@ -620,7 +607,6 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
     };
   }, [gameLoop, gameMode, winner]);
 
-  // Handle Game Initialization
   useEffect(() => {
       if (gameMode && p1Weapon && p2Weapon && (gameMode === 'PvP' || difficulty)) {
           p1Ref.current = new Fighter(100, 200, '#00f6ff', 1, 'AGENT_01', p1Weapon);
@@ -641,17 +627,17 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
   if (!gameMode) {
     return (
-      <div className="flex flex-col items-center justify-center h-[400px] w-[800px] bg-black text-white p-8 space-y-8 relative overflow-hidden">
+      <div className="flex flex-col items-center justify-center h-[400px] w-full max-w-[800px] bg-black text-white p-4 space-y-8 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000')] bg-cover" />
-        <h2 className="text-5xl font-cyber text-primary animate-pulse flex items-center gap-6 relative z-10">
-          <Sword className="h-12 w-12" /> COMBAT INTRUSION <Shield className="h-12 w-12" />
+        <h2 className="text-3xl md:text-5xl font-cyber text-primary animate-pulse flex items-center gap-4 md:gap-6 relative z-10 text-center">
+          <Sword className="h-8 w-8 md:h-12 md:w-12 shrink-0" /> COMBAT INTRUSION <Shield className="h-8 w-8 md:h-12 md:w-12 shrink-0" />
         </h2>
-        <div className="grid grid-cols-2 gap-8 w-full max-w-lg relative z-10">
-          <Button variant="cyber" className="h-28 text-2xl group" onClick={() => setGameMode('PvBot')}>
-            <Bot className="mr-3 h-8 w-8 transition-transform group-hover:scale-110" /> AGENT VS AI
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 w-full max-w-lg relative z-10">
+          <Button variant="cyber" className="h-20 md:h-28 text-lg md:text-2xl group" onClick={() => setGameMode('PvBot')}>
+            <Bot className="mr-2 md:mr-3 h-6 w-6 md:h-8 md:w-8 transition-transform group-hover:scale-110" /> AGENT VS AI
           </Button>
-          <Button variant="cyber" className="h-28 text-2xl group" onClick={() => setGameMode('PvP')}>
-            <User className="mr-3 h-8 w-8 transition-transform group-hover:scale-110" /> LOCAL PVP
+          <Button variant="cyber" className="h-20 md:h-28 text-lg md:text-2xl group" onClick={() => setGameMode('PvP')}>
+            <User className="mr-2 md:mr-3 h-6 w-6 md:h-8 md:w-8 transition-transform group-hover:scale-110" /> LOCAL PVP
           </Button>
         </div>
         <Button variant="ghost" onClick={onExit} className="text-muted-foreground hover:text-primary z-10">
@@ -663,19 +649,19 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
 
   if (gameMode === 'PvBot' && !difficulty) {
       return (
-          <div className="flex flex-col items-center justify-center h-[400px] w-[800px] bg-black text-white p-8 relative overflow-hidden">
-              <h3 className="text-3xl font-cyber text-primary mb-8">SELECT DIFFICULTY</h3>
-              <div className="grid grid-cols-3 gap-6 w-full max-w-2xl">
+          <div className="flex flex-col items-center justify-center h-[400px] w-full max-w-[800px] bg-black text-white p-4 relative overflow-hidden">
+              <h3 className="text-2xl md:text-3xl font-cyber text-primary mb-8">SELECT DIFFICULTY</h3>
+              <div className="grid grid-cols-3 gap-2 md:gap-6 w-full max-w-2xl">
                   {DIFFICULTIES.map(d => (
                       <div 
                         key={d.type} 
-                        className="bg-zinc-900 border border-primary/30 rounded-lg hover:border-primary transition-all cursor-pointer group p-6 flex flex-col items-center text-center gap-4"
+                        className="bg-zinc-900 border border-primary/30 rounded-lg hover:border-primary transition-all cursor-pointer group p-2 md:p-6 flex flex-col items-center text-center gap-2 md:gap-4"
                         onClick={() => setDifficulty(d.type)}
                       >
-                          <d.icon className={cn("h-12 w-12 group-hover:scale-110 transition-transform", d.color)} />
+                          <d.icon className={cn("h-8 w-8 md:h-12 md:w-12 group-hover:scale-110 transition-transform", d.color)} />
                           <div>
-                              <p className={cn("font-bold uppercase tracking-tighter", d.color)}>{d.label}</p>
-                              <p className="text-[10px] text-zinc-500">{d.description}</p>
+                              <p className={cn("font-bold uppercase tracking-tighter text-[8px] md:text-xs", d.color)}>{d.label}</p>
+                              <p className="text-[6px] md:text-[10px] text-zinc-500 hidden sm:block">{d.description}</p>
                           </div>
                       </div>
                   ))}
@@ -688,22 +674,22 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
   if (!p1Weapon || (gameMode === 'PvP' && !p2Weapon)) {
       const isSelectingP2 = p1Weapon !== null;
       return (
-          <div className="flex flex-col items-center justify-center h-[400px] w-[800px] bg-black text-white p-8 relative overflow-hidden">
-              <h3 className="text-3xl font-cyber text-accent mb-8">
-                  SELECT ARMAMENT: {isSelectingP2 ? 'AGENT_02' : 'AGENT_01'}
+          <div className="flex flex-col items-center justify-center h-[400px] w-full max-w-[800px] bg-black text-white p-4 relative overflow-hidden">
+              <h3 className="text-xl md:text-3xl font-cyber text-accent mb-8 text-center uppercase">
+                  ARMAMENT: {isSelectingP2 ? 'AGENT_02' : 'AGENT_01'}
               </h3>
-              <div className="grid grid-cols-3 gap-6 w-full max-w-2xl">
+              <div className="grid grid-cols-3 gap-2 md:gap-6 w-full max-w-2xl">
                   {WEAPONS.map(w => (
                       <div 
                         key={w.type} 
                         className="bg-zinc-900 border border-primary/30 rounded-lg hover:border-primary transition-all cursor-pointer group"
                         onClick={() => isSelectingP2 ? setP2Weapon(w.type) : (gameMode === 'PvBot' ? (setP1Weapon(w.type), setP2Weapon('none')) : setP1Weapon(w.type))}
                       >
-                          <div className="p-6 flex flex-col items-center text-center gap-4">
-                              <w.icon className="h-12 w-12 text-primary group-hover:scale-110 transition-transform" />
+                          <div className="p-2 md:p-6 flex flex-col items-center text-center gap-2 md:gap-4">
+                              <w.icon className="h-8 w-8 md:h-12 md:w-12 text-primary group-hover:scale-110 transition-transform" />
                               <div>
-                                  <p className="font-bold text-white uppercase tracking-tighter">{w.label}</p>
-                                  <p className="text-[10px] text-zinc-500">{w.description}</p>
+                                  <p className="font-bold text-white uppercase tracking-tighter text-[10px] md:text-sm">{w.label}</p>
+                                  <p className="text-[6px] md:text-[10px] text-zinc-500 hidden sm:block">{w.description}</p>
                               </div>
                           </div>
                       </div>
@@ -715,29 +701,31 @@ export default function StickmanFighter({ onExit, onWin }: StickmanFighterProps)
   }
 
   return (
-    <div className="relative group bg-black rounded-lg overflow-hidden border-2 border-primary/30">
-      <canvas
-        ref={canvasRef}
-        width={CANVAS_WIDTH}
-        height={CANVAS_HEIGHT}
-        className="cursor-none"
-      />
+    <div className="relative group bg-black rounded-lg overflow-hidden border-2 border-primary/30 w-full max-w-[800px]">
+      <div className="overflow-x-auto w-full">
+        <canvas
+            ref={canvasRef}
+            width={CANVAS_WIDTH}
+            height={CANVAS_HEIGHT}
+            className="cursor-none mx-auto min-w-[800px]"
+        />
+      </div>
       <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
         <Button variant="destructive" size="icon" onClick={onExit} className="rounded-full shadow-lg shadow-black/50">
           <X className="h-4 w-4" />
         </Button>
       </div>
       
-      <div className="absolute bottom-4 left-4 flex gap-8 text-[10px] font-mono text-white/40 pointer-events-none bg-black/40 backdrop-blur-sm p-2 rounded border border-white/10">
+      <div className="absolute bottom-4 left-4 flex gap-4 md:gap-8 text-[8px] md:text-[10px] font-mono text-white/40 pointer-events-none bg-black/40 backdrop-blur-sm p-2 rounded border border-white/10">
         <div className="flex flex-col">
-            <span className="text-primary font-bold uppercase">AGENT_01 ({p1Weapon})</span>
-            <span>WASD: MOVE | J: {p1Weapon === 'gun' ? 'FIRE' : 'ATTACK'} | K: KICK</span>
+            <span className="text-primary font-bold uppercase">P1 ({p1Weapon})</span>
+            <span className="hidden sm:inline">WASD | J: ATK | K: KICK</span>
         </div>
-        <div className="flex flex-col">
-            <span className="text-pink-500 font-bold uppercase">
-                {gameMode === 'PvBot' ? `AI_UNIT (${p2Ref.current?.weapon || 'RND'}) - ${difficulty}` : `AGENT_02 (${p2Weapon})`}
+        <div className="flex flex-col border-l border-white/10 pl-4 md:pl-8">
+            <span className="text-pink-500 font-bold uppercase truncate max-w-[100px]">
+                {gameMode === 'PvBot' ? `CPU (${p2Ref.current?.weapon || 'RND'})` : `P2 (${p2Weapon})`}
             </span>
-            <span>{gameMode === 'PvBot' ? 'AUTONOMOUS' : `ARROWS: MOVE | 1: ${p2Weapon === 'gun' ? 'FIRE' : 'ATTACK'} | 2: KICK`}</span>
+            <span className="hidden sm:inline">{gameMode === 'PvBot' ? 'AI' : 'ARROWS | 1: ATK | 2: KICK'}</span>
         </div>
       </div>
     </div>

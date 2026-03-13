@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useContext, useState, useMemo, useEffect } from 'react';
@@ -10,12 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Loader2, ListFilter, ShieldX, MicOff, Edit, CheckCircle, Ban, User, CaseSensitive } from 'lucide-react';
+import { Shield, Loader2, ListFilter, ShieldX, MicOff, Edit, Ban, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { UserAccount } from '@/lib/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-
+import { cn } from '@/lib/utils';
 
 export default function AdminDashboardPage() {
     const { currentUser, isAdmin, loginHistory, activityLogs, accounts, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle } = useContext(GameContext) as GameContextType;
@@ -64,7 +63,7 @@ export default function AdminDashboardPage() {
     
     return (
         <div className="container mx-auto px-4 py-6">
-            <h1 className="font-headline text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3"><Shield className="text-destructive"/> Admin Dashboard</h1>
+            <h1 className="font-headline text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3"><Shield className="text-destructive shrink-0"/> Admin Dashboard</h1>
             <p className="text-muted-foreground mb-8 text-sm md:text-base">Monitor user activity and system logs.</p>
 
             <Card className="mb-8 bg-card/80 backdrop-blur-sm border-primary/20">
@@ -76,48 +75,48 @@ export default function AdminDashboardPage() {
                         placeholder="Filter by username..."
                         value={usernameFilter}
                         onChange={(e) => setUsernameFilter(e.target.value)}
-                        className="bg-background/50"
+                        className="bg-background/50 h-10 text-sm"
                     />
                     <Input 
                         type="date"
                         value={dateFilter}
                         onChange={(e) => setDateFilter(e.target.value)}
-                        className="bg-background/50"
+                        className="bg-background/50 h-10 text-sm"
                     />
                 </CardContent>
             </Card>
 
-            <Tabs defaultValue="activity" className="w-full overflow-hidden">
+            <Tabs defaultValue="activity" className="w-full">
                 <TabsList className="grid w-full grid-cols-3 mb-4">
-                    <TabsTrigger value="activity" className="text-xs md:text-sm">Activity</TabsTrigger>
-                    <TabsTrigger value="login" className="text-xs md:text-sm">Logins</TabsTrigger>
-                    <TabsTrigger value="management" className="text-xs md:text-sm">Users</TabsTrigger>
+                    <TabsTrigger value="activity" className="text-[10px] md:text-sm px-1">Activity</TabsTrigger>
+                    <TabsTrigger value="login" className="text-[10px] md:text-sm px-1">Logins</TabsTrigger>
+                    <TabsTrigger value="management" className="text-[10px] md:text-sm px-1">Users</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="activity">
-                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
+                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20 overflow-hidden">
                         <CardHeader>
                             <CardTitle className="text-lg md:text-xl">Feature Usage Logs</CardTitle>
                             <CardDescription className="text-xs md:text-sm">Recent actions performed by users.</CardDescription>
                         </CardHeader>
-                        <CardContent className="p-0 md:p-6">
-                             <div className="w-full overflow-x-auto">
+                        <CardContent className="p-0 md:p-6 overflow-x-auto">
+                             <div className="min-w-[600px] w-full">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="min-w-[120px]">Timestamp</TableHead>
-                                            <TableHead className="min-w-[100px]">Username</TableHead>
-                                            <TableHead className="min-w-[100px]">Activity</TableHead>
-                                            <TableHead className="min-w-[150px]">Details</TableHead>
+                                            <TableHead className="w-[120px]">Timestamp</TableHead>
+                                            <TableHead className="w-[120px]">Username</TableHead>
+                                            <TableHead className="w-[120px]">Activity</TableHead>
+                                            <TableHead>Details</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {filteredActivityLogs.map(log => (
                                             <TableRow key={log.id}>
-                                                <TableCell className="text-xs">{format(new Date(log.timestamp), 'MM/dd HH:mm')}</TableCell>
-                                                <TableCell className="font-medium text-xs truncate max-w-[80px] md:max-w-none">{log.username}</TableCell>
-                                                <TableCell><Badge variant="secondary" className="text-[10px] whitespace-nowrap">{log.activity}</Badge></TableCell>
-                                                <TableCell className="text-muted-foreground text-xs">{log.details}</TableCell>
+                                                <TableCell className="text-[10px] md:text-xs">{format(new Date(log.timestamp), 'MM/dd HH:mm')}</TableCell>
+                                                <TableCell className="font-medium text-[10px] md:text-xs truncate max-w-[100px]">{log.username}</TableCell>
+                                                <TableCell><Badge variant="secondary" className="text-[9px] md:text-[10px] whitespace-nowrap">{log.activity}</Badge></TableCell>
+                                                <TableCell className="text-muted-foreground text-[10px] md:text-xs">{log.details}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -129,28 +128,28 @@ export default function AdminDashboardPage() {
                 </TabsContent>
 
                 <TabsContent value="login">
-                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
+                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20 overflow-hidden">
                         <CardHeader>
                             <CardTitle className="text-lg md:text-xl">Login History</CardTitle>
                             <CardDescription className="text-xs md:text-sm">All login attempts recorded by the simulation.</CardDescription>
                         </CardHeader>
-                        <CardContent className="p-0 md:p-6">
-                            <div className="w-full overflow-x-auto">
+                        <CardContent className="p-0 md:p-6 overflow-x-auto">
+                            <div className="min-w-[400px] w-full">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="min-w-[120px]">Timestamp</TableHead>
-                                            <TableHead className="min-w-[120px]">Username</TableHead>
-                                            <TableHead className="min-w-[80px]">Status</TableHead>
+                                            <TableHead className="w-[150px]">Timestamp</TableHead>
+                                            <TableHead className="w-[150px]">Username</TableHead>
+                                            <TableHead className="w-[100px]">Status</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {filteredLoginHistory.map(log => (
                                             <TableRow key={log.id}>
-                                                <TableCell className="text-xs">{format(new Date(log.timestamp), 'PPpp')}</TableCell>
-                                                <TableCell className="font-medium text-xs">{log.username}</TableCell>
+                                                <TableCell className="text-[10px] md:text-xs">{format(new Date(log.timestamp), 'PPpp')}</TableCell>
+                                                <TableCell className="font-medium text-[10px] md:text-xs truncate max-w-[120px]">{log.username}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant={log.status === 'Success' ? 'default' : 'destructive'} className="text-[10px]">{log.status}</Badge>
+                                                    <Badge variant={log.status === 'Success' ? 'default' : 'destructive'} className="text-[9px] md:text-[10px]">{log.status}</Badge>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -163,33 +162,33 @@ export default function AdminDashboardPage() {
                 </TabsContent>
 
                 <TabsContent value="management">
-                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
+                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20 overflow-hidden">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg md:text-xl"><User /> User Management</CardTitle>
                             <CardDescription className="text-xs md:text-sm">Manage roles and security state.</CardDescription>
                         </CardHeader>
-                        <CardContent className="p-0 md:p-6">
-                             <div className="w-full overflow-x-auto">
+                        <CardContent className="p-0 md:p-6 overflow-x-auto">
+                             <div className="min-w-[450px] w-full">
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="min-w-[120px]">User</TableHead>
-                                            <TableHead className="min-w-[100px]">Status</TableHead>
-                                            <TableHead className="text-right min-w-[100px]">Actions</TableHead>
+                                            <TableHead>User</TableHead>
+                                            <TableHead className="w-[150px]">Status</TableHead>
+                                            <TableHead className="text-right w-[120px]">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {manageableUsers.map(({ player }) => (
                                             <TableRow key={player.username}>
                                                 <TableCell>
-                                                    <p className="font-medium text-xs md:text-sm">{player.displayName}</p>
-                                                    <p className="text-[10px] md:text-xs text-muted-foreground truncate max-w-[100px] md:max-w-none">@{player.username}</p>
+                                                    <p className="font-medium text-xs md:text-sm truncate max-w-[150px]">{player.displayName}</p>
+                                                    <p className="text-[10px] text-muted-foreground truncate max-w-[150px]">@{player.username}</p>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex flex-wrap gap-1">
-                                                        {player.isBanned && <Badge variant="destructive" className="text-[9px] px-1"><ShieldX className="h-2 w-2 mr-1" /> Banned</Badge>}
-                                                        {player.isMuted && <Badge variant="secondary" className="text-[9px] px-1"><MicOff className="h-2 w-2 mr-1" /> Muted</Badge>}
-                                                        {player.customTitle && <Badge variant="outline" className="text-[9px] px-1 truncate max-w-[60px] md:max-w-none">{player.customTitle}</Badge>}
+                                                        {player.isBanned && <Badge variant="destructive" className="text-[8px] md:text-[9px] px-1"><ShieldX className="h-2 w-2 mr-1" /> Banned</Badge>}
+                                                        {player.isMuted && <Badge variant="secondary" className="text-[8px] md:text-[9px] px-1"><MicOff className="h-2 w-2 mr-1" /> Muted</Badge>}
+                                                        {player.customTitle && <Badge variant="outline" className="text-[8px] md:text-[9px] px-1 truncate max-w-[80px]">{player.customTitle}</Badge>}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="text-right">
@@ -204,12 +203,12 @@ export default function AdminDashboardPage() {
                                                                     <MicOff className={cn("h-3.5 w-3.5", player.isMuted && "text-green-500")} />
                                                                 </Button>
                                                             </AlertDialogTrigger>
-                                                            <AlertDialogContent>
+                                                            <AlertDialogContent className="max-w-[90vw] md:max-w-md">
                                                                 <AlertDialogHeader>
                                                                     <AlertDialogTitle>Update Mute Status?</AlertDialogTitle>
                                                                     <AlertDialogDescription>Change feedback permissions for {player.displayName}.</AlertDialogDescription>
                                                                 </AlertDialogHeader>
-                                                                <AlertDialogFooter>
+                                                                <AlertDialogFooter className="gap-2 sm:gap-0">
                                                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                                                                     <AlertDialogAction onClick={() => player.isMuted ? unmuteUser(player.username) : muteUser(player.username)}>Confirm</AlertDialogAction>
                                                                 </AlertDialogFooter>
@@ -222,12 +221,12 @@ export default function AdminDashboardPage() {
                                                                     <Ban className={cn("h-3.5 w-3.5", player.isBanned ? "text-green-500" : "text-destructive")} />
                                                                 </Button>
                                                             </AlertDialogTrigger>
-                                                            <AlertDialogContent>
+                                                            <AlertDialogContent className="max-w-[90vw] md:max-w-md">
                                                                 <AlertDialogHeader>
                                                                     <AlertDialogTitle>Update Ban Status?</AlertDialogTitle>
                                                                     <AlertDialogDescription>Access control for {player.displayName}.</AlertDialogDescription>
                                                                 </AlertDialogHeader>
-                                                                <AlertDialogFooter>
+                                                                <AlertDialogFooter className="gap-2 sm:gap-0">
                                                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                                                                     <AlertDialogAction onClick={() => player.isBanned ? unbanUser(player.username) : banUser(player.username)}>Confirm</AlertDialogAction>
                                                                 </AlertDialogFooter>
@@ -256,7 +255,7 @@ export default function AdminDashboardPage() {
                         value={customTitleInput}
                         onChange={(e) => setCustomTitleInput(e.target.value)}
                         placeholder="e.g., The Bug Hunter"
-                        className="bg-background/50"
+                        className="bg-background/50 h-10"
                     />
                     <DialogFooter className="mt-4 gap-2">
                         <Button variant="outline" onClick={() => setEditingUser(null)} className="w-full md:w-auto">Cancel</Button>

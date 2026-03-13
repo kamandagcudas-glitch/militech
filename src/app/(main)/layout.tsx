@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useContext, useEffect, useState } from "react";
@@ -39,7 +38,6 @@ import {
 } from "lucide-react";
 import { GameContext, GameContextType } from "@/context/GameContext";
 import { GamifiedAvatar } from "@/components/ui/gamified-avatar";
-import { CreatorBadgeIcon, GamepadIcon } from "@/components/icons";
 import SoulAiAssistant from "@/components/soul-ai-assistant";
 
 export default function MainAppLayout({
@@ -182,7 +180,7 @@ export default function MainAppLayout({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm">
+        <header className="flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm sticky top-0 z-50">
           <SidebarTrigger />
           <div className="flex items-center gap-3 min-w-0">
              <div className="flex flex-col items-end -space-y-1 min-w-0">
@@ -192,7 +190,7 @@ export default function MainAppLayout({
             <GamifiedAvatar account={currentUser} imageClassName="h-8 w-8" />
           </div>
         </header>
-        <main className="relative flex-1 overflow-auto p-4 md:p-6">{children}</main>
+        <main className="relative flex-1 overflow-x-hidden p-4 md:p-6 lg:p-8">{children}</main>
         {isAdmin && <SoulAiAssistant />}
       </SidebarInset>
     </SidebarProvider>

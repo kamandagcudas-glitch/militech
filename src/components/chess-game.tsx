@@ -1,15 +1,13 @@
-
 'use client';
 
 import React, { useState, useCallback, useMemo, useEffect, useContext } from 'react';
 import { Chess, Square } from 'chess.js';
 import { Button } from '@/components/ui/button';
-import { X, RotateCcw, Undo2, User, Bot, Trophy, Play, Signal, ShieldAlert, Cpu } from 'lucide-react';
+import { X, RotateCcw, Undo2, Trophy, Play, Signal, ShieldAlert, Cpu } from 'lucide-react';
 import AnimatedGlitchText from './animated-glitch-text';
 import { cn } from '@/lib/utils';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
 import { GamifiedAvatar } from '@/components/ui/gamified-avatar';
 
 interface ChessGameProps {
@@ -19,7 +17,6 @@ interface ChessGameProps {
 
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
-// Custom Piece SVGs for a digital technical look
 const PieceIcon = ({ type, color }: { type: string; color: string }) => {
   const isWhite = color === 'w';
   const stroke = isWhite ? '#00f6ff' : '#ff0080';
@@ -27,32 +24,32 @@ const PieceIcon = ({ type, color }: { type: string; color: string }) => {
 
   switch (type) {
     case 'p': return (
-      <svg viewBox="0 0 24 24" className="w-full h-full p-2 drop-shadow-lg">
+      <svg viewBox="0 0 24 24" className="w-full h-full p-1.5 md:p-2 drop-shadow-lg">
         <path d="M12 2L9 7H15L12 2ZM12 7V17M8 22H16M9 17H15" stroke={stroke} fill={fill} strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     );
     case 'r': return (
-      <svg viewBox="0 0 24 24" className="w-full h-full p-2 drop-shadow-lg">
+      <svg viewBox="0 0 24 24" className="w-full h-full p-1.5 md:p-2 drop-shadow-lg">
         <path d="M4 2V6M8 2V6M12 2V6M16 2V6M20 2V6M4 6H20V10H4V6ZM6 10L5 20H19L18 10M4 22H20" stroke={stroke} fill={fill} strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     );
     case 'n': return (
-      <svg viewBox="0 0 24 24" className="w-full h-full p-2 drop-shadow-lg">
+      <svg viewBox="0 0 24 24" className="w-full h-full p-1.5 md:p-2 drop-shadow-lg">
         <path d="M8 22V17L11 14L7 10L10 2L17 6L15 12L18 15V22H8Z" stroke={stroke} fill={fill} strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     );
     case 'b': return (
-      <svg viewBox="0 0 24 24" className="w-full h-full p-2 drop-shadow-lg">
+      <svg viewBox="0 0 24 24" className="w-full h-full p-1.5 md:p-2 drop-shadow-lg">
         <path d="M12 2C10 2 8 4 8 7C8 9 9 11 12 14C15 11 16 9 16 7C16 4 14 2 12 2ZM12 14V22M8 22H16" stroke={stroke} fill={fill} strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     );
     case 'q': return (
-      <svg viewBox="0 0 24 24" className="w-full h-full p-2 drop-shadow-lg">
+      <svg viewBox="0 0 24 24" className="w-full h-full p-1.5 md:p-2 drop-shadow-lg">
         <path d="M12 2L8 6L4 2L6 14H18L20 2L16 6L12 2ZM6 14L8 22H16L18 14" stroke={stroke} fill={fill} strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     );
     case 'k': return (
-      <svg viewBox="0 0 24 24" className="w-full h-full p-2 drop-shadow-lg">
+      <svg viewBox="0 0 24 24" className="w-full h-full p-1.5 md:p-2 drop-shadow-lg">
         <path d="M12 2V6M10 4H14M12 6L8 10L4 6L6 18H18L20 6L16 10L12 6ZM6 18L8 22H16L18 18" stroke={stroke} fill={fill} strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     );
@@ -60,7 +57,6 @@ const PieceIcon = ({ type, color }: { type: string; color: string }) => {
   }
 };
 
-// Evaluation function for AI
 const evaluateBoard = (game: Chess) => {
     const pieceValues: Record<string, number> = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
     let score = 0;
@@ -77,7 +73,6 @@ const evaluateBoard = (game: Chess) => {
     return score;
 };
 
-// Minimax with Alpha-Beta Pruning
 const minimax = (game: Chess, depth: number, alpha: number, beta: number, isMaximizing: boolean): number => {
     if (depth === 0 || game.isGameOver()) return evaluateBoard(game);
 
@@ -110,7 +105,7 @@ const getBestMove = (game: Chess, difficulty: Difficulty) => {
     if (difficulty === 'Easy') return moves[Math.floor(Math.random() * moves.length)];
     
     let bestMove = '';
-    let bestValue = Infinity; // Minimizing for black
+    let bestValue = Infinity;
     
     const depth = difficulty === 'Medium' ? 2 : 3;
 
@@ -177,7 +172,6 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
     }
   };
 
-  // Bot logic
   useEffect(() => {
     if (isStarted && moveMode === 'PvBot' && game.turn() === 'b' && !game.isGameOver()) {
       const timer = setTimeout(() => {
@@ -246,9 +240,9 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
     <div className="flex flex-col items-center bg-zinc-950 p-4 md:p-6 rounded-xl border-2 border-cyan-500/30 shadow-[0_0_50px_-12px_rgba(0,246,255,0.3)] w-full max-w-[95vw] min-h-[600px] overflow-x-hidden overflow-y-auto">
       <div className="w-full flex justify-between items-center mb-6 border-b border-cyan-500/20 pb-4">
         <div className="flex flex-col">
-          <AnimatedGlitchText text="BRAGA MODE ACTIVATED" className="text-lg md:text-2xl font-cyber text-cyan-400" />
+          <AnimatedGlitchText text="BRAGA MODE" className="text-lg md:text-2xl font-cyber text-cyan-400" />
           <p className="text-[8px] md:text-[10px] text-zinc-500 font-mono tracking-widest uppercase mt-1 flex items-center gap-2">
-            <Signal className="h-3 w-3 text-cyan-500 animate-pulse" /> Neural Core Link: Secure
+            <Signal className="h-3 w-3 text-cyan-500 animate-pulse" /> Neural Link: Secure
           </p>
         </div>
         <Button variant="ghost" size="icon" onClick={onExit} className="text-zinc-500 hover:text-cyan-400 h-8 w-8">
@@ -257,9 +251,9 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
-        {/* Leaderboard Panel - Collapsed/Hidden on very small screens? No, stacked. */}
+        {/* Leaderboard Panel */}
         <div className="lg:col-span-3 order-3 lg:order-1">
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 h-full flex flex-col max-h-[300px] lg:max-h-none">
+            <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 h-full flex flex-col max-h-[250px] lg:max-h-none">
                 <h3 className="text-[10px] font-cyber text-cyan-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                     <Trophy className="h-3 w-3" /> Top Agents
                 </h3>
@@ -282,17 +276,16 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
 
         {/* Board Section */}
         <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center gap-6">
-          <div className="relative aspect-square w-full max-w-[480px] border-2 md:border-4 border-zinc-800 rounded shadow-2xl bg-zinc-900 overflow-hidden ring-2 md:ring-4 ring-cyan-500/10">
-            {/* The Grid Layer */}
+          <div className="relative aspect-square w-full max-w-[400px] border-2 md:border-4 border-zinc-800 rounded shadow-2xl bg-zinc-900 overflow-hidden ring-2 md:ring-4 ring-cyan-500/10">
             {!isStarted && (
                 <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center gap-6">
                     <Cpu className="h-10 w-10 md:h-12 md:w-12 text-cyan-400 animate-pulse" />
                     <div>
-                        <h4 className="text-base md:text-lg font-cyber text-white">SIMULATION IDLE</h4>
+                        <h4 className="text-base md:text-lg font-cyber text-white uppercase tracking-widest">Simulation Idle</h4>
                         <p className="text-[10px] md:text-xs text-zinc-500 mt-2">Initialize neural interface to begin combat.</p>
                     </div>
-                    <Button variant="cyber" size="lg" className="px-10 h-10 md:h-12 uppercase text-xs tracking-widest" onClick={() => setIsStarted(true)}>
-                        <Play className="mr-2 h-4 w-4" /> START SIM
+                    <Button variant="cyber" size="lg" className="px-10 h-10 md:h-12 uppercase text-[10px] md:text-xs tracking-widest" onClick={() => setIsStarted(true)}>
+                        <Play className="mr-2 h-4 w-4" /> Start Sim
                     </Button>
                 </div>
             )}
@@ -332,7 +325,6 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
               }))}
             </div>
 
-            {/* The Piece Layer */}
             {game.board().map((row, i) => row.map((piece, j) => {
               if (!piece) return null;
               const square = String.fromCharCode(97 + j) + (8 - i);
@@ -358,7 +350,7 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
         <div className="lg:col-span-3 order-2 lg:order-3 flex flex-col gap-4">
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4 space-y-4">
             <h3 className="text-[10px] font-cyber text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-              <Bot className="h-3 w-3" /> System Logic
+              <Cpu className="h-3 w-3" /> System Logic
             </h3>
             <div className="grid grid-cols-1 gap-2">
               <div className="flex gap-1">
@@ -368,7 +360,7 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
                     onClick={() => { setMoveMode('PvBot'); resetGame(); }}
                     className={cn("flex-1 text-[9px] h-8", moveMode !== 'PvBot' && "opacity-50 grayscale")}
                   >
-                    AI UNIT
+                    AI Unit
                   </Button>
                   <Button
                     variant="cyber"
@@ -376,7 +368,7 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
                     onClick={() => { setMoveMode('PvP'); resetGame(); }}
                     className={cn("flex-1 text-[9px] h-8", moveMode !== 'PvP' && "opacity-50 grayscale")}
                   >
-                    LINK
+                    Link
                   </Button>
               </div>
               
@@ -403,43 +395,43 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4 space-y-4 flex-grow flex flex-col">
             <h3 className="text-[10px] font-cyber text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-              <Trophy className="h-3 w-3" /> State
+              <Trophy className="h-3 w-3" /> Mission State
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[10px] font-mono">
-                <span className="text-zinc-500">TURN:</span>
+                <span className="text-zinc-500 uppercase">Turn:</span>
                 <span className={cn(
                   "font-bold",
                   game.turn() === 'w' ? "text-cyan-400" : "text-pink-500"
                 )}>
-                  {game.turn() === 'w' ? 'AGENT' : moveMode === 'PvBot' ? 'CPU' : 'PEER'}
+                  {game.turn() === 'w' ? 'Agent' : moveMode === 'PvBot' ? 'CPU' : 'Peer'}
                 </span>
               </div>
               <div className="flex items-center justify-between text-[10px] font-mono">
-                <span className="text-zinc-500">STATUS:</span>
+                <span className="text-zinc-500 uppercase">Status:</span>
                 <span className="text-white uppercase flex items-center gap-1 text-[9px]">
                   {game.isGameOver() ? <ShieldAlert className="h-3 w-3 text-destructive" /> : null}
-                  {game.isGameOver() ? 'HALTED' : game.inCheck() ? 'CHECK' : 'STABLE'}
+                  {game.isGameOver() ? 'Halted' : game.inCheck() ? 'Check' : 'Stable'}
                 </span>
               </div>
             </div>
 
             {game.isGameOver() && (
               <div className="mt-4 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded text-center animate-in fade-in zoom-in-95 duration-500">
-                <p className="text-[10px] font-bold text-cyan-400 mb-1 uppercase">TERMINATED</p>
+                <p className="text-[10px] font-bold text-cyan-400 mb-1 uppercase tracking-widest">Terminated</p>
                 <p className="text-[8px] text-white font-mono leading-relaxed">
-                  {game.isCheckmate() ? `CHECKMATE` : 
-                   game.isDraw() ? 'STALEMATE' : 'ENDED'}
+                  {game.isCheckmate() ? `Checkmate` : 
+                   game.isDraw() ? 'Stalemate' : 'Ended'}
                 </p>
               </div>
             )}
 
             <div className="mt-auto space-y-2 pt-4">
               <Button variant="cyber" className="w-full justify-start gap-2 h-8 text-[9px] uppercase tracking-widest" onClick={undoMove} disabled={boardHistory.length === 0}>
-                <Undo2 className="h-3 w-3" /> UNDO
+                <Undo2 className="h-3 w-3" /> Undo
               </Button>
               <Button variant="cyber" className="w-full justify-start gap-2 h-8 text-[9px] uppercase tracking-widest" onClick={resetGame}>
-                <RotateCcw className="h-3 w-3" /> REBOOT
+                <RotateCcw className="h-3 w-3" /> Reboot
               </Button>
             </div>
           </div>

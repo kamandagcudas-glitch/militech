@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo, useContext, useRef, useEffect } from 'react';
@@ -44,9 +43,9 @@ function FriendList({ onSelectFriend, onOpenBgDialog }: { onSelectFriend: (frien
 
     return (
         <Card className="flex flex-col h-full bg-card/75 backdrop-blur-md border-primary/20">
-            <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
-                <h2 className="text-lg md:text-xl font-bold">Neural Links</h2>
-                <Button variant="ghost" size="icon" onClick={onOpenBgDialog} title="Customize Background" className="h-8 w-8">
+            <CardHeader className="flex flex-row items-center justify-between p-4 border-b shrink-0">
+                <h2 className="text-base md:text-lg font-bold truncate">Neural Links</h2>
+                <Button variant="ghost" size="icon" onClick={onOpenBgDialog} title="Customize Background" className="h-8 w-8 shrink-0">
                     <ImageIcon className="h-4 w-4" />
                 </Button>
             </CardHeader>
@@ -57,18 +56,18 @@ function FriendList({ onSelectFriend, onOpenBgDialog }: { onSelectFriend: (frien
                             <button
                                 key={friend.player.uid}
                                 onClick={() => onSelectFriend(friend)}
-                                className="w-full text-left p-3 rounded-lg hover:bg-primary/10 transition-colors flex items-center gap-3 group"
+                                className="w-full text-left p-2 md:p-3 rounded-lg hover:bg-primary/10 transition-colors flex items-center gap-3 group"
                             >
-                                <GamifiedAvatar account={friend} imageClassName="w-10 h-10" />
+                                <GamifiedAvatar account={friend} imageClassName="w-8 h-8 md:w-10 md:h-10" />
                                 <div className="min-w-0 flex-1">
-                                    <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{friend.player.displayName}</p>
-                                    <p className="text-[10px] text-muted-foreground truncate">@{friend.player.username}</p>
+                                    <p className="font-semibold text-xs md:text-sm truncate group-hover:text-primary transition-colors">{friend.player.displayName}</p>
+                                    <p className="text-[9px] md:text-[10px] text-muted-foreground truncate">@{friend.player.username}</p>
                                 </div>
                             </button>
                         )) : (
                             <div className="p-8 text-center text-muted-foreground flex flex-col items-center gap-3">
                                 <MessageCircle className="h-10 w-10 opacity-20" />
-                                <p className="text-xs">No active links identified. Add friends from the User Directory.</p>
+                                <p className="text-[10px] md:text-xs">No active links identified. Add friends from the User Directory.</p>
                             </div>
                         )}
                     </div>
@@ -138,22 +137,22 @@ function ChatWindow({ friend, onBack }: { friend: UserAccount; onBack?: () => vo
 
     return (
         <Card className="flex flex-col h-full bg-card/75 backdrop-blur-md border-primary/20">
-            <CardHeader className="flex-row items-center justify-between gap-4 p-4 border-b">
-                <div className="flex items-center gap-3 min-w-0">
+            <CardHeader className="flex-row items-center justify-between gap-4 p-3 md:p-4 border-b shrink-0">
+                <div className="flex items-center gap-2 md:gap-3 min-w-0">
                     {onBack && (
-                        <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden h-8 w-8 mr-1">
+                        <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden h-8 w-8 mr-1 shrink-0">
                             <ChevronLeft className="h-5 w-5" />
                         </Button>
                     )}
-                    <GamifiedAvatar account={friend} imageClassName="w-10 h-10" />
+                    <GamifiedAvatar account={friend} imageClassName="w-8 h-8 md:w-10 md:h-10" />
                     <div className="min-w-0">
-                        <h2 className="text-base md:text-lg font-bold truncate">{friend.player.displayName}</h2>
-                        <p className="text-[10px] text-muted-foreground truncate">@{friend.player.username}</p>
+                        <h2 className="text-sm md:text-lg font-bold truncate">{friend.player.displayName}</h2>
+                        <p className="text-[9px] md:text-[10px] text-muted-foreground truncate">@{friend.player.username}</p>
                     </div>
                 </div>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-destructive h-8 w-8 hover:bg-destructive/10">
+                        <Button variant="ghost" size="icon" className="text-destructive h-8 w-8 hover:bg-destructive/10 shrink-0">
                             <Trash2 className="h-4 w-4" />
                         </Button>
                     </AlertDialogTrigger>
@@ -164,7 +163,7 @@ function ChatWindow({ friend, onBack }: { friend: UserAccount; onBack?: () => vo
                                 This will permanently delete all messages in this simulation thread with {friend.player.displayName}.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
-                        <AlertDialogFooter className="gap-2">
+                        <AlertDialogFooter className="gap-2 sm:gap-0">
                             <AlertDialogCancel>Abort</AlertDialogCancel>
                             <AlertDialogAction onClick={() => clearChatHistory(friend.player.uid)} className="bg-destructive text-destructive-foreground">
                                 Confirm Purge
@@ -174,7 +173,7 @@ function ChatWindow({ friend, onBack }: { friend: UserAccount; onBack?: () => vo
                 </AlertDialog>
             </CardHeader>
             <CardContent className="flex-1 p-0 overflow-hidden">
-                <ScrollArea className="h-full p-4">
+                <ScrollArea className="h-full p-3 md:p-4">
                      {isLoading && (
                         <div className="flex items-center justify-center h-full">
                             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -190,17 +189,17 @@ function ChatWindow({ friend, onBack }: { friend: UserAccount; onBack?: () => vo
                                     <div key={msg.id} className={cn("flex items-end gap-2", isSender ? "justify-end" : "justify-start")}>
                                         {!isSender && <GamifiedAvatar account={senderAccount} imageClassName="w-6 h-6"/>}
                                         <div className={cn(
-                                            "max-w-[85%] md:max-w-[70%] p-3 rounded-lg flex flex-col gap-2 shadow-sm",
+                                            "max-w-[85%] md:max-w-[70%] p-2 md:p-3 rounded-lg flex flex-col gap-2 shadow-sm",
                                             isSender ? "bg-primary text-primary-foreground rounded-br-none" : "bg-muted text-foreground rounded-bl-none"
                                         )}>
                                             {msg.imageUrl && (
-                                                <div className="relative w-full max-h-[300px] rounded overflow-hidden border border-white/10">
+                                                <div className="relative w-full max-h-[250px] md:max-h-[300px] rounded overflow-hidden border border-white/10">
                                                     <img src={msg.imageUrl} alt="Uplink transmission" className="w-full h-auto object-contain" />
                                                 </div>
                                             )}
-                                            {msg.message && <p className="text-xs md:text-sm leading-relaxed">{msg.message}</p>}
+                                            {msg.message && <p className="text-[11px] md:text-sm leading-relaxed">{msg.message}</p>}
                                             {msg.timestamp && (
-                                                <p className={cn("text-[9px] mt-1 self-end font-mono uppercase", isSender ? "text-primary-foreground/60" : "text-muted-foreground")}>
+                                                <p className={cn("text-[8px] md:text-[9px] mt-1 self-end font-mono uppercase", isSender ? "text-primary-foreground/60" : "text-muted-foreground")}>
                                                     {formatDistanceToNow( (msg.timestamp as Timestamp).toDate(), { addSuffix: true })}
                                                 </p>
                                             )}
@@ -212,16 +211,16 @@ function ChatWindow({ friend, onBack }: { friend: UserAccount; onBack?: () => vo
                         </div>
                     )}
                      {!isLoading && (!messages || messages.length === 0) && (
-                        <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-4">
+                        <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-4 p-4 text-center">
                             <div className="bg-primary/5 p-4 rounded-full">
-                                <MessageCircle className="h-12 w-12 opacity-20" />
+                                <MessageCircle className="h-8 w-8 md:h-12 md:w-12 opacity-20" />
                             </div>
                             <p className="text-xs md:text-sm">Neural link stable. Initiate communication.</p>
                         </div>
                     )}
                 </ScrollArea>
             </CardContent>
-            <CardFooter className="p-4 border-t bg-background/30">
+            <CardFooter className="p-3 md:p-4 border-t bg-background/30 shrink-0">
                 <form onSubmit={handleSendMessage} className="flex w-full items-center gap-2">
                     <input
                         type="file"
@@ -242,11 +241,11 @@ function ChatWindow({ friend, onBack }: { friend: UserAccount; onBack?: () => vo
                     <Input
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        placeholder="Transmit message..."
+                        placeholder="Transmit..."
                         autoComplete="off"
-                        className="bg-background/50 h-9 text-xs md:text-sm"
+                        className="bg-background/50 h-9 text-[11px] md:text-sm"
                     />
-                    <Button type="submit" disabled={!message.trim()} size="icon" className="h-9 w-9">
+                    <Button type="submit" disabled={!message.trim()} size="icon" className="h-9 w-9 shrink-0">
                         <Send className="h-4 w-4" />
                     </Button>
                 </form>
@@ -306,7 +305,7 @@ export default function ChatPage() {
     };
 
     return (
-        <div className="relative -m-4 md:-m-6 h-[calc(100vh-3.5rem)] overflow-hidden flex flex-col">
+        <div className="relative -m-4 md:-m-6 lg:-m-8 h-[calc(100vh-3.5rem)] overflow-hidden flex flex-col">
             {hasSpecialBg ? (
                 <div className="absolute inset-0 z-[-20]">
                     <SpecialBackground type={player.chatSpecialBackground!} />
@@ -321,9 +320,8 @@ export default function ChatPage() {
             <div className="absolute inset-0 w-full h-full bg-background/40 backdrop-blur-[2px] z-[-5]" />
 
             <div className="relative z-10 flex-1 overflow-hidden">
-                <div className="container mx-auto h-full p-4 md:p-6 lg:p-8">
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
-                        {/* Mobile view logic: hide friend list when chat is active */}
+                <div className="container mx-auto h-full p-2 md:p-6 lg:p-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4 h-full">
                         <div className={cn("h-full", activeFriend ? "hidden md:block" : "block")}>
                             <FriendList onSelectFriend={setActiveFriend} onOpenBgDialog={() => setIsBgDialogOpen(true)} />
                         </div>
@@ -333,10 +331,10 @@ export default function ChatPage() {
                             ) : (
                                 <Card className="flex flex-col h-full items-center justify-center text-center p-8 bg-card/75 backdrop-blur-md border-primary/20">
                                     <div className="bg-primary/5 p-8 rounded-full mb-6">
-                                        <MessageCircle className="h-16 w-16 text-primary opacity-20" />
+                                        <MessageCircle className="h-12 w-12 text-primary opacity-20" />
                                     </div>
-                                    <h2 className="text-2xl font-bold mb-2">Neural Hub</h2>
-                                    <p className="text-muted-foreground text-sm max-w-xs">Select an agent from your neural link directory to start a private transmission.</p>
+                                    <h2 className="text-xl md:text-2xl font-bold mb-2 uppercase tracking-widest">Neural Hub</h2>
+                                    <p className="text-muted-foreground text-[10px] md:text-sm max-w-xs">Select an agent from your neural link directory to start a private transmission.</p>
                                 </Card>
                             )}
                         </div>
@@ -344,7 +342,6 @@ export default function ChatPage() {
                 </div>
             </div>
 
-            {/* BACKGROUND CUSTOMIZATION DIALOG */}
             <Dialog open={isBgDialogOpen} onOpenChange={setIsBgDialogOpen}>
                 <DialogContent className="max-w-[95vw] md:max-w-3xl max-h-[90vh] overflow-auto">
                     <DialogHeader>
@@ -353,9 +350,9 @@ export default function ChatPage() {
                     </DialogHeader>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
                         <div className="space-y-3">
-                            <h4 className="font-semibold text-center text-sm md:text-base">Predefined Themes</h4>
+                            <h4 className="font-semibold text-center text-sm md:text-base uppercase tracking-widest text-[10px] md:text-sm">Predefined Themes</h4>
                             <ScrollArea className="h-48 md:h-72 rounded-md border border-primary/10">
-                                <div className="grid grid-cols-2 gap-2 p-2 md:p-4">
+                                <div className="grid grid-cols-2 gap-2 p-2">
                                     {predefinedBackgrounds.map((bg) => (
                                         <div 
                                             key={bg.id} 
@@ -367,7 +364,7 @@ export default function ChatPage() {
                                         >
                                             <Image src={bg.imageUrl} alt={bg.name} fill className="object-cover" />
                                             <div className="absolute inset-0 bg-black/30 flex items-end p-2 opacity-100 sm:opacity-0 group-hover:opacity-100">
-                                                <p className="text-[10px] font-bold text-white uppercase tracking-tighter">{bg.name}</p>
+                                                <p className="text-[8px] font-bold text-white uppercase tracking-tighter">{bg.name}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -375,7 +372,7 @@ export default function ChatPage() {
                             </ScrollArea>
                         </div>
                         <div className="space-y-3">
-                             <h4 className="font-semibold text-center text-sm md:text-base">Custom Uplink</h4>
+                             <h4 className="font-semibold text-center text-sm md:text-base uppercase tracking-widest text-[10px] md:text-sm">Custom Uplink</h4>
                              <div className='flex flex-col items-center justify-center space-y-4 p-4 border border-primary/10 rounded-md md:h-72 bg-muted/20'>
                                 {bgPreviewUrl ? (
                                     <div className="relative w-full h-32 rounded-md overflow-hidden border border-primary/30">
@@ -390,9 +387,9 @@ export default function ChatPage() {
                                     type="file"
                                     accept="image/png, image/jpeg"
                                     onChange={handleBgFileChange}
-                                    className="file:text-primary file:font-semibold text-xs h-auto p-1"
+                                    className="file:text-primary file:font-semibold text-[10px] h-auto p-1"
                                 />
-                                <Button onClick={handleSaveCustomBg} disabled={!selectedBgFile} className="w-full h-9 text-xs uppercase font-cyber tracking-widest">
+                                <Button onClick={handleSaveCustomBg} disabled={!selectedBgFile} className="w-full h-9 text-[10px] uppercase font-cyber tracking-widest">
                                     Apply Surface
                                 </Button>
                              </div>
