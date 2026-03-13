@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from './avatar';
@@ -70,7 +71,7 @@ export function GamifiedAvatar({ account, className, imageClassName }: { account
     const avatarComponent = (
         <div className={cn("avatar-border-wrapper", className)} data-border={borderData.type}>
             <div className="avatar-border"></div>
-            <Avatar className={cn('relative z-10 overflow-hidden bg-muted flex items-center justify-center', imageClassName)}>
+            <Avatar className={cn('relative z-10 overflow-hidden bg-muted flex items-center justify-center rounded-full', imageClassName)}>
                 <AvatarImage src={player.avatar} alt={player.username} className="object-cover w-full h-full" />
                 <AvatarFallback className="bg-muted text-foreground flex items-center justify-center w-full h-full uppercase">
                     {player.displayName.charAt(0)}
