@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useContext, useState, useMemo, useEffect } from 'react';
@@ -217,11 +216,11 @@ export default function DashboardPage() {
             </Dialog>
 
             <Dialog open={showChessGame} onOpenChange={setShowChessGame}>
-                <DialogContent className="max-w-[95vw] md:max-w-fit p-0 bg-transparent border-none overflow-hidden">
+                <DialogContent className="max-w-[95vw] md:max-w-fit p-0 bg-transparent border-none overflow-hidden flex items-center justify-center">
                     <DialogHeader className="sr-only">
                         <DialogTitle>Braga Mode Chess</DialogTitle>
                     </DialogHeader>
-                    <div className="w-full overflow-auto">
+                    <div className="w-full max-w-full overflow-auto p-4">
                         <ChessGame 
                             onExit={() => setShowChessGame(false)} 
                             onWin={() => {

@@ -237,35 +237,35 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
   }, [accounts]);
 
   return (
-    <div className="flex flex-col items-center bg-zinc-950 p-4 md:p-6 rounded-xl border-2 border-cyan-500/30 shadow-[0_0_50px_-12px_rgba(0,246,255,0.3)] w-full max-w-[95vw] min-h-[600px] overflow-x-hidden overflow-y-auto">
-      <div className="w-full flex justify-between items-center mb-6 border-b border-cyan-500/20 pb-4">
+    <div className="flex flex-col items-center bg-zinc-950 p-4 md:p-8 rounded-xl border-2 border-cyan-500/30 shadow-[0_0_50px_-12px_rgba(0,246,255,0.3)] w-full max-w-[1200px] min-h-[700px] overflow-x-hidden overflow-y-auto">
+      <div className="w-full flex justify-between items-center mb-8 border-b border-cyan-500/20 pb-6">
         <div className="flex flex-col">
-          <AnimatedGlitchText text="BRAGA MODE" className="text-lg md:text-2xl font-cyber text-cyan-400" />
-          <p className="text-[8px] md:text-[10px] text-zinc-500 font-mono tracking-widest uppercase mt-1 flex items-center gap-2">
-            <Signal className="h-3 w-3 text-cyan-500 animate-pulse" /> Neural Link: Secure
+          <AnimatedGlitchText text="BRAGA MODE" className="text-xl md:text-3xl font-cyber text-cyan-400" />
+          <p className="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest uppercase mt-1 flex items-center gap-2">
+            <Signal className="h-4 w-4 text-cyan-500 animate-pulse" /> Neural Link: Secure
           </p>
         </div>
-        <Button variant="ghost" size="icon" onClick={onExit} className="text-zinc-500 hover:text-cyan-400 h-8 w-8">
-          <X className="h-5 w-5" />
+        <Button variant="ghost" size="icon" onClick={onExit} className="text-zinc-500 hover:text-cyan-400 h-10 w-10">
+          <X className="h-6 w-6" />
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
         {/* Leaderboard Panel */}
         <div className="lg:col-span-3 order-3 lg:order-1">
-            <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 h-full flex flex-col max-h-[250px] lg:max-h-none">
-                <h3 className="text-[10px] font-cyber text-cyan-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <Trophy className="h-3 w-3" /> Top Agents
+            <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 h-full flex flex-col max-h-[300px] lg:max-h-none">
+                <h3 className="text-xs font-cyber text-cyan-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <Trophy className="h-4 w-4" /> Top Agents
                 </h3>
                 <ScrollArea className="flex-grow">
-                    <div className="space-y-3 pr-3">
+                    <div className="space-y-4 pr-3">
                         {topAgents.map((agent, index) => (
-                            <div key={agent.player.uid} className="flex items-center gap-3 p-2 rounded bg-zinc-800/30 border border-white/5 group hover:border-cyan-500/30 transition-colors">
-                                <span className="text-[10px] font-mono text-zinc-500">{index + 1}</span>
-                                <GamifiedAvatar account={agent} imageClassName="w-6 h-6" />
+                            <div key={agent.player.uid} className="flex items-center gap-4 p-3 rounded bg-zinc-800/30 border border-white/5 group hover:border-cyan-500/30 transition-colors">
+                                <span className="text-xs font-mono text-zinc-500">{index + 1}</span>
+                                <GamifiedAvatar account={agent} imageClassName="w-8 h-8" />
                                 <div className="flex flex-col min-w-0">
-                                    <span className="text-[10px] font-bold text-white truncate">{agent.player.displayName}</span>
-                                    <span className="text-[8px] text-zinc-500 font-mono uppercase tracking-tighter">LVL {(Object.values(agent.progress).reduce((acc, p) => acc + p.completedSteps.length, 0))}</span>
+                                    <span className="text-xs font-bold text-white truncate">{agent.player.displayName}</span>
+                                    <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-tighter">LVL {(Object.values(agent.progress).reduce((acc, p) => acc + p.completedSteps.length, 0))}</span>
                                 </div>
                             </div>
                         ))}
@@ -275,17 +275,17 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
         </div>
 
         {/* Board Section */}
-        <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center gap-6">
-          <div className="relative aspect-square w-full max-w-[400px] border-2 md:border-4 border-zinc-800 rounded shadow-2xl bg-zinc-900 overflow-hidden ring-2 md:ring-4 ring-cyan-500/10">
+        <div className="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center gap-8">
+          <div className="relative aspect-square w-full max-w-[550px] border-4 md:border-8 border-zinc-800 rounded shadow-2xl bg-zinc-900 overflow-hidden ring-4 md:ring-8 ring-cyan-500/10">
             {!isStarted && (
-                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center gap-6">
-                    <Cpu className="h-10 w-10 md:h-12 md:w-12 text-cyan-400 animate-pulse" />
+                <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-8 text-center gap-8">
+                    <Cpu className="h-12 w-12 md:h-16 md:w-16 text-cyan-400 animate-pulse" />
                     <div>
-                        <h4 className="text-base md:text-lg font-cyber text-white uppercase tracking-widest">Simulation Idle</h4>
-                        <p className="text-[10px] md:text-xs text-zinc-500 mt-2">Initialize neural interface to begin combat.</p>
+                        <h4 className="text-lg md:text-2xl font-cyber text-white uppercase tracking-widest">Simulation Idle</h4>
+                        <p className="text-xs md:text-sm text-zinc-500 mt-2">Initialize neural interface to begin combat.</p>
                     </div>
-                    <Button variant="cyber" size="lg" className="px-10 h-10 md:h-12 uppercase text-[10px] md:text-xs tracking-widest" onClick={() => setIsStarted(true)}>
-                        <Play className="mr-2 h-4 w-4" /> Start Sim
+                    <Button variant="cyber" size="lg" className="px-12 h-12 md:h-14 uppercase text-xs md:text-sm tracking-widest" onClick={() => setIsStarted(true)}>
+                        <Play className="mr-2 h-5 w-5" /> Start Sim
                     </Button>
                 </div>
             )}
@@ -305,7 +305,7 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
                     className={cn(
                       "relative cursor-pointer transition-colors duration-200",
                       isDark ? "bg-zinc-800/50" : "bg-zinc-700/30",
-                      isSelected && "bg-cyan-500/40 ring-inset ring-1 md:ring-2 ring-cyan-400",
+                      isSelected && "bg-cyan-500/40 ring-inset ring-2 md:ring-4 ring-cyan-400",
                       isLastMove && "bg-yellow-500/10",
                       isCheck && "bg-red-500/40 animate-pulse"
                     )}
@@ -314,12 +314,12 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className={cn(
                           "rounded-full bg-cyan-400/30",
-                          game.get(square) ? "w-full h-full border-2 border-cyan-400/50" : "w-2 h-2 md:w-3 md:h-3"
+                          game.get(square) ? "w-full h-full border-2 border-cyan-400/50" : "w-3 h-3 md:w-4 md:h-4"
                         )} />
                       </div>
                     )}
-                    {j === 0 && <span className="absolute top-0.5 left-0.5 text-[6px] md:text-[8px] text-zinc-600 font-mono">{8 - i}</span>}
-                    {i === 7 && <span className="absolute bottom-0.5 right-0.5 text-[6px] md:text-[8px] text-zinc-600 font-mono">{String.fromCharCode(97 + j)}</span>}
+                    {j === 0 && <span className="absolute top-1 left-1 text-[8px] md:text-[10px] text-zinc-600 font-mono">{8 - i}</span>}
+                    {i === 7 && <span className="absolute bottom-1 right-1 text-[8px] md:text-[10px] text-zinc-600 font-mono">{String.fromCharCode(97 + j)}</span>}
                   </div>
                 );
               }))}
@@ -347,18 +347,18 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
         </div>
 
         {/* Sidebar Controls */}
-        <div className="lg:col-span-3 order-2 lg:order-3 flex flex-col gap-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4 space-y-4">
-            <h3 className="text-[10px] font-cyber text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-              <Cpu className="h-3 w-3" /> System Logic
+        <div className="lg:col-span-3 order-2 lg:order-3 flex flex-col gap-6">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-6">
+            <h3 className="text-xs font-cyber text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+              <Cpu className="h-4 w-4" /> System Logic
             </h3>
-            <div className="grid grid-cols-1 gap-2">
-              <div className="flex gap-1">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="flex gap-2">
                   <Button
                     variant="cyber"
                     size="sm"
                     onClick={() => { setMoveMode('PvBot'); resetGame(); }}
-                    className={cn("flex-1 text-[9px] h-8", moveMode !== 'PvBot' && "opacity-50 grayscale")}
+                    className={cn("flex-1 text-[10px] h-10", moveMode !== 'PvBot' && "opacity-50 grayscale")}
                   >
                     AI Unit
                   </Button>
@@ -366,23 +366,23 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
                     variant="cyber"
                     size="sm"
                     onClick={() => { setMoveMode('PvP'); resetGame(); }}
-                    className={cn("flex-1 text-[9px] h-8", moveMode !== 'PvP' && "opacity-50 grayscale")}
+                    className={cn("flex-1 text-[10px] h-10", moveMode !== 'PvP' && "opacity-50 grayscale")}
                   >
                     Link
                   </Button>
               </div>
               
               {moveMode === 'PvBot' && (
-                  <div className="space-y-2 mt-2">
-                      <p className="text-[8px] text-zinc-500 font-mono uppercase tracking-widest">Difficulty</p>
-                      <div className="grid grid-cols-3 gap-1">
+                  <div className="space-y-3 mt-2">
+                      <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Difficulty</p>
+                      <div className="grid grid-cols-3 gap-2">
                           {(['Easy', 'Medium', 'Hard'] as Difficulty[]).map((d) => (
                               <Button
                                 key={d}
                                 variant="cyber"
                                 size="sm"
                                 onClick={() => setDifficulty(d)}
-                                className={cn("text-[8px] h-7 px-0", difficulty !== d && "opacity-50 grayscale")}
+                                className={cn("text-[10px] h-9 px-0", difficulty !== d && "opacity-50 grayscale")}
                               >
                                 {d}
                               </Button>
@@ -393,12 +393,12 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
             </div>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4 space-y-4 flex-grow flex flex-col">
-            <h3 className="text-[10px] font-cyber text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-              <Trophy className="h-3 w-3" /> Mission State
+          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-6 flex-grow flex flex-col">
+            <h3 className="text-xs font-cyber text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+              <Trophy className="h-4 w-4" /> Mission State
             </h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-[10px] font-mono">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-zinc-500 uppercase">Turn:</span>
                 <span className={cn(
                   "font-bold",
@@ -407,31 +407,31 @@ export default function ChessGame({ onExit, onWin }: ChessGameProps) {
                   {game.turn() === 'w' ? 'Agent' : moveMode === 'PvBot' ? 'CPU' : 'Peer'}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-[10px] font-mono">
+              <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-zinc-500 uppercase">Status:</span>
-                <span className="text-white uppercase flex items-center gap-1 text-[9px]">
-                  {game.isGameOver() ? <ShieldAlert className="h-3 w-3 text-destructive" /> : null}
+                <span className="text-white uppercase flex items-center gap-1 text-[10px]">
+                  {game.isGameOver() ? <ShieldAlert className="h-4 w-4 text-destructive" /> : null}
                   {game.isGameOver() ? 'Halted' : game.inCheck() ? 'Check' : 'Stable'}
                 </span>
               </div>
             </div>
 
             {game.isGameOver() && (
-              <div className="mt-4 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded text-center animate-in fade-in zoom-in-95 duration-500">
-                <p className="text-[10px] font-bold text-cyan-400 mb-1 uppercase tracking-widest">Terminated</p>
-                <p className="text-[8px] text-white font-mono leading-relaxed">
+              <div className="mt-6 p-4 bg-cyan-500/10 border border-cyan-500/30 rounded text-center animate-in fade-in zoom-in-95 duration-500">
+                <p className="text-xs font-bold text-cyan-400 mb-2 uppercase tracking-widest">Terminated</p>
+                <p className="text-[10px] text-white font-mono leading-relaxed">
                   {game.isCheckmate() ? `Checkmate` : 
                    game.isDraw() ? 'Stalemate' : 'Ended'}
                 </p>
               </div>
             )}
 
-            <div className="mt-auto space-y-2 pt-4">
-              <Button variant="cyber" className="w-full justify-start gap-2 h-8 text-[9px] uppercase tracking-widest" onClick={undoMove} disabled={boardHistory.length === 0}>
-                <Undo2 className="h-3 w-3" /> Undo
+            <div className="mt-auto space-y-3 pt-6">
+              <Button variant="cyber" className="w-full justify-start gap-3 h-10 text-[10px] uppercase tracking-widest" onClick={undoMove} disabled={boardHistory.length === 0}>
+                <Undo2 className="h-4 w-4" /> Undo
               </Button>
-              <Button variant="cyber" className="w-full justify-start gap-2 h-8 text-[9px] uppercase tracking-widest" onClick={resetGame}>
-                <RotateCcw className="h-3 w-3" /> Reboot
+              <Button variant="cyber" className="w-full justify-start gap-3 h-10 text-[10px] uppercase tracking-widest" onClick={resetGame}>
+                <RotateCcw className="h-4 w-4" /> Reboot
               </Button>
             </div>
           </div>
