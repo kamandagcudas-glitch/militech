@@ -193,7 +193,7 @@ export default function FeedbackPage() {
     if (!game.currentUser) return null;
 
     return (
-        <div className="relative -m-4 md:-m-6 h-full overflow-hidden">
+        <div className="relative -m-4 md:-m-6 lg:-m-8 h-full overflow-hidden">
             {/* Background Layers */}
             <div 
                 className="absolute inset-0 w-full h-full bg-cover bg-center feedback-bg-image z-[-20]"
@@ -201,11 +201,17 @@ export default function FeedbackPage() {
                 data-ai-hint="cyberpunk city"
             />
             
+            {/* Animated Glitch Overlay */}
+            <div 
+                className="absolute inset-0 w-full h-full bg-cover bg-center feedback-bg-image z-[-19] animate-cyber-neural-glitch opacity-[0.15] mix-blend-screen pointer-events-none"
+                style={{ backgroundImage: `url(${feedbackPageBackgroundUrl})` }}
+            />
+            
             <div className="absolute inset-0 w-full h-full bg-black/40 backdrop-blur-[6px] z-[-5]" />
             <div className="absolute inset-0 w-full h-full feedback-bg-scanlines z-[-5]" />
 
             {/* Content Layer */}
-            <div className="relative z-10 h-full overflow-y-auto p-4 md:p-6">
+            <div className="relative z-10 h-full overflow-y-auto p-4 md:p-6 lg:p-8">
                 <div className="container mx-auto">
                     <div className="mb-8">
                         <h1 className="font-headline text-4xl font-bold flex items-center gap-3 text-white" style={{ textShadow: '0 0 8px hsl(var(--primary))' }}>
