@@ -318,6 +318,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = async (): Promise<{ success: boolean; message: string; }> => {
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
@@ -326,8 +327,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
         let userDocSnap = await getDoc(userDocRef);
 
         if (!userDocSnap.exists()) {
+            console.log("[Auth] Creating neural profile for Google user:", user.uid);
             const isCreator = user.email?.toLowerCase() === ADMIN_EMAIL;
-            let username = user.email?.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || `user${Date.now()}`;
+            let username = user.email ? user.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') : `agent_${Date.now()}`;
+            
             if(isCreator) {
                 username = CREATOR_USERNAME;
             } else {
@@ -428,7 +431,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 title: 'Account Created!',
                 description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
             });
-            userDocSnap = await getDoc(userDocRef);
         }
 
         await addDoc(collection(firestore, 'loginHistory'), {
@@ -443,6 +445,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
         if (error.code === 'auth/popup-closed-by-user') {
             return { success: false, message: 'Sign-in cancelled by user.' };
+        }
+        if (error.code === 'auth/account-exists-with-different-credential') {
+            return { success: false, message: 'An account already exists with the same email but different credentials. Please use your original method.' };
         }
         console.error("Google Sign-In Error: ", error);
         return { success: false, message: error.message || 'Failed to sign in with Google.' };
