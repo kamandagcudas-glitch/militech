@@ -17,7 +17,10 @@ export interface Player {
   isCreator: boolean;
   profileBackgroundId?: string;
   profileBackgroundUrl?: string;
+  chatBackgroundId?: string;
+  chatBackgroundUrl?: string;
   specialBackground?: 'angelic' | 'cabbage';
+  chatSpecialBackground?: 'angelic' | 'cabbage';
   specialInsignia?: 'black-flame';
   passwordResetCode?: string;
   passwordResetExpires?: string;

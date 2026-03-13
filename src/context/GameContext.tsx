@@ -88,6 +88,7 @@ export interface GameContextType {
   sendVerificationEmail: () => void;
   verifyEmail: () => void;
   updateProfileBackground: (idOrUrl: string) => void;
+  updateChatBackground: (idOrUrl: string) => void;
   updateEmail: (email: string) => Promise<{ success: boolean; message: string; }>;
   sendPasswordResetCode: (email: string) => Promise<{ success: boolean; message: string; }>;
   resetPassword: (email: string, code: string, newPassword: string) => Promise<{ success: boolean; message: string; }>;
@@ -169,6 +170,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         isBanned: false,
         isMuted: false,
         profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+        chatBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
         unlockedTitleIds: [],
         badgeIds: [],
         activeTitleId: null
@@ -181,6 +183,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         playerObject.unlockedTitleIds = ['creator'];
         playerObject.badgeIds = ['creator-badge', 'angelic-power-rune'];
         playerObject.specialBackground = 'angelic';
+        playerObject.chatSpecialBackground = 'angelic';
         const achievement = achievementsData.find(a => a.id === 'creator');
         if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
         const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
@@ -189,6 +192,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         playerObject.activeTitleId = 'bk-foot-lettuce';
         playerObject.unlockedTitleIds = ['bk-foot-lettuce'];
         playerObject.specialBackground = 'cabbage';
+        playerObject.chatSpecialBackground = 'cabbage';
         const achievement = achievementsData.find(a => a.id === 'bk-foot-lettuce');
         if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
       } else if (isVergil) {
@@ -233,10 +237,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
         friendRequests: newPlayer.friendRequests,
         isCreator: newPlayer.isCreator,
         profileBackgroundId: newPlayer.profileBackgroundId,
+        chatBackgroundId: newPlayer.chatBackgroundId,
       };
 
       if (newPlayer.customTitle) finalPlayerObject.customTitle = newPlayer.customTitle;
       if (newPlayer.specialBackground) finalPlayerObject.specialBackground = newPlayer.specialBackground;
+      if (newPlayer.chatSpecialBackground) finalPlayerObject.chatSpecialBackground = newPlayer.chatSpecialBackground;
       if (newPlayer.specialInsignia) finalPlayerObject.specialInsignia = newPlayer.specialInsignia;
       
       const newStats: PlayerStats = {
@@ -351,6 +357,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 isBanned: false,
                 isMuted: false,
                 profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+                chatBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
                 unlockedTitleIds: [],
                 badgeIds: [],
                 activeTitleId: null,
@@ -363,6 +370,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 playerObject.unlockedTitleIds = ['creator'];
                 playerObject.badgeIds = ['creator-badge', 'angelic-power-rune'];
                 playerObject.specialBackground = 'angelic';
+                playerObject.chatSpecialBackground = 'angelic';
                 const achievement = achievementsData.find(a => a.id === 'creator');
                 if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
                 const runeBadge = achievementsData.find(a => a.id === 'angelic-power-rune');
@@ -385,8 +393,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 friendRequests: playerObject.friendRequests!,
                 isCreator: playerObject.isCreator!,
                 profileBackgroundId: playerObject.profileBackgroundId,
+                chatBackgroundId: playerObject.chatBackgroundId,
                 ...(playerObject.customTitle && { customTitle: playerObject.customTitle }),
                 ...(playerObject.specialBackground && { specialBackground: playerObject.specialBackground }),
+                ...(playerObject.chatSpecialBackground && { chatSpecialBackground: playerObject.chatSpecialBackground }),
                 ...(playerObject.specialInsignia && { specialInsignia: playerObject.specialInsignia }),
             };
             
@@ -747,6 +757,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateChatBackground = (idOrUrl: string) => {
+    if (!userDocRef) return;
+    if (idOrUrl.startsWith('data:image/')) {
+      updateDocumentNonBlocking(userDocRef, { 
+        'player.chatBackgroundId': 'custom', 
+        'player.chatBackgroundUrl': idOrUrl 
+      });
+      toast({ title: 'Custom Chat Background Applied!' });
+    } else {
+      updateDocumentNonBlocking(userDocRef, { 
+        'player.chatBackgroundId': idOrUrl, 
+        'player.chatBackgroundUrl': '' 
+      });
+      toast({ title: 'Chat Background Updated!' });
+    }
+  };
+
   const updateEmail = async (newEmail: string): Promise<{ success: boolean; message: string }> => {
     if (!authUser || !userDocRef) return { success: false, message: "Not logged in." };
     
@@ -1028,7 +1055,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       loginHistory: loginHistory || [],
       activityLogs: activityLogs || [],
       feedbackPosts: feedbackPosts || [],
-      logActivity, register, login, signInWithGoogle, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, replyToFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle, sendMessage, clearChatHistory
+      logActivity, register, login, signInWithGoogle, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateChatBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, replyToFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle, sendMessage, clearChatHistory
     }}>
       {children}
     </GameContext.Provider>

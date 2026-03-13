@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo, useContext, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { UserAccount, ChatMessage } from '@/lib/types';
 import { useCollection, useMemoFirebase } from '@/firebase';
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
-import { Send, MessageCircle, Loader2, Trash2 } from 'lucide-react';
+import { Send, MessageCircle, Loader2, Trash2, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -26,8 +27,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { predefinedBackgrounds } from '@/lib/backgrounds-data';
+import { SpecialBackground } from '@/components/special-background';
+import { useToast } from '@/hooks/use-toast';
 
-function FriendList({ onSelectFriend }: { onSelectFriend: (friend: UserAccount) => void; }) {
+function FriendList({ onSelectFriend, onOpenBgDialog }: { onSelectFriend: (friend: UserAccount) => void; onOpenBgDialog: () => void; }) {
     const { currentUser, accounts } = useContext(GameContext) as GameContextType;
     
     const friends = useMemo(() => {
@@ -38,9 +43,12 @@ function FriendList({ onSelectFriend }: { onSelectFriend: (friend: UserAccount) 
     }, [currentUser?.player.friendUsernames, accounts]);
 
     return (
-        <Card className="flex flex-col h-full">
-            <CardHeader>
+        <Card className="flex flex-col h-full bg-card/75 backdrop-blur-md">
+            <CardHeader className="flex flex-row items-center justify-between">
                 <h2 className="text-xl font-bold">Friends</h2>
+                <Button variant="ghost" size="icon" onClick={onOpenBgDialog} title="Customize Chat Background">
+                    <ImageIcon className="h-5 w-5" />
+                </Button>
             </CardHeader>
             <CardContent className="p-0 flex-1">
                 <ScrollArea className="h-full">
@@ -100,7 +108,7 @@ function ChatWindow({ friend }: { friend: UserAccount; }) {
     if (!currentUser) return null;
 
     return (
-        <Card className="flex flex-col h-full">
+        <Card className="flex flex-col h-full bg-card/75 backdrop-blur-md">
             <CardHeader className="flex-row items-center justify-between gap-4 border-b">
                 <div className="flex items-center gap-4">
                     <GamifiedAvatar account={friend} />
@@ -149,11 +157,11 @@ function ChatWindow({ friend }: { friend: UserAccount; }) {
                                         {!isSender && <GamifiedAvatar account={senderAccount} className="w-8 h-8"/>}
                                         <div className={cn(
                                             "max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg",
-                                            isSender ? "bg-primary text-primary-foreground" : "bg-muted"
+                                            isSender ? "bg-primary text-primary-foreground" : "bg-muted shadow-sm"
                                         )}>
                                             <p className="text-sm">{msg.message}</p>
                                             {msg.timestamp && (
-                                                <p className={cn("text-xs mt-1", isSender ? "text-primary-foreground/70" : "text-muted-foreground")}>
+                                                <p className={cn("text-[10px] mt-1", isSender ? "text-primary-foreground/70" : "text-muted-foreground")}>
                                                     {formatDistanceToNow( (msg.timestamp as Timestamp).toDate(), { addSuffix: true })}
                                                 </p>
                                             )}
@@ -178,6 +186,7 @@ function ChatWindow({ friend }: { friend: UserAccount; }) {
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="Type a message..."
                         autoComplete="off"
+                        className="bg-background/50"
                     />
                     <Button type="submit" disabled={!message.trim()}>
                         <Send className="h-4 w-4" />
@@ -190,24 +199,147 @@ function ChatWindow({ friend }: { friend: UserAccount; }) {
 
 
 export default function ChatPage() {
+    const { currentUser, updateChatBackground } = useContext(GameContext) as GameContextType;
     const [activeFriend, setActiveFriend] = useState<UserAccount | null>(null);
+    const [isBgDialogOpen, setIsBgDialogOpen] = useState(false);
+    const [bgPreviewUrl, setBgPreviewUrl] = useState<string | null>(null);
+    const [selectedBgFile, setSelectedBgFile] = useState<File | null>(null);
+    const { toast } = useToast();
+
+    if (!currentUser) return null;
+
+    const { player } = currentUser;
+    const hasSpecialBg = !!player.chatSpecialBackground;
+
+    const currentBackgroundUrl = useMemo(() => {
+        if (!player) return '';
+        if (player.chatBackgroundId === 'custom' && player.chatBackgroundUrl) {
+            return player.chatBackgroundUrl;
+        }
+        const predefined = predefinedBackgrounds.find(bg => bg.id === player.chatBackgroundId);
+        return predefined ? predefined.imageUrl : (predefinedBackgrounds[0]?.imageUrl || '');
+    }, [player]);
+
+    const handleBgFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                toast({ variant: "destructive", title: "Image Too Large", description: "Background images must be smaller than 5MB." });
+                return;
+            }
+            if (file.type === 'image/jpeg' || file.type === 'image/png') {
+                setSelectedBgFile(file);
+                const reader = new FileReader();
+                reader.onloadend = () => setBgPreviewUrl(reader.result as string);
+                reader.readAsDataURL(file);
+            } else {
+                toast({ variant: "destructive", title: "Invalid File Type", description: "Please select a JPG or PNG image." });
+            }
+        }
+    };
+
+    const handleSaveCustomBg = () => {
+        if (bgPreviewUrl && updateChatBackground) {
+            updateChatBackground(bgPreviewUrl);
+            setSelectedBgFile(null);
+            setBgPreviewUrl(null);
+            setIsBgDialogOpen(false);
+        }
+    };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 h-[calc(100vh-8rem)]">
-            <div className="md:col-span-1 lg:col-span-1 h-full">
-                <FriendList onSelectFriend={setActiveFriend} />
+        <div className="relative -m-4 md:-m-6 h-[calc(100vh-3.5rem)] overflow-hidden">
+            {hasSpecialBg ? (
+                <div className="absolute inset-0 z-[-20]">
+                    <SpecialBackground type={player.chatSpecialBackground!} />
+                </div>
+            ) : (
+                <div
+                    className="absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-500 z-[-20]"
+                    style={{ backgroundImage: `url(${currentBackgroundUrl})` }}
+                />
+            )}
+            
+            <div className="absolute inset-0 w-full h-full bg-background/40 backdrop-blur-[2px] z-[-5]" />
+
+            <div className="relative z-10 p-4 md:p-6 h-full">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full">
+                    <div className="md:col-span-1 lg:col-span-1 h-full">
+                        <FriendList onSelectFriend={setActiveFriend} onOpenBgDialog={() => setIsBgDialogOpen(true)} />
+                    </div>
+                    <div className="md:col-span-2 lg:col-span-3 h-full">
+                        {activeFriend ? (
+                            <ChatWindow friend={activeFriend} />
+                        ) : (
+                            <Card className="flex flex-col h-full items-center justify-center text-center text-muted-foreground bg-card/75 backdrop-blur-md">
+                                <MessageCircle className="h-16 w-16 mb-4 opacity-20" />
+                                <h2 className="text-2xl font-bold">Select a friend</h2>
+                                <p>Choose a friend from the list to start chatting.</p>
+                            </Card>
+                        )}
+                    </div>
+                </div>
             </div>
-            <div className="md:col-span-2 lg:col-span-3 h-full">
-                {activeFriend ? (
-                    <ChatWindow friend={activeFriend} />
-                ) : (
-                    <Card className="flex flex-col h-full items-center justify-center text-center text-muted-foreground">
-                        <MessageCircle className="h-16 w-16 mb-4" />
-                        <h2 className="text-2xl font-bold">Select a friend</h2>
-                        <p>Choose a friend from the list to start chatting.</p>
-                    </Card>
-                )}
-            </div>
+
+            {/* BACKGROUND CUSTOMIZATION DIALOG */}
+            <Dialog open={isBgDialogOpen} onOpenChange={setIsBgDialogOpen}>
+                <DialogContent className="max-w-3xl">
+                    <DialogHeader>
+                        <DialogTitle>Customize Chat Background</DialogTitle>
+                        <DialogDescription>Select a predefined theme or upload your own neural interface skin.</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+                        <div className="space-y-3">
+                            <h4 className="font-semibold text-center">Predefined Themes</h4>
+                            <ScrollArea className="h-72 rounded-md border">
+                                <div className="grid grid-cols-2 gap-2 p-4">
+                                    {predefinedBackgrounds.map((bg) => (
+                                        <div 
+                                            key={bg.id} 
+                                            className={cn(
+                                                "relative aspect-video rounded-md overflow-hidden cursor-pointer border-2 transition-all group",
+                                                player.chatBackgroundId === bg.id && !player.chatBackgroundUrl ? 'border-primary ring-2 ring-primary' : 'border-transparent hover:border-primary/50'
+                                            )}
+                                            onClick={() => updateChatBackground && updateChatBackground(bg.id)}
+                                        >
+                                            <Image src={bg.imageUrl} alt={bg.name} fill style={{ objectFit: 'cover' }} />
+                                            <div className="absolute inset-0 bg-black/30 flex items-end p-2 opacity-100 sm:opacity-0 group-hover:opacity-100">
+                                                <p className="text-xs font-bold text-white">{bg.name}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </ScrollArea>
+                        </div>
+                        <div className="space-y-3">
+                             <h4 className="font-semibold text-center">Custom Upload</h4>
+                             <div className='flex flex-col items-center justify-center space-y-4 p-4 border rounded-md h-72 bg-muted/20'>
+                                {bgPreviewUrl ? (
+                                    <div className="relative w-full h-32 rounded-md overflow-hidden">
+                                        <Image src={bgPreviewUrl} alt="Preview" fill style={{ objectFit: 'cover' }}/>
+                                    </div>
+                                ) : player.chatBackgroundUrl && (
+                                    <div className="relative w-full h-32 rounded-md overflow-hidden">
+                                        <Image src={player.chatBackgroundUrl} alt="Current" fill style={{ objectFit: 'cover' }}/>
+                                    </div>
+                                )}
+                                <Input
+                                    type="file"
+                                    accept="image/png, image/jpeg"
+                                    onChange={handleBgFileChange}
+                                    className="file:text-primary"
+                                />
+                                <Button onClick={handleSaveCustomBg} disabled={!selectedBgFile} className="w-full">
+                                    Apply Custom Surface
+                                </Button>
+                             </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsBgDialogOpen(false)}>Close</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

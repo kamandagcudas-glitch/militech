@@ -5,71 +5,78 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "UserProfile",
       "type": "object",
-      "description": "Represents a user's profile, including their identity, learning progression, and gamified statistics. This replaces `localStorage` user data.",
+      "description": "Represents a user's profile, including their identity, learning progression, and gamified statistics.",
       "properties": {
         "id": {
-          "type": "string",
-          "description": "Unique identifier for the UserProfile entity, corresponding to the Firebase Authentication User ID (UID)."
+          "type": "string"
         },
         "username": {
-          "type": "string",
-          "description": "The user-chosen username for display within the application."
+          "type": "string"
         },
         "email": {
           "type": "string",
-          "description": "The user's email address, primarily used for Firebase Authentication.",
           "format": "email"
         },
         "avatar": {
-          "type": "string",
-          "description": "URL or local path to the user's selected avatar image."
+          "type": "string"
         },
         "activeTitleId": {
-          "type": "string",
-          "description": "Reference to the ID of the Title entity currently selected and displayed by the user. (Relationship: Title 1:N UserProfile)"
+          "type": "string"
         },
         "earnedBadgeIds": {
           "type": "array",
-          "description": "An array of IDs referencing Badge entities that the user has earned. (Relationship: Badge N:N UserProfile)",
           "items": {
             "type": "string"
           }
         },
         "unlockedTitleIds": {
           "type": "array",
-          "description": "An array of IDs referencing Title entities that the user has unlocked. (Relationship: Title N:N UserProfile)",
           "items": {
             "type": "string"
           }
         },
         "currentCocId": {
-          "type": "string",
-          "description": "Reference to the ID of the CourseOfCompetency entity the user is currently working through. (Relationship: CourseOfCompetency 1:N UserProfile)"
+          "type": "string"
         },
         "currentStepId": {
+          "type": "string"
+        },
+        "profileBackgroundId": {
+          "type": "string"
+        },
+        "profileBackgroundUrl": {
+          "type": "string"
+        },
+        "chatBackgroundId": {
+          "type": "string"
+        },
+        "chatBackgroundUrl": {
+          "type": "string"
+        },
+        "specialBackground": {
           "type": "string",
-          "description": "Reference to the ID of the Step entity the user is currently attempting within their current COC. (Relationship: Step 1:N UserProfile)"
+          "enum": ["angelic", "cabbage"]
+        },
+        "chatSpecialBackground": {
+          "type": "string",
+          "enum": ["angelic", "cabbage"]
         },
         "totalQuizAttempts": {
           "type": "array",
-          "description": "A list of objects, each tracking the total attempts for a specific quiz by its ID.",
           "items": {
             "type": "string"
           }
         },
         "totalFullResets": {
           "type": "number",
-          "description": "The cumulative count of times the user has been reset to the first step of COC 1 due to progression rules (e.g., low quiz scores).",
           "format": "integer"
         },
         "createdAt": {
           "type": "string",
-          "description": "Timestamp indicating when the user's profile was initially created.",
           "format": "date-time"
         },
         "role": {
           "type": "string",
-          "description": "The access role assigned to the user, such as 'user' or 'admin'.",
           "format": "enum"
         }
       },
@@ -78,13 +85,6 @@
         "username",
         "email",
         "avatar",
-        "activeTitleId",
-        "earnedBadgeIds",
-        "unlockedTitleIds",
-        "currentCocId",
-        "currentStepId",
-        "totalQuizAttempts",
-        "totalFullResets",
         "createdAt",
         "role"
       ]
@@ -105,41 +105,33 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "AchievementLog",
       "type": "object",
-      "description": "Records individual instances of badges or titles earned by a user, including when they were achieved and their significance.",
+      "description": "Records individual instances of badges or titles earned by a user.",
       "properties": {
         "id": {
-          "type": "string",
-          "description": "Unique identifier for the AchievementLog entry."
+          "type": "string"
         },
         "userId": {
-          "type": "string",
-          "description": "Reference to the ID of the UserProfile who earned this achievement. (Relationship: UserProfile 1:N AchievementLog)"
+          "type": "string"
         },
         "type": {
           "type": "string",
-          "description": "Specifies whether the achievement is a 'badge' or a 'title'.",
           "format": "enum"
         },
         "entityId": {
-          "type": "string",
-          "description": "Reference to the ID of the Badge or Title entity that was earned. (Relationship: Badge/Title 1:N AchievementLog)"
+          "type": "string"
         },
         "entityName": {
-          "type": "string",
-          "description": "The display name of the earned badge or title, for quick display without needing to lookup the entity."
+          "type": "string"
         },
         "earnedAt": {
           "type": "string",
-          "description": "Timestamp indicating the exact date and time the achievement was earned.",
           "format": "date-time"
         },
         "description": {
-          "type": "string",
-          "description": "A contextual description of the achievement, e.g., 'Achieved Perfect Score on COC 1 Step 2 Quiz'."
+          "type": "string"
         },
         "isSpecialAchievement": {
-          "type": "boolean",
-          "description": "Indicates if this recorded achievement is one of the special, highlightable achievements (e.g., 'Perfect Score', 'The Greatest Reset')."
+          "type": "boolean"
         }
       },
       "required": [
@@ -147,37 +139,29 @@
         "userId",
         "type",
         "entityId",
-        "entityName",
-        "earnedAt",
-        "description",
-        "isSpecialAchievement"
+        "earnedAt"
       ]
     },
     "ChatMessage": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "ChatMessage",
       "type": "object",
-      "description": "Represents a single message within a chat session between two users.",
+      "description": "Represents a single message within a chat session.",
       "properties": {
         "id": {
-          "type": "string",
-          "description": "Unique identifier for the message."
+          "type": "string"
         },
         "chatId": {
-          "type": "string",
-          "description": "Identifier for the chat session this message belongs to."
+          "type": "string"
         },
         "senderId": {
-          "type": "string",
-          "description": "The UID of the user who sent the message."
+          "type": "string"
         },
         "message": {
-          "type": "string",
-          "description": "The text content of the message."
+          "type": "string"
         },
         "timestamp": {
           "type": "string",
-          "description": "The server timestamp indicating when the message was sent.",
           "format": "date-time"
         }
       },
@@ -187,76 +171,6 @@
         "senderId",
         "message",
         "timestamp"
-      ]
-    },
-    "Badge": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Badge",
-      "type": "object",
-      "description": "Defines the characteristics of a collectible badge that users can earn within the game.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Badge entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The official name of the badge (e.g., 'Perfect Score')."
-        },
-        "description": {
-          "type": "string",
-          "description": "A detailed explanation of how to earn the badge or what it represents."
-        },
-        "iconUrl": {
-          "type": "string",
-          "description": "URL or local path to the graphic icon representing the badge."
-        },
-        "isSpecial": {
-          "type": "boolean",
-          "description": "Indicates if this badge is a special or hidden achievement, often with unique unlock conditions (e.g., 'Creator' badge)."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "description",
-        "iconUrl",
-        "isSpecial"
-      ]
-    },
-    "Title": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Title",
-      "type": "object",
-      "description": "Defines the characteristics of a title that users can unlock and display on their profile.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Title entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The official name of the title (e.g., 'The Greatest Reset', 'CREATOR')."
-        },
-        "description": {
-          "type": "string",
-          "description": "A detailed explanation of the title and its prestige or meaning."
-        },
-        "condition": {
-          "type": "string",
-          "description": "The specific conditions or achievements required for a user to unlock this title."
-        },
-        "isSpecial": {
-          "type": "boolean",
-          "description": "Indicates if this title is a special or hidden achievement with unique unlock conditions."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "description",
-        "condition",
-        "isSpecial"
       ]
     },
     "FeedbackPost": {
