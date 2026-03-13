@@ -27,9 +27,9 @@
     },
     {
       "id": "coc1-step5",
-      "description": "Professional view of the Windows Device Manager interface.",
-      "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "device manager"
+      "description": "Tactical visualization of system security and driver verification.",
+      "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1080",
+      "imageHint": "digital security"
     },
     {
       "id": "coc2-step1",
@@ -246,150 +246,6 @@
       "description": "Compact Tower Case",
       "imageUrl": "https://images.unsplash.com/photo-1593152077897-2cc2dcbc041f?auto=format&fit=crop&q=80&w=1080",
       "imageHint": "nzxt case"
-    },
-    {
-      "id": "profile-bg-cyberpunk-red",
-      "description": "Red City Skyline",
-      "imageUrl": "https://images.unsplash.com/photo-1533577116850-9cc66cad8a9b?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "cyberpunk red"
-    },
-    {
-      "id": "profile-bg-neon-grid",
-      "description": "Neon Digital Grid",
-      "imageUrl": "https://images.unsplash.com/photo-1769120062656-23adba3790b3?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "neon grid"
-    },
-    {
-      "id": "profile-bg-dark-tech",
-      "description": "Dark Technical Pattern",
-      "imageUrl": "https://images.unsplash.com/photo-1512998844734-cd2cca565822?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "dark tech"
-    },
-    {
-      "id": "profile-bg-glitch-red",
-      "description": "Red Glitch Art",
-      "imageUrl": "https://images.unsplash.com/photo-1729761137674-9a3a841f7cea?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "glitch red"
-    },
-    {
-      "id": "minigame1-pic1",
-      "description": "Peripheral Mouse",
-      "imageUrl": "https://images.unsplash.com/photo-1629121291243-7b5e885cce9b?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "pc mouse"
-    },
-    {
-      "id": "minigame1-pic2",
-      "description": "Peripheral Keyboard",
-      "imageUrl": "https://images.unsplash.com/photo-1637243218672-d338945efdf7?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "keyboard"
-    },
-    {
-      "id": "minigame1-pic3",
-      "description": "Peripheral Monitor",
-      "imageUrl": "https://images.unsplash.com/photo-1484788984921-03950022c9ef?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "monitor"
-    },
-    {
-      "id": "minigame1-pic4",
-      "description": "Peripheral Headphones",
-      "imageUrl": "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "headphones"
-    },
-    {
-      "id": "minigame2-pic1",
-      "description": "Network Port",
-      "imageUrl": "https://images.unsplash.com/photo-1649269234528-6cf263c06ccc?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "ethernet port"
-    },
-    {
-      "id": "minigame2-pic2",
-      "description": "Wireless WiFi",
-      "imageUrl": "https://images.unsplash.com/photo-1600238454024-bc8c1e49caba?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "wifi"
-    },
-    {
-      "id": "minigame2-pic3",
-      "description": "Network Switch",
-      "imageUrl": "https://images.unsplash.com/photo-1682559736721-c2e77ff4c650?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "network switch"
-    },
-    {
-      "id": "minigame2-pic4",
-      "description": "Network Diagram",
-      "imageUrl": "https://images.unsplash.com/photo-1664526937033-fe2c11f1be25?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "network map"
-    },
-    {
-      "id": "minigame3-pic1",
-      "description": "Dedicated Server",
-      "imageUrl": "https://images.unsplash.com/photo-1667984550809-ac2a63a4f7b4?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "server rack"
-    },
-    {
-      "id": "minigame3-pic2",
-      "description": "Server Administration",
-      "imageUrl": "https://images.unsplash.com/photo-1684661893103-aad19c0173c5?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "server admin"
-    },
-    {
-      "id": "minigame3-pic3",
-      "description": "Cloud Infrastructure",
-      "imageUrl": "https://images.unsplash.com/photo-1558494949-ef010ca7382f?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "cloud data"
-    },
-    {
-      "id": "minigame3-pic4",
-      "description": "File Services",
-      "imageUrl": "https://images.unsplash.com/photo-1715520530023-cc8a1b2044ab?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "file server"
-    },
-    {
-      "id": "minigame4-pic1",
-      "description": "Data Backup",
-      "imageUrl": "https://images.unsplash.com/photo-1659885785824-3e72856b8fef?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "data storage"
-    },
-    {
-      "id": "minigame4-pic2",
-      "description": "System Virus",
-      "imageUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "malware"
-    },
-    {
-      "id": "minigame4-pic3",
-      "description": "System Cleaning",
-      "imageUrl": "https://images.unsplash.com/photo-1464580148015-c844134b925f?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "clean pc"
-    },
-    {
-      "id": "minigame4-pic4",
-      "description": "Maintenance Calendar",
-      "imageUrl": "https://images.unsplash.com/photo-1768745595839-10fc76c8ac10?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "schedule"
-    },
-    {
-      "id": "minigame5-pic1",
-      "description": "Memory RAM",
-      "imageUrl": "https://images.unsplash.com/photo-1754820978729-39c2e2a15112?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "memory stick"
-    },
-    {
-      "id": "minigame5-pic2",
-      "description": "Main CPU",
-      "imageUrl": "https://images.unsplash.com/photo-1750365919878-2735d30fa3d8?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "processor"
-    },
-    {
-      "id": "minigame5-pic3",
-      "description": "Main Motherboard",
-      "imageUrl": "https://images.unsplash.com/photo-1631031509251-62a73758f9d3?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "logic board"
-    },
-    {
-      "id": "minigame5-pic4",
-      "description": "Internal SSD",
-      "imageUrl": "https://images.unsplash.com/photo-1602526431715-81a7851b96d8?auto=format&fit=crop&q=80&w=1080",
-      "imageHint": "flash storage"
     }
   ]
 }

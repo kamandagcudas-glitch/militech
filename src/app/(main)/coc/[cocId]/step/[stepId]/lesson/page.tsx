@@ -1,15 +1,16 @@
+
 "use client";
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { cocData } from '@/lib/data';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, BookOpen, Cpu, Lock } from 'lucide-react';
+import { ArrowRight, BookOpen, Cpu, Lock, ImageOff } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Breadcrumb,
@@ -26,6 +27,8 @@ export default function LessonPage() {
   const game = useContext(GameContext) as GameContextType;
   const cocId = params.cocId as string;
   const stepId = params.stepId as string;
+  
+  const [hasError, setHasError] = useState(false);
 
   const coc = cocData.find(c => c.id === cocId);
   const step = coc?.steps.find(s => s.id === stepId);
@@ -98,10 +101,10 @@ export default function LessonPage() {
             </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Card>
+      <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
         <CardHeader>
-          <CardTitle className="font-headline text-3xl flex items-center gap-2">
-            <BookOpen />
+          <CardTitle className="font-headline text-2xl md:text-3xl flex items-center gap-2">
+            <BookOpen className="text-primary" />
             {step.title}
           </CardTitle>
         </CardHeader>
@@ -109,20 +112,29 @@ export default function LessonPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="prose dark:prose-invert max-w-none">
               {step.lesson.text.map((paragraph, index) => (
-                <p key={index} className="text-lg mb-4">{paragraph}</p>
+                <p key={index} className="text-sm md:text-lg mb-4 text-foreground/90 leading-relaxed">{paragraph}</p>
               ))}
             </div>
-            {image && (
-              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
-                <Image 
-                  src={image.imageUrl}
-                  alt={image.description}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  data-ai-hint={image.imageHint}
-                />
-              </div>
-            )}
+            <div className="relative">
+                {image && !hasError ? (
+                  <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg border border-primary/20 bg-muted">
+                    <Image 
+                      src={image.imageUrl}
+                      alt={image.description}
+                      fill
+                      className="object-cover transition-opacity duration-500"
+                      onError={() => setHasError(true)}
+                      data-ai-hint={image.imageHint}
+                    />
+                  </div>
+                ) : image && hasError ? (
+                  <div className="aspect-video rounded-lg flex flex-col items-center justify-center bg-muted border-2 border-dashed border-primary/20 text-muted-foreground p-4 text-center">
+                    <ImageOff className="h-12 w-12 mb-2 opacity-20 text-primary" />
+                    <p className="text-sm font-semibold uppercase font-cyber tracking-widest text-primary">Image not available</p>
+                    <p className="text-[10px]">Verification of visual asset failed.</p>
+                  </div>
+                ) : null}
+            </div>
           </div>
 
           <div className="mt-8 flex flex-col items-center gap-4">
@@ -140,19 +152,19 @@ export default function LessonPage() {
               {isCoc1Step1 && (
                 <Link href="/system-viewer">
                   <Button variant="secondary" size="lg">
-                    <Cpu className="mr-2" /> Explore System Unit
+                    <Cpu className="mr-2 h-5 w-5" /> Explore System Unit
                   </Button>
                 </Link>
               )}
               
               {isQuizUnlocked ? (
                 <Link href={`/coc/${cocId}/step/${stepId}/quiz`}>
-                  <Button variant="cyber" size="lg" className="text-lg h-14">
-                    I'm Ready, Start Quiz! <ArrowRight className="ml-2" />
+                  <Button variant="cyber" size="lg" className="text-lg h-14 px-10">
+                    I'm Ready, Start Quiz! <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
               ) : (
-                <Button variant="ghost" size="lg" className="text-lg h-14 opacity-50 cursor-not-allowed" disabled>
+                <Button variant="ghost" size="lg" className="text-lg h-14 opacity-50 cursor-not-allowed border border-dashed border-white/10" disabled>
                   <Lock className="mr-2 h-5 w-5" /> Quiz Locked
                 </Button>
               )}
