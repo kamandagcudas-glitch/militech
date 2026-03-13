@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,6 +24,7 @@
     --border: 0 84.2% 40.2%;
     --input: 225 30% 16%;
     --ring: 0 84.2% 60.2%;
+    --radius: 0.5rem;
     --sidebar-background: 226 25% 10%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 0 84.2% 60.2%;
@@ -237,18 +239,25 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
   }
-  .light body {
-    background-color: hsl(var(--background));
-    background-image: none;
-    animation: none;
+  
+  /* Scrollbar styling for a cleaner mobile feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
-  .dark body {
-    background-color: hsl(var(--background));
-    background-image: none;
-    animation: none;
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.2);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.4);
+  }
+
   .cyberpunk body {
     background-color: hsl(var(--background));
     background-image: 
@@ -256,21 +265,6 @@
       linear-gradient(90deg, hsl(var(--primary) / 0.1) 1px, transparent 1px);
     background-size: 3.5rem 3.5rem;
     animation: animated-grid 30s linear infinite;
-    overflow-x: hidden;
-  }
-  .samurai body {
-    background-color: hsl(var(--background));
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23a12022' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9z'/%3E%3Cpath d='M6 5V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h9V0h1v5h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5v-9H0v-1h5V0h1v5zm95 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm-10 0h-9v9h9V5zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm10 0h9v9h-9v-9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm0 10h9v9h-9v-9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm0 10v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9zm-10 0v9h9v-9h-9z'/%3E%3Cg%3E%3C/g%3E%3C/svg%3E");
-    animation: none;
-  }
-  .flames body {
-    background: linear-gradient(120deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--background)), hsl(var(--primary)));
-    background-size: 400% 400%;
-    animation: animated-flames 15s ease infinite;
-  }
-  .angelic body {
-    background-color: hsl(var(--background));
-    animation: none;
   }
 }
 
@@ -438,9 +432,6 @@
   50% { filter: drop-shadow(0 0 15px hsl(var(--primary) / 0.9)) drop-shadow(0 0 25px hsl(var(--primary) / 0.4)); }
 }
 
-/* High-Energy Theme Animations */
-
-/* Advanced Neural Glitch for Cyberpunk */
 @keyframes cyber-neural-glitch {
   0%, 100% { 
     transform: translate(0, 0) skew(0deg); 
@@ -469,7 +460,6 @@
   }
 }
 
-/* Graceful Flight for Angelic */
 @keyframes angelic-weightless-drift {
   0%, 100% { 
     transform: translateY(0) rotate(0deg) scale(1); 
@@ -485,7 +475,6 @@
   }
 }
 
-/* Sharp Steel Shimmer for Samurai */
 @keyframes samurai-steel-shimmer {
   0%, 100% { 
     transform: scale(1) rotate(0deg); 
@@ -529,7 +518,6 @@
     @apply bg-gradient-to-br from-gray-900 via-indigo-950 to-blue-950;
   }
 
-  /* Increase ray visibility */
   .angelic-bg .light-ray {
     @apply absolute bg-gradient-to-t from-transparent to-yellow-300/70 w-1/4 h-full;
     animation: ray-anim 15s linear infinite;
@@ -541,7 +529,6 @@
   .angelic-bg .ray-3 { top: -50%; left: 60%; animation-delay: -10s;}
   .angelic-bg .ray-4 { top: -50%; left: 80%; }
 
-  /* Make particles slightly larger and move faster */
   .angelic-bg .particles {
     @apply absolute inset-0;
     background-image:
@@ -560,7 +547,6 @@
       animation: veggie-float 12s linear infinite;
   }
 
-  /* Quiz anti-cheat styles */
   .quiz-anti-cheat {
     user-select: none;
   }
@@ -585,29 +571,6 @@
     animation: feather-drift linear infinite;
   }
 
-  .cyberpunk body::before,
-  .cyberpunk body::after {
-    content: none;
-  }
-
-  /* Custom overrides for Cyberpunk theme to remove blur and ensure solid backgrounds */
-  .cyberpunk [class*="backdrop-blur"] {
-    backdrop-filter: none;
-  }
-
-  .cyberpunk [class*="bg-card/"] {
-    background-color: hsl(var(--card));
-  }
-    
-  .cyberpunk [class*="bg-background/"] {
-    background-color: hsl(var(--background));
-  }
-
-  .cyberpunk [class*="bg-black/"] {
-      background-color: hsl(var(--card) / 0.85);
-  }
-
-  /* Redesigned Cyber Button */
   .cyber-btn {
     @apply relative inline-flex items-center justify-center font-headline font-bold uppercase tracking-[0.2em] transition-all duration-300 overflow-hidden;
     clip-path: polygon(12% 0, 100% 0, 100% 70%, 88% 100%, 0 100%, 0 30%);
@@ -616,21 +579,6 @@
     color: hsl(var(--primary));
     box-shadow: 0 0 15px hsl(var(--primary) / 0.3), inset 0 0 10px hsl(var(--primary) / 0.2);
     text-shadow: 0 0 5px hsl(var(--primary) / 0.5);
-  }
-
-  /* Sweep Effect */
-  .cyber-btn::before {
-    content: "";
-    @apply absolute top-0 -left-full w-1/2 h-full transition-all duration-500 pointer-events-none;
-    background: linear-gradient(90deg, transparent, hsl(var(--accent) / 0.4), transparent);
-    transform: skewX(-25deg);
-  }
-
-  /* Glitch Line Decoration */
-  .cyber-btn::after {
-    content: "";
-    @apply absolute left-0 bottom-0 w-full h-[2px] bg-accent opacity-0 transition-opacity;
-    box-shadow: 0 0 10px hsl(var(--accent));
   }
 
   .cyber-btn:hover {
@@ -642,164 +590,26 @@
     border-color: white;
   }
 
-  .cyber-btn:hover::before {
-    @apply left-[150%];
-  }
-
-  .cyber-btn:hover::after {
-    @apply opacity-100;
-    animation: cyber-glitch-line 2s steps(1) infinite;
-  }
-
-  .cyber-btn:active {
-    animation: cyber-neural-shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
-    background: hsl(var(--accent) / 0.2);
-    border-color: hsl(var(--accent));
-    box-shadow: 0 0 30px hsl(var(--accent));
-  }
-
-  /* Gamified Avatar Borders */
   .avatar-border-wrapper {
     @apply relative rounded-full flex items-center justify-center transition-all duration-300 aspect-square min-w-fit min-h-fit;
-  }
-
-  .avatar-border-wrapper:hover {
-    @apply brightness-110;
   }
 
   .avatar-border {
     @apply absolute inset-0 rounded-full z-0 pointer-events-none;
   }
 
-  /* Standard decorative border backing */
   .avatar-border-wrapper::before {
     content: '';
     @apply absolute inset-[2px] rounded-full z-[1] bg-card;
   }
 
-  /* Common shimmer animation */
   @keyframes shine {
     from { transform: translateX(-100%) rotate(45deg); }
     to { transform: translateX(200%) rotate(45deg); }
   }
 
-  .avatar-border-wrapper[data-border="bronze"] { @apply p-1; }
-  .avatar-border-wrapper[data-border="bronze"] .avatar-border {
-    background: linear-gradient(135deg, #a87932 0%, #cd7f32 50%, #8b5a2b 100%);
-    box-shadow: 0 0 8px rgba(205, 127, 50, 0.3);
-  }
-
-  .avatar-border-wrapper[data-border="silver"] { @apply p-1; }
-  .avatar-border-wrapper[data-border="silver"] .avatar-border {
-    background: linear-gradient(135deg, #d1d1d1 0%, #ffffff 50%, #a1a1a1 100%);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  }
-
-  .avatar-border-wrapper[data-border="gold"] { @apply p-1; }
-  .avatar-border-wrapper[data-border="gold"] .avatar-border {
-    background: linear-gradient(135deg, #ffd700 0%, #fff9aa 50%, #b8860b 100%);
-    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-    animation: gold-pulse 3s infinite ease-in-out;
-  }
-
-  @keyframes gold-pulse {
-    50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
-  }
-
-  .avatar-border-wrapper[data-border="diamond"] { @apply p-1; }
-  .avatar-border-wrapper[data-border="diamond"] .avatar-border {
-    background: linear-gradient(135deg, #b9f2ff 0%, #ffffff 50%, #70d1ff 100%);
-    box-shadow: 0 0 15px rgba(185, 242, 255, 0.6);
-    overflow: hidden;
-  }
-
-  .avatar-border-wrapper[data-border="diamond"] .avatar-border::after {
-    content: '';
-    @apply absolute top-0 left-0 w-full h-full;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-    animation: shine 2s infinite;
-  }
-
-  .avatar-border-wrapper[data-border="black-flame"] { @apply p-1; }
-  .avatar-border-wrapper[data-border="black-flame"] .avatar-border {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, #000 50%, hsl(var(--primary)) 100%);
-    box-shadow: 0 0 15px hsl(var(--primary) / 0.6);
-    animation: border-pulse 2.5s infinite ease-in-out;
-  }
-
-  /* Specialized Image Overlay Borders (Admin & Custom) */
-  .avatar-border-wrapper[data-border="admin-image"],
-  .avatar-border-wrapper[data-border="custom-no"],
-  .avatar-border-wrapper[data-border="custom-jay"] {
-    @apply p-[10%] aspect-square; /* Internal space for the circular avatar */
-  }
-
-  .avatar-border-wrapper[data-border="admin-image"] .avatar-border,
-  .avatar-border-wrapper[data-border="custom-no"] .avatar-border,
-  .avatar-border-wrapper[data-border="custom-jay"] .avatar-border {
-    @apply inset-0 rounded-none; /* Frame covers the entire wrapper area including padding */
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: 20; /* Frame sits on TOP of the avatar image */
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-  }
-
-  /* Custom frames are overlays, so we disable the standard circular backing */
-  .avatar-border-wrapper[data-border="admin-image"]::before,
-  .avatar-border-wrapper[data-border="custom-no"]::before,
-  .avatar-border-wrapper[data-border="custom-jay"]::before {
-    @apply bg-transparent;
-  }
-
-  .avatar-border-wrapper[data-border="admin-image"] .avatar-border {
-    background-image: url('/Admin.png');
-    animation: admin-frame-glow 3s infinite ease-in-out;
-  }
-
-  .avatar-border-wrapper[data-border="custom-no"] .avatar-border {
-    background-image: url('/no.png');
-  }
-
-  .avatar-border-wrapper[data-border="custom-jay"] .avatar-border {
-    background-image: url('/jay.png');
-  }
-
-  .avatar-border-wrapper[data-border="default"] {
-    @apply p-0.5;
-  }
-  .avatar-border-wrapper[data-border="default"] .avatar-border {
-    @apply border-2 border-border;
-  }
-  .avatar-border-wrapper[data-border="default"]::before {
-    content: none;
-  }
-}
-
-@keyframes cyber-glitch-line {
-  0%, 100% { bottom: 0; height: 2px; }
-  33% { bottom: 40%; height: 1px; }
-  66% { bottom: 80%; height: 3px; }
-}
-
-@keyframes cyber-neural-shake {
-  0% { transform: translate(0); }
-  25% { transform: translate(-4px, 2px); }
-  50% { transform: translate(4px, -2px); }
-  75% { transform: translate(-2px, -2px); }
-  100% { transform: translate(0); }
-}
-
-@keyframes glitch-red {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(-3px, 2px); }
-  50% { transform: translate(3px, -2px); }
-  75% { transform: translate(-1px, 1px); }
-}
-
-@keyframes glitch-cyan {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(2px, -3px); }
-  50% { transform: translate(-2px, 3px); }
-  75% { transform: translate(1px, -1px); }
+  /* Responsive font adjustments for headers */
+  h1 { @apply text-2xl md:text-4xl; }
+  h2 { @apply text-xl md:text-3xl; }
+  h3 { @apply text-lg md:text-2xl; }
 }

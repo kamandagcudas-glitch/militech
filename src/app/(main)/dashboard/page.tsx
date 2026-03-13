@@ -112,29 +112,31 @@ export default function DashboardPage() {
     }, [lowercasedQuery, otherCards]);
 
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4 md:px-0">
             <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h1 className="font-headline text-4xl font-bold flex flex-wrap items-center gap-2">
+                <h1 className="font-headline text-3xl md:text-4xl font-bold flex flex-wrap items-center gap-2">
                     <AnimatedGlitchText text={`Welcome, ${player.displayName}!`} />
-                    {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-12" title="Creator"/>}
-                    {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-8 w-8 transition-transform duration-300 hover:scale-125 hover:rotate-[-12deg]" title="Angelic Power Rune"/>}
-                    {player.specialInsignia === 'black-flame' && <BlackFlameIcon className="text-primary h-8 w-8 transition-transform duration-300 hover:scale-125" title="Black Flame Wanderer"/>}
+                    <div className="flex items-center gap-1">
+                        {player.isCreator && <CreatorBadgeIcon className="text-yellow-400 h-6 w-6 md:h-8 md:w-8 transition-transform duration-300 hover:scale-125 hover:rotate-12" title="Creator"/>}
+                        {player.isCreator && <AngelicPowerRuneIcon className="text-cyan-300 h-6 w-6 md:h-8 md:w-8 transition-transform duration-300 hover:scale-125 hover:rotate-[-12deg]" title="Angelic Power Rune"/>}
+                        {player.specialInsignia === 'black-flame' && <BlackFlameIcon className="text-primary h-6 w-6 md:h-8 md:w-8 transition-transform duration-300 hover:scale-125" title="Black Flame Wanderer"/>}
+                    </div>
                 </h1>
-                <p className="text-muted-foreground">@{player.username}</p>
-                <p className="text-muted-foreground mt-2">Ready to level up your IT skills? Find a module to begin.</p>
+                <p className="text-sm md:text-base text-muted-foreground mt-1">@{player.username}</p>
+                <p className="text-xs md:text-sm text-muted-foreground mt-2 opacity-80">Ready to level up your IT skills? Find a module to begin.</p>
             </div>
 
             <div className="mb-8 relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input 
                     placeholder="Search for modules or features..."
-                    className="pl-12 text-lg h-14"
+                    className="pl-12 text-sm md:text-lg h-12 md:h-14 bg-background/50 border-primary/20 focus:border-primary/50"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {filteredCocData.map((coc, index) => {
                     const completedSteps = progress![coc.id]?.completedSteps.length || 0;
                     const totalSteps = coc.steps.length;
@@ -144,20 +146,23 @@ export default function DashboardPage() {
                         <Card 
                             key={coc.id} 
                             className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                            style={{ animationDelay: `${150 * index}ms`, animationFillMode: 'backwards' }}
+                            style={{ animationDelay: `${100 * index}ms`, animationFillMode: 'backwards' }}
                         >
-                            <CardHeader>
-                                <CardTitle className="font-headline">{coc.title}</CardTitle>
-                                <CardDescription>{coc.description}</CardDescription>
+                            <CardHeader className="p-4 md:p-6">
+                                <CardTitle className="font-headline text-lg md:text-xl">{coc.title}</CardTitle>
+                                <CardDescription className="text-xs md:text-sm line-clamp-2">{coc.description}</CardDescription>
                             </CardHeader>
-                            <CardContent className="flex-grow flex flex-col justify-between">
+                            <CardContent className="flex-grow flex flex-col justify-between p-4 md:p-6 pt-0 md:pt-0">
                                 <div>
-                                    <p className="text-sm text-muted-foreground mb-1">{completedSteps} / {totalSteps} steps completed</p>
-                                    <Progress value={progressPercentage} className="mb-4" />
+                                    <div className="flex justify-between text-[10px] md:text-xs text-muted-foreground mb-1 font-mono">
+                                        <span>PROGRESS</span>
+                                        <span>{completedSteps} / {totalSteps}</span>
+                                    </div>
+                                    <Progress value={progressPercentage} className="h-1.5 md:h-2 mb-4" />
                                 </div>
-                                <Link href={`/coc/${coc.id}`} passHref>
-                                    <Button variant="cyber" className="w-full mt-2">
-                                        {progressPercentage === 100 ? 'Review' : 'Start'} Module <ArrowRight className="ml-2" />
+                                <Link href={`/coc/${coc.id}`} passHref className="w-full">
+                                    <Button variant="cyber" className="w-full mt-2 h-9 md:h-10 text-xs md:text-sm uppercase tracking-widest">
+                                        {progressPercentage === 100 ? 'Review' : 'Initialize'} <ArrowRight className="ml-2 h-3 w-3 md:h-4 md:w-4" />
                                     </Button>
                                 </Link>
                             </CardContent>
@@ -168,16 +173,16 @@ export default function DashboardPage() {
                      <Card 
                         key={card.href}
                         className="transition-all duration-300 flex flex-col bg-card/80 backdrop-blur-sm border-primary/20 hover:border-primary/50 hover:shadow-[0_0_25px_hsl(var(--primary)/0.3)] hover:-translate-y-1 animate-in fade-in slide-in-from-bottom-4"
-                        style={{ animationDelay: `${150 * (filteredCocData.length + index)}ms`, animationFillMode: 'backwards' }}
+                        style={{ animationDelay: `${100 * (filteredCocData.length + index)}ms`, animationFillMode: 'backwards' }}
                     >
-                        <CardHeader>
-                            <CardTitle className="font-headline flex items-center gap-2">{card.icon} {card.title}</CardTitle>
-                            <CardDescription>{card.description}</CardDescription>
+                        <CardHeader className="p-4 md:p-6">
+                            <CardTitle className="font-headline text-lg md:text-xl flex items-center gap-2">{card.icon} {card.title}</CardTitle>
+                            <CardDescription className="text-xs md:text-sm line-clamp-2">{card.description}</CardDescription>
                         </CardHeader>
-                        <CardContent className="flex-grow flex items-end">
-                            <Link href={card.href} passHref>
-                                <Button variant="cyber" className="w-full mt-2">
-                                    {card.buttonText} <ArrowRight className="ml-2" />
+                        <CardContent className="flex-grow flex items-end p-4 md:p-6 pt-0 md:pt-0">
+                            <Link href={card.href} passHref className="w-full">
+                                <Button variant="cyber" className="w-full mt-2 h-9 md:h-10 text-xs md:text-sm uppercase tracking-widest">
+                                    {card.buttonText} <ArrowRight className="ml-2 h-3 w-3 md:h-4 md:w-4" />
                                 </Button>
                             </Link>
                         </CardContent>
@@ -186,46 +191,51 @@ export default function DashboardPage() {
             </div>
 
             {filteredCocData.length === 0 && filteredOtherCards.length === 0 && (
-                <div className="text-center py-16 text-muted-foreground bg-card/50 rounded-lg border-2 border-dashed">
-                    <p className="text-lg font-semibold">No Results Found</p>
-                    <p>No modules or features match your search query.</p>
+                <div className="text-center py-16 text-muted-foreground bg-card/50 rounded-lg border-2 border-dashed border-primary/10">
+                    <Search className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                    <p className="text-lg font-semibold uppercase font-cyber tracking-widest">No Results Found</p>
+                    <p className="text-sm">Modify search parameters or check simulation status.</p>
                 </div>
             )}
 
             <Dialog open={showSecretGame} onOpenChange={setShowSecretGame}>
-                <DialogContent className="max-w-[800px] p-0 bg-black border-primary overflow-hidden">
+                <DialogContent className="max-w-[95vw] md:max-w-[800px] p-0 bg-black border-primary overflow-hidden">
                     <DialogHeader className="sr-only">
                         <DialogTitle>Stickman Fighter Easter Egg</DialogTitle>
                     </DialogHeader>
-                    <StickmanFighter 
-                        onExit={() => setShowSecretGame(false)} 
-                        onWin={() => {
-                            if (game.addAchievement) {
-                                game.addAchievement('certified-bored');
-                            }
-                        }}
-                    />
+                    <div className="w-full overflow-auto">
+                        <StickmanFighter 
+                            onExit={() => setShowSecretGame(false)} 
+                            onWin={() => {
+                                if (game.addAchievement) {
+                                    game.addAchievement('certified-bored');
+                                }
+                            }}
+                        />
+                    </div>
                 </DialogContent>
             </Dialog>
 
             <Dialog open={showChessGame} onOpenChange={setShowChessGame}>
-                <DialogContent className="max-w-fit p-0 bg-transparent border-none overflow-hidden">
+                <DialogContent className="max-w-[95vw] md:max-w-fit p-0 bg-transparent border-none overflow-hidden">
                     <DialogHeader className="sr-only">
                         <DialogTitle>Braga Mode Chess</DialogTitle>
                     </DialogHeader>
-                    <ChessGame 
-                        onExit={() => setShowChessGame(false)} 
-                        onWin={() => {
-                            if (game.addAchievement) {
-                                game.addAchievement('grandmaster-braga');
-                            }
-                        }}
-                    />
+                    <div className="w-full overflow-auto">
+                        <ChessGame 
+                            onExit={() => setShowChessGame(false)} 
+                            onWin={() => {
+                                if (game.addAchievement) {
+                                    game.addAchievement('grandmaster-braga');
+                                }
+                            }}
+                        />
+                    </div>
                 </DialogContent>
             </Dialog>
 
             <Dialog open={showJoystickCodes} onOpenChange={setShowJoystickCodes}>
-                <DialogContent className="max-w-md bg-card/95 backdrop-blur-xl border-primary/50">
+                <DialogContent className="max-w-[90vw] md:max-w-md bg-card/95 backdrop-blur-xl border-primary/50">
                     <DialogHeader>
                         <DialogTitle className="font-cyber text-2xl text-primary flex items-center gap-2">
                             <Terminal className="h-6 w-6" /> JOYSTICK OVERRIDE
@@ -234,15 +244,15 @@ export default function DashboardPage() {
                             Classified access codes retrieved from simulation core.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="grid grid-cols-2 gap-4 py-6">
+                    <div className="grid grid-cols-2 gap-2 md:gap-4 py-6">
                         {joystickCodes.map((code, index) => (
                             <div key={index} className="bg-black/40 border border-primary/20 p-3 rounded text-center group hover:border-primary transition-colors">
-                                <code className="font-mono text-lg text-accent group-hover:text-white transition-colors">{code}</code>
+                                <code className="font-mono text-sm md:text-lg text-accent group-hover:text-white transition-colors">{code}</code>
                             </div>
                         ))}
                     </div>
                     <div className="flex justify-center">
-                        <Button variant="cyber" onClick={() => setShowJoystickCodes(false)}>Close Terminal</Button>
+                        <Button variant="cyber" onClick={() => setShowJoystickCodes(false)} className="w-full md:w-auto h-10 uppercase text-xs">Close Terminal</Button>
                     </div>
                 </DialogContent>
             </Dialog>

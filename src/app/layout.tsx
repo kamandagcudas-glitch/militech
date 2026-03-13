@@ -1,5 +1,5 @@
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
 import "./globals.css";
@@ -8,7 +8,14 @@ export const metadata: Metadata = {
   title: "MI-LITECH | Cyberpunk Learning Platform",
   description: "MI-LITECH is a gamified web-based learning and assessment platform for Grade 12 CSS Certificate of Competency.",
   keywords: ["MI-LITECH", "Cyberpunk", "Learning", "CSS", "COC", "Quiz", "Gamified"],
-  authors: [{ name: "Your Name" }],
+  authors: [{ name: "IT MAZING" }],
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -26,7 +33,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased">
+      <body className="font-body antialiased selection:bg-primary selection:text-white">
         <Providers>
           {children}
           <Toaster />

@@ -63,166 +63,173 @@ export default function AdminDashboardPage() {
     }
     
     return (
-        <div className="container mx-auto">
-            <h1 className="font-headline text-4xl font-bold mb-4 flex items-center gap-3"><Shield className="text-destructive"/> Admin Dashboard</h1>
-            <p className="text-muted-foreground mb-8">Monitor user activity and system logs.</p>
+        <div className="container mx-auto px-4 py-6">
+            <h1 className="font-headline text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3"><Shield className="text-destructive"/> Admin Dashboard</h1>
+            <p className="text-muted-foreground mb-8 text-sm md:text-base">Monitor user activity and system logs.</p>
 
-            <Card className="mb-8 bg-card/80 backdrop-blur-sm">
+            <Card className="mb-8 bg-card/80 backdrop-blur-sm border-primary/20">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><ListFilter /> Filters</CardTitle>
+                    <CardTitle className="flex items-center gap-2 text-lg md:text-xl"><ListFilter /> Filters</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input 
                         placeholder="Filter by username..."
                         value={usernameFilter}
                         onChange={(e) => setUsernameFilter(e.target.value)}
+                        className="bg-background/50"
                     />
                     <Input 
                         type="date"
                         value={dateFilter}
                         onChange={(e) => setDateFilter(e.target.value)}
+                        className="bg-background/50"
                     />
                 </CardContent>
             </Card>
 
-            <Tabs defaultValue="activity">
-                <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="activity">Activity Logs</TabsTrigger>
-                    <TabsTrigger value="login">Login History</TabsTrigger>
-                    <TabsTrigger value="management">User Management</TabsTrigger>
+            <Tabs defaultValue="activity" className="w-full overflow-hidden">
+                <TabsList className="grid w-full grid-cols-3 mb-4">
+                    <TabsTrigger value="activity" className="text-xs md:text-sm">Activity</TabsTrigger>
+                    <TabsTrigger value="login" className="text-xs md:text-sm">Logins</TabsTrigger>
+                    <TabsTrigger value="management" className="text-xs md:text-sm">Users</TabsTrigger>
                 </TabsList>
+                
                 <TabsContent value="activity">
-                    <Card className="bg-card/80 backdrop-blur-sm">
+                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
                         <CardHeader>
-                            <CardTitle>Feature Usage Logs</CardTitle>
-                            <CardDescription>Recent actions performed by users across the system.</CardDescription>
+                            <CardTitle className="text-lg md:text-xl">Feature Usage Logs</CardTitle>
+                            <CardDescription className="text-xs md:text-sm">Recent actions performed by users.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                             <div className="max-h-[60vh] overflow-auto">
+                        <CardContent className="p-0 md:p-6">
+                             <div className="w-full overflow-x-auto">
                                 <Table>
-                                    <TableHeader className="sticky top-0 bg-card">
+                                    <TableHeader>
                                         <TableRow>
-                                            <TableHead>Timestamp</TableHead>
-                                            <TableHead>Username</TableHead>
-                                            <TableHead>Activity</TableHead>
-                                            <TableHead>Details</TableHead>
+                                            <TableHead className="min-w-[120px]">Timestamp</TableHead>
+                                            <TableHead className="min-w-[100px]">Username</TableHead>
+                                            <TableHead className="min-w-[100px]">Activity</TableHead>
+                                            <TableHead className="min-w-[150px]">Details</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {filteredActivityLogs.map(log => (
                                             <TableRow key={log.id}>
-                                                <TableCell>{format(new Date(log.timestamp), 'PPpp')}</TableCell>
-                                                <TableCell className="font-medium">{log.username}</TableCell>
-                                                <TableCell><Badge variant="secondary">{log.activity}</Badge></TableCell>
-                                                <TableCell className="text-muted-foreground">{log.details}</TableCell>
+                                                <TableCell className="text-xs">{format(new Date(log.timestamp), 'MM/dd HH:mm')}</TableCell>
+                                                <TableCell className="font-medium text-xs truncate max-w-[80px] md:max-w-none">{log.username}</TableCell>
+                                                <TableCell><Badge variant="secondary" className="text-[10px] whitespace-nowrap">{log.activity}</Badge></TableCell>
+                                                <TableCell className="text-muted-foreground text-xs">{log.details}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
-                                {filteredActivityLogs.length === 0 && <p className="text-center text-muted-foreground p-8">No activity logs match the current filters.</p>}
+                                {filteredActivityLogs.length === 0 && <p className="text-center text-muted-foreground p-8">No records found.</p>}
                             </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
+
                 <TabsContent value="login">
-                    <Card className="bg-card/80 backdrop-blur-sm">
+                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
                         <CardHeader>
-                            <CardTitle>Login History</CardTitle>
-                            <CardDescription>Record of all user login attempts.</CardDescription>
+                            <CardTitle className="text-lg md:text-xl">Login History</CardTitle>
+                            <CardDescription className="text-xs md:text-sm">All login attempts recorded by the simulation.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="max-h-[60vh] overflow-auto">
+                        <CardContent className="p-0 md:p-6">
+                            <div className="w-full overflow-x-auto">
                                 <Table>
-                                    <TableHeader className="sticky top-0 bg-card">
+                                    <TableHeader>
                                         <TableRow>
-                                            <TableHead>Timestamp</TableHead>
-                                            <TableHead>Username</TableHead>
-                                            <TableHead>Status</TableHead>
+                                            <TableHead className="min-w-[120px]">Timestamp</TableHead>
+                                            <TableHead className="min-w-[120px]">Username</TableHead>
+                                            <TableHead className="min-w-[80px]">Status</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {filteredLoginHistory.map(log => (
                                             <TableRow key={log.id}>
-                                                <TableCell>{format(new Date(log.timestamp), 'PPpp')}</TableCell>
-                                                <TableCell className="font-medium">{log.username}</TableCell>
+                                                <TableCell className="text-xs">{format(new Date(log.timestamp), 'PPpp')}</TableCell>
+                                                <TableCell className="font-medium text-xs">{log.username}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant={log.status === 'Success' ? 'default' : 'destructive'}>{log.status}</Badge>
+                                                    <Badge variant={log.status === 'Success' ? 'default' : 'destructive'} className="text-[10px]">{log.status}</Badge>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
-                                {filteredLoginHistory.length === 0 && <p className="text-center text-muted-foreground p-8">No login history matches the current filters.</p>}
+                                {filteredLoginHistory.length === 0 && <p className="text-center text-muted-foreground p-8">No records found.</p>}
                             </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
+
                 <TabsContent value="management">
-                    <Card className="bg-card/80 backdrop-blur-sm">
+                    <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><User /> User Management</CardTitle>
-                            <CardDescription>Manage user roles, permissions, and status.</CardDescription>
+                            <CardTitle className="flex items-center gap-2 text-lg md:text-xl"><User /> User Management</CardTitle>
+                            <CardDescription className="text-xs md:text-sm">Manage roles and security state.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                             <div className="max-h-[60vh] overflow-auto">
+                        <CardContent className="p-0 md:p-6">
+                             <div className="w-full overflow-x-auto">
                                 <Table>
-                                    <TableHeader className="sticky top-0 bg-card">
+                                    <TableHeader>
                                         <TableRow>
-                                            <TableHead>User</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead className="text-right">Actions</TableHead>
+                                            <TableHead className="min-w-[120px]">User</TableHead>
+                                            <TableHead className="min-w-[100px]">Status</TableHead>
+                                            <TableHead className="text-right min-w-[100px]">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {manageableUsers.map(({ player }) => (
                                             <TableRow key={player.username}>
                                                 <TableCell>
-                                                    <p className="font-medium">{player.displayName}</p>
-                                                    <p className="text-sm text-muted-foreground">@{player.username}</p>
+                                                    <p className="font-medium text-xs md:text-sm">{player.displayName}</p>
+                                                    <p className="text-[10px] md:text-xs text-muted-foreground truncate max-w-[100px] md:max-w-none">@{player.username}</p>
                                                 </TableCell>
-                                                <TableCell className="flex items-center gap-2 flex-wrap">
-                                                    {player.isBanned && <Badge variant="destructive" className="items-center gap-1"><ShieldX className="h-3 w-3" /> Banned</Badge>}
-                                                    {player.isMuted && <Badge variant="secondary" className="items-center gap-1"><MicOff className="h-3 w-3" /> Muted</Badge>}
-                                                    {player.customTitle && <Badge variant="outline" className="items-center gap-1"><CaseSensitive className="h-3 w-3" /> {player.customTitle}</Badge>}
+                                                <TableCell>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {player.isBanned && <Badge variant="destructive" className="text-[9px] px-1"><ShieldX className="h-2 w-2 mr-1" /> Banned</Badge>}
+                                                        {player.isMuted && <Badge variant="secondary" className="text-[9px] px-1"><MicOff className="h-2 w-2 mr-1" /> Muted</Badge>}
+                                                        {player.customTitle && <Badge variant="outline" className="text-[9px] px-1 truncate max-w-[60px] md:max-w-none">{player.customTitle}</Badge>}
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <div className="flex justify-end gap-1">
-                                                        <Button variant="ghost" size="icon" onClick={() => { setEditingUser(player); setCustomTitleInput(player.customTitle || ''); }}>
-                                                            <Edit className="h-4 w-4" />
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { setEditingUser(player); setCustomTitleInput(player.customTitle || ''); }}>
+                                                            <Edit className="h-3.5 w-3.5" />
                                                         </Button>
                                                         
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
-                                                                <Button variant="ghost" size="icon">
-                                                                    {player.isMuted ? <MicOff className="h-4 w-4 text-green-500" /> : <MicOff className="h-4 w-4" />}
+                                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                                    <MicOff className={cn("h-3.5 w-3.5", player.isMuted && "text-green-500")} />
                                                                 </Button>
                                                             </AlertDialogTrigger>
                                                             <AlertDialogContent>
                                                                 <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>You are about to {player.isMuted ? 'unmute' : 'mute'} {player.displayName}. {player.isMuted ? 'They will be able to post feedback again.' : 'They will not be able to post feedback.'}</AlertDialogDescription>
+                                                                    <AlertDialogTitle>Update Mute Status?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>Change feedback permissions for {player.displayName}.</AlertDialogDescription>
                                                                 </AlertDialogHeader>
                                                                 <AlertDialogFooter>
                                                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => player.isMuted ? unmuteUser(player.username) : muteUser(player.username)}>Continue</AlertDialogAction>
+                                                                    <AlertDialogAction onClick={() => player.isMuted ? unmuteUser(player.username) : muteUser(player.username)}>Confirm</AlertDialogAction>
                                                                 </AlertDialogFooter>
                                                             </AlertDialogContent>
                                                         </AlertDialog>
                                                         
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
-                                                                <Button variant="ghost" size="icon">
-                                                                    {player.isBanned ? <CheckCircle className="h-4 w-4 text-green-500" /> : <Ban className="h-4 w-4 text-destructive" />}
+                                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                                    <Ban className={cn("h-3.5 w-3.5", player.isBanned ? "text-green-500" : "text-destructive")} />
                                                                 </Button>
                                                             </AlertDialogTrigger>
                                                             <AlertDialogContent>
                                                                 <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>You are about to {player.isBanned ? 'unban' : 'ban'} {player.displayName}. {player.isBanned ? 'They will regain full access.' : 'This will prevent them from logging in.'}</AlertDialogDescription>
+                                                                    <AlertDialogTitle>Update Ban Status?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>Access control for {player.displayName}.</AlertDialogDescription>
                                                                 </AlertDialogHeader>
                                                                 <AlertDialogFooter>
                                                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => player.isBanned ? unbanUser(player.username) : banUser(player.username)}>Continue</AlertDialogAction>
+                                                                    <AlertDialogAction onClick={() => player.isBanned ? unbanUser(player.username) : banUser(player.username)}>Confirm</AlertDialogAction>
                                                                 </AlertDialogFooter>
                                                             </AlertDialogContent>
                                                         </AlertDialog>
@@ -232,7 +239,7 @@ export default function AdminDashboardPage() {
                                         ))}
                                     </TableBody>
                                 </Table>
-                                {manageableUsers.length === 0 && <p className="text-center text-muted-foreground p-8">No users match the current filter.</p>}
+                                {manageableUsers.length === 0 && <p className="text-center text-muted-foreground p-8">No agents found.</p>}
                             </div>
                         </CardContent>
                     </Card>
@@ -240,22 +247,23 @@ export default function AdminDashboardPage() {
             </Tabs>
 
             <Dialog open={!!editingUser} onOpenChange={(isOpen) => !isOpen && setEditingUser(null)}>
-                <DialogContent>
+                <DialogContent className="max-w-[90vw] md:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>Edit Title for {editingUser?.displayName}</DialogTitle>
-                        <DialogDescription>Set a custom title. Leave blank to remove.</DialogDescription>
+                        <DialogTitle>Edit Title: {editingUser?.displayName}</DialogTitle>
+                        <DialogDescription>Assign a tactical callsign suffix.</DialogDescription>
                     </DialogHeader>
                     <Input 
                         value={customTitleInput}
                         onChange={(e) => setCustomTitleInput(e.target.value)}
                         placeholder="e.g., The Bug Hunter"
+                        className="bg-background/50"
                     />
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setEditingUser(null)}>Cancel</Button>
+                    <DialogFooter className="mt-4 gap-2">
+                        <Button variant="outline" onClick={() => setEditingUser(null)} className="w-full md:w-auto">Cancel</Button>
                         <Button onClick={() => {
                             if (editingUser) setCustomTitle(editingUser.username, customTitleInput);
                             setEditingUser(null);
-                        }}>Save Title</Button>
+                        }} className="w-full md:w-auto">Save Title</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

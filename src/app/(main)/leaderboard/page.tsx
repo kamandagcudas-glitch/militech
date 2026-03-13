@@ -28,13 +28,10 @@ export default function LeaderboardPage() {
     /**
      * Ranking Logic:
      * 1. Calculate Total Score: Sums all scores from all completed quizzes for each user.
-     *    Scores are only stored upon passing a quiz.
-     * 2. Calculate Completion Percentage: Divides the number of unique steps completed by the total
-     *    number of steps available across all COCs.
+     * 2. Calculate Completion Percentage: Based on unique steps completed.
      * 3. Sort Users:
      *    - Primary sort key: `totalScore` (descending).
      *    - Tie-breaker: `completionPercentage` (descending).
-     * The entire calculation is memoized with `useMemo` to prevent re-computation on every render.
      */
     const rankedUsers = useMemo((): RankedUser[] => {
         if (!game.accounts) return [];
@@ -81,62 +78,65 @@ export default function LeaderboardPage() {
     };
 
     return (
-        <div className="container mx-auto">
-            <h1 className="font-headline text-4xl font-bold mb-4 flex items-center gap-3"><Trophy className="text-yellow-400"/> Leaderboard</h1>
-            <p className="text-muted-foreground mb-8">See who is at the top of the class. Rankings are based on total score, then completion %.</p>
+        <div className="container mx-auto px-4 py-6">
+            <h1 className="font-headline text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3"><Trophy className="text-yellow-400"/> Leaderboard</h1>
+            <p className="text-muted-foreground mb-8 text-sm md:text-base">Simulation top-tier operatives. Rankings prioritized by Total Score then Completion %.</p>
             
-            <Card>
+            <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
                 <CardHeader>
-                    <CardTitle>Agent Rankings</CardTitle>
-                    <CardDescription>The top agents currently in the simulation.</CardDescription>
+                    <CardTitle className="text-lg md:text-xl">Global Rankings</CardTitle>
+                    <CardDescription className="text-xs md:text-sm">The most advanced agents identified within the simulation environment.</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="text-center w-[10%]">Rank</TableHead>
-                                <TableHead>Agent</TableHead>
-                                <TableHead className="text-right w-[20%]">Total Score</TableHead>
-                                <TableHead className="text-right w-[20%]">Completion</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {rankedUsers.map(rankedUser => {
-                                const userAccount = game.accounts.find(acc => acc.player.username === rankedUser.player.username);
-                                if (!userAccount) return null;
+                <CardContent className="p-0 md:p-6">
+                    <div className="w-full overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="text-center w-[60px] md:w-[80px]">Rank</TableHead>
+                                    <TableHead className="min-w-[150px]">Agent</TableHead>
+                                    <TableHead className="text-right min-w-[100px]">Score</TableHead>
+                                    <TableHead className="text-right min-w-[100px]">Sync %</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {rankedUsers.map(rankedUser => {
+                                    const userAccount = game.accounts.find(acc => acc.player.username === rankedUser.player.username);
+                                    if (!userAccount) return null;
 
-                                const displayTitle = getDisplayTitle(rankedUser.player);
-                                const isCurrentUser = rankedUser.player.username === game.currentUser?.player.username;
-                                
-                                return (
-                                    <TableRow key={rankedUser.player.username} className={cn(isCurrentUser && 'bg-primary/20 hover:bg-primary/30')}>
-                                        <TableCell className="text-center">
-                                            <div className="text-2xl font-bold">
-                                                {rankedUser.rank === 1 && '🥇'}
-                                                {rankedUser.rank === 2 && '🥈'}
-                                                {rankedUser.rank === 3 && '🥉'}
-                                                {rankedUser.rank > 3 && rankedUser.rank}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Link href={`/users/${rankedUser.player.username}`} className="flex items-center gap-4 group hover:cursor-pointer min-w-0">
-                                                <GamifiedAvatar account={userAccount} />
-                                                <div className="min-w-0">
-                                                    <p className="font-semibold text-base group-hover:underline group-hover:text-primary truncate max-w-[150px] sm:max-w-[250px]">{rankedUser.player.displayName}</p>
-                                                     {displayTitle && <Badge variant="destructive" className="mt-1 max-w-[150px] sm:max-w-[250px] truncate">{displayTitle}</Badge>}
+                                    const displayTitle = getDisplayTitle(rankedUser.player);
+                                    const isCurrentUser = rankedUser.player.username === game.currentUser?.player.username;
+                                    
+                                    return (
+                                        <TableRow key={rankedUser.player.username} className={cn(isCurrentUser && 'bg-primary/10 hover:bg-primary/20')}>
+                                            <TableCell className="text-center">
+                                                <div className="text-xl md:text-2xl font-bold font-cyber">
+                                                    {rankedUser.rank === 1 ? '🥇' : 
+                                                     rankedUser.rank === 2 ? '🥈' : 
+                                                     rankedUser.rank === 3 ? '🥉' : 
+                                                     rankedUser.rank}
                                                 </div>
-                                            </Link>
-                                        </TableCell>
-                                        <TableCell className="text-right font-mono text-lg">{rankedUser.totalScore.toLocaleString()}</TableCell>
-                                        <TableCell className="text-right font-mono text-lg">{rankedUser.completionPercentage.toFixed(1)}%</TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Link href={`/users/${rankedUser.player.username}`} className="flex items-center gap-3 group min-w-0">
+                                                    <GamifiedAvatar account={userAccount} imageClassName="w-8 h-8 md:w-10 md:h-10" />
+                                                    <div className="min-w-0">
+                                                        <p className="font-bold text-xs md:text-sm group-hover:text-primary transition-colors truncate max-w-[100px] md:max-w-[200px]">{rankedUser.player.displayName}</p>
+                                                         {displayTitle && <Badge variant="destructive" className="mt-0.5 text-[8px] md:text-[10px] py-0 px-1 truncate max-w-[80px] md:max-w-none">{displayTitle}</Badge>}
+                                                    </div>
+                                                </Link>
+                                            </TableCell>
+                                            <TableCell className="text-right font-mono text-sm md:text-lg text-primary">{rankedUser.totalScore.toLocaleString()}</TableCell>
+                                            <TableCell className="text-right font-mono text-sm md:text-lg">{rankedUser.completionPercentage.toFixed(1)}%</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </div>
                     {rankedUsers.length === 0 && (
-                        <div className="text-center py-16 text-muted-foreground">
-                            <p>The leaderboard is empty. Complete some quizzes to get on the board!</p>
+                        <div className="text-center py-16 text-muted-foreground flex flex-col items-center gap-4">
+                            <Trophy className="h-12 w-12 opacity-10" />
+                            <p className="text-sm font-cyber uppercase tracking-widest">No Active Operatives</p>
                         </div>
                     )}
                 </CardContent>
