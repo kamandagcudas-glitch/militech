@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useContext, useEffect, useRef, useCallback } from 'react';
+import { useState, useContext, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { GameContext, GameContextType } from '@/context/GameContext';
 import { cocData } from '@/lib/data';
@@ -29,6 +29,43 @@ export default function QuizPage() {
   const coc = cocData.find(c => c.id === cocId);
   const step = coc?.steps.find(s => s.id === stepId);
   
+  // Progression Logic for route guard
+  const isQuizUnlocked = useMemo(() => {
+    if (!game.currentUser || !coc) return false;
+    const cocs = ['coc1', 'coc2', 'coc3', 'coc4'];
+    const currentCocIndex = cocs.indexOf(cocId);
+    
+    for (let i = 0; i < currentCocIndex; i++) {
+      const prevId = cocs[i];
+      const prevData = cocData.find(c => c.id === prevId);
+      const completedCount = game.currentUser.progress[prevId]?.completedSteps.length || 0;
+      if (completedCount !== (prevData?.steps.length || 0)) {
+        return false;
+      }
+    }
+
+    const stepIndex = coc.steps.findIndex(s => s.id === stepId);
+    for (let i = 0; i < stepIndex; i++) {
+      const prevStepId = coc.steps[i].id;
+      if (!game.currentUser.progress[cocId]?.completedSteps.includes(prevStepId)) {
+        return false;
+      }
+    }
+
+    return true;
+  }, [game.currentUser, cocId, stepId, coc]);
+
+  useEffect(() => {
+    if (!game.isUserLoading && game.currentUser && !isQuizUnlocked) {
+      toast({
+        variant: "destructive",
+        title: "Access Denied",
+        description: "Complete the previous module quiz to unlock this quiz.",
+      });
+      router.replace(`/coc/${cocId}/step/${stepId}/lesson`);
+    }
+  }, [isQuizUnlocked, game.isUserLoading, game.currentUser, router, cocId, stepId, toast]);
+
   // This ref is attached to the main quiz container.
   const quizContainerRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +116,7 @@ export default function QuizPage() {
     };
 
     // Only add listeners if the quiz is currently active.
-    if (!showResult) {
+    if (!showResult && isQuizUnlocked) {
         document.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('blur', failQuizForLosingFocus);
     }
@@ -89,7 +126,7 @@ export default function QuizPage() {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
         window.removeEventListener('blur', failQuizForLosingFocus);
     };
-  }, [showResult, failQuizForLosingFocus]);
+  }, [showResult, failQuizForLosingFocus, isQuizUnlocked]);
 
 
   // Anti-Cheat Logic: This effect adds event listeners to the quiz container
@@ -121,8 +158,12 @@ export default function QuizPage() {
     };
   }, [toast]);
 
-  if (!coc || !step) {
-    return <div>Quiz not found.</div>;
+  if (!coc || !step || !isQuizUnlocked) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-muted-foreground">Verifying access credentials...</p>
+      </div>
+    );
   }
 
   const question = step.quiz[currentQuestionIndex];

@@ -72,6 +72,8 @@ export default function CocPage() {
             {coc.steps.map((step, index) => {
               const isCompleted = completedSteps.includes(step.id);
               const isCurrent = currentStepIndex === index;
+              // Progression system updated: Lessons are no longer disabled for review.
+              // Logic preserved for visual status icons only.
               const isLocked = !isCompleted && !isCurrent;
 
               return (
@@ -91,7 +93,6 @@ export default function CocPage() {
                   </div>
                   <Link href={`/coc/${cocId}/step/${step.id}/lesson`} passHref>
                     <Button 
-                        disabled={isLocked} 
                         variant={isCurrent ? 'cyber' : 'secondary'}
                         className={cn(isCurrent && "h-12 px-6")}
                     >
