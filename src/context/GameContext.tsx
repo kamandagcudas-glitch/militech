@@ -104,7 +104,7 @@ export interface GameContextType {
   muteUser: (username: string) => void;
   unmuteUser: (username: string) => void;
   setCustomTitle: (username: string, title: string) => void;
-  sendMessage: (friendUid: string, message: string) => void;
+  sendMessage: (friendUid: string, message: string, imageUrl?: string) => void;
   clearChatHistory: (friendUid: string) => Promise<void>;
 }
 
@@ -1000,7 +1000,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     toast({ title: 'Title Updated', description: `${username}'s title has been changed.` });
   };
 
-  const sendMessage = (friendUid: string, message: string) => {
+  const sendMessage = (friendUid: string, message: string, imageUrl?: string) => {
     if (!currentUser || !friendUid) return;
 
     const uids = [currentUser.player.uid, friendUid].sort();
@@ -1011,6 +1011,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     addDocumentNonBlocking(messagesCol, {
       senderId: currentUser.player.uid,
       message: message,
+      imageUrl: imageUrl || null,
       timestamp: serverTimestamp(),
     });
   };

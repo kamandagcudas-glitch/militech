@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
-import { Send, MessageCircle, Loader2, Trash2, Image as ImageIcon } from 'lucide-react';
+import { Send, MessageCircle, Loader2, Trash2, Image as ImageIcon, Paperclip } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -77,9 +77,11 @@ function FriendList({ onSelectFriend, onOpenBgDialog }: { onSelectFriend: (frien
 
 function ChatWindow({ friend }: { friend: UserAccount; }) {
     const { currentUser, sendMessage, clearChatHistory } = useContext(GameContext) as GameContextType;
+    const { toast } = useToast();
     const firestore = useFirestore();
     const [message, setMessage] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const chatId = useMemo(() => {
         if (!currentUser) return null;
@@ -99,6 +101,30 @@ function ChatWindow({ friend }: { friend: UserAccount; }) {
             sendMessage(friend.player.uid, message.trim());
             setMessage('');
         }
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 1024 * 1024) {
+                toast({
+                    variant: "destructive",
+                    title: "Payload Too Large",
+                    description: "Neural uplinks are limited to 1MB per image."
+                });
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const dataUrl = event.target?.result as string;
+                if (friend && sendMessage) {
+                    sendMessage(friend.player.uid, "", dataUrl);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        if (e.target) e.target.value = '';
     };
     
     useEffect(() => {
@@ -156,12 +182,17 @@ function ChatWindow({ friend }: { friend: UserAccount; }) {
                                     <div key={msg.id} className={cn("flex items-end gap-2", isSender ? "justify-end" : "justify-start")}>
                                         {!isSender && <GamifiedAvatar account={senderAccount} className="w-8 h-8"/>}
                                         <div className={cn(
-                                            "max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg",
+                                            "max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg flex flex-col gap-2",
                                             isSender ? "bg-primary text-primary-foreground" : "bg-muted shadow-sm"
                                         )}>
-                                            <p className="text-sm">{msg.message}</p>
+                                            {msg.imageUrl && (
+                                                <div className="relative w-full aspect-auto rounded overflow-hidden border border-white/10">
+                                                    <img src={msg.imageUrl} alt="Shared visual" className="max-w-full h-auto" />
+                                                </div>
+                                            )}
+                                            {msg.message && <p className="text-sm">{msg.message}</p>}
                                             {msg.timestamp && (
-                                                <p className={cn("text-[10px] mt-1", isSender ? "text-primary-foreground/70" : "text-muted-foreground")}>
+                                                <p className={cn("text-[10px] mt-1 self-end", isSender ? "text-primary-foreground/70" : "text-muted-foreground")}>
                                                     {formatDistanceToNow( (msg.timestamp as Timestamp).toDate(), { addSuffix: true })}
                                                 </p>
                                             )}
@@ -181,6 +212,22 @@ function ChatWindow({ friend }: { friend: UserAccount; }) {
             </CardContent>
             <CardFooter className="border-t pt-4">
                 <form onSubmit={handleSendMessage} className="flex w-full items-center gap-2">
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/png, image/jpeg"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                    />
+                    <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="icon" 
+                        className="shrink-0"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        <Paperclip className="h-5 w-5" />
+                    </Button>
                     <Input
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}

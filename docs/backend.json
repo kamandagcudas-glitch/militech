@@ -151,14 +151,15 @@
         "id": {
           "type": "string"
         },
-        "chatId": {
-          "type": "string"
-        },
         "senderId": {
           "type": "string"
         },
         "message": {
           "type": "string"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Optional data URL or URL for a shared image."
         },
         "timestamp": {
           "type": "string",
@@ -167,7 +168,6 @@
       },
       "required": [
         "id",
-        "chatId",
         "senderId",
         "message",
         "timestamp"
@@ -273,6 +273,20 @@
           "params": [
             { "name": "feedbackId", "description": "ID of parent" },
             { "name": "replyId", "description": "ID of reply" }
+          ]
+        }
+      },
+      {
+        "path": "/chats/{chatId}/messages/{messageId}",
+        "definition": {
+          "entityName": "ChatMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ChatMessage"
+          },
+          "description": "Messages between users.",
+          "params": [
+            { "name": "chatId", "description": "Combined UID of two users" },
+            { "name": "messageId", "description": "Message ID" }
           ]
         }
       }

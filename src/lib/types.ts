@@ -103,6 +103,7 @@ export interface ChatMessage {
   id: string;
   senderId: string;
   message: string;
+  imageUrl?: string;
   timestamp: any; // Use 'any' for Firestore ServerTimestamp
 }
 
