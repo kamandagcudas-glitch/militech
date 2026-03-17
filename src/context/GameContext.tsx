@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, ReactNode, useEffect, useState, useCallback, useMemo } from 'react';
@@ -382,19 +383,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
             await setDoc(userDocRef, newUserAccount);
         }
 
-        await addDoc(collection(firestore, 'loginHistory'), {
+        // Log login history silently
+        addDoc(collection(firestore, 'loginHistory'), {
             userId: user.uid,
             username: user.email,
             timestamp: new Date().toISOString(),
             status: 'Success'
-        });
+        }).catch(e => console.warn("[Neural SSO] Silent logging failure:", e.message));
         
         return { success: true, message: 'Neural SSO successful.' };
     } catch (error: any) {
-        console.error("Google SSO Failure:", error.code, error.message);
         if (error.code === 'auth/popup-closed-by-user') {
-            return { success: false, message: 'Neural link terminated by agent.' };
+            return { success: false, message: 'Sign-in cancelled by user.' };
         }
+        console.error("[Neural SSO] Authentication Failure:", error.code, error.message);
         return { success: false, message: error.message || 'Neural SSO handshake failed.' };
     }
   };
