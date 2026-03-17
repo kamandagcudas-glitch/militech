@@ -1,4 +1,3 @@
-
 "use client";
 
 import { createContext, ReactNode, useEffect, useState, useCallback, useMemo } from 'react';
@@ -159,7 +158,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const isGoodBoy = trimmedUsername.toLowerCase() === GOOD_BOY_USERNAME.toLowerCase();
       const isPapet = trimmedUsername.toLowerCase() === PAPET_USERNAME.toLowerCase();
 
-      const playerObject: Partial<Player> = {
+      const playerObject: Player = {
         uid: user.uid,
         username: trimmedUsername,
         displayName: displayName.trim(),
@@ -219,34 +218,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
           if(achievement) initialAchievements.push({ ...achievement, timestamp: new Date().toISOString() });
       }
 
-      const newPlayer: Player = {
-        ...playerObject as Player
-      };
-
-      const finalPlayerObject: Player = {
-        uid: newPlayer.uid,
-        username: newPlayer.username,
-        displayName: newPlayer.displayName,
-        avatar: newPlayer.avatar,
-        email: newPlayer.email,
-        emailVerified: newPlayer.emailVerified,
-        activeTitleId: newPlayer.activeTitleId,
-        isBanned: newPlayer.isBanned,
-        isMuted: newPlayer.isMuted,
-        unlockedTitleIds: newPlayer.unlockedTitleIds,
-        badgeIds: newPlayer.badgeIds,
-        friendUsernames: newPlayer.friendUsernames,
-        friendRequests: newPlayer.friendRequests,
-        isCreator: newPlayer.isCreator,
-        profileBackgroundId: newPlayer.profileBackgroundId,
-        chatBackgroundId: newPlayer.chatBackgroundId,
-      };
-
-      if (newPlayer.customTitle) finalPlayerObject.customTitle = newPlayer.customTitle;
-      if (newPlayer.specialBackground) finalPlayerObject.specialBackground = newPlayer.specialBackground;
-      if (newPlayer.chatSpecialBackground) finalPlayerObject.chatSpecialBackground = newPlayer.chatSpecialBackground;
-      if (newPlayer.specialInsignia) finalPlayerObject.specialInsignia = newPlayer.specialInsignia;
-      
       const newStats: PlayerStats = {
         coc1: { attempts: 0, resets: 0 },
         coc2: { attempts: 0, resets: 0 },
@@ -262,7 +233,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       };
 
       const newUserAccount: UserAccount = {
-        player: finalPlayerObject,
+        player: playerObject,
         stats: newStats,
         progress: newProgress,
         achievements: initialAchievements,
@@ -282,21 +253,24 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
       return { success: true, message: 'Registration successful!' };
     } catch (error: any) {
-      console.error("Registration Error: ", error);
+      console.error("Registration Error: ", error.code, error.message);
       if (error.code === 'auth/email-already-in-use') {
         return { success: false, message: 'This email is already registered.' };
       }
-       if (error.code === 'permission-denied') {
-        return { success: false, message: 'This callsign is already taken.' };
+      if (error.code === 'auth/invalid-email') {
+        return { success: false, message: 'Invalid email identifier provided.' };
       }
-      return { success: false, message: error.message || 'Failed to register.' };
+      if (error.code === 'auth/weak-password') {
+        return { success: false, message: 'Access key is too weak. Minimum 6 characters.' };
+      }
+      return { success: false, message: error.message || 'Failed to register with simulation core.' };
     }
   };
 
   const login = async (email: string, password: string): Promise<{ success: boolean, message: string }> => {
     const trimmedEmail = email.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-        return { success: false, message: 'Invalid email format. Please use your email to log in.' };
+        return { success: false, message: 'Invalid email format. Use your assigned identifier.' };
     }
     try {
       const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
@@ -308,40 +282,39 @@ export function GameProvider({ children }: { children: ReactNode }) {
           timestamp: new Date().toISOString(),
           status: 'Success'
       });
-      router.push('/dashboard');
-      return { success: true, message: 'Login successful' };
+      
+      return { success: true, message: 'Neural link stable.' };
     } catch (error: any) {
+      console.error("Login Error: ", error.code, error.message);
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-            return { success: false, message: 'Invalid email or password.' };
+            return { success: false, message: 'Invalid identifier or access key.' };
       }
-      return { success: false, message: error.message || 'An unexpected error occurred.' };
+      return { success: false, message: error.message || 'Simulation sync failed.' };
     }
   };
 
   const signInWithGoogle = async (): Promise<{ success: boolean; message: string; }> => {
-    console.log("[Neural SSO] Initializing Google Link...");
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
     
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        console.log("[Neural SSO] Handshake successful for:", user.uid);
 
         const userDocRef = doc(firestore, 'users', user.uid);
         let userDocSnap = await getDoc(userDocRef);
 
         if (!userDocSnap.exists()) {
-            console.log("[Neural SSO] Provisioning new agent profile...");
             const isCreator = user.email?.toLowerCase() === ADMIN_EMAIL;
             let username = user.email ? user.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') : `agent_${Date.now()}`;
             
             if(isCreator) {
                 username = CREATOR_USERNAME;
             } else {
+                // Ensure unique username for Google SSO
                 let isUsernameTaken = true;
                 let attempt = 0;
-                while(isUsernameTaken) {
+                while(isUsernameTaken && attempt < 5) {
                     const finalUsername = attempt > 0 ? `${username}${attempt}` : username;
                     const usernameQuery = query(collection(firestore, 'users'), where('player.username', '==', finalUsername));
                     const usernameSnapshot = await getDocs(usernameQuery);
@@ -354,21 +327,23 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 }
             }
             
-            const playerObject: Partial<Player> = {
+            const playerObject: Player = {
+                uid: user.uid,
+                emailVerified: user.emailVerified,
                 username: username,
                 displayName: user.displayName || username,
                 avatar: user.photoURL || '',
                 email: user.email || '',
+                activeTitleId: null,
+                isBanned: false,
+                isMuted: false,
+                unlockedTitleIds: [],
+                badgeIds: [],
                 friendUsernames: [],
                 friendRequests: [],
                 isCreator: isCreator,
-                isBanned: false,
-                isMuted: false,
                 profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
                 chatBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
-                unlockedTitleIds: [],
-                badgeIds: [],
-                activeTitleId: null,
             };
 
             let initialAchievements: Achievement[] = [];
@@ -385,57 +360,26 @@ export function GameProvider({ children }: { children: ReactNode }) {
                 if(runeBadge) initialAchievements.push({ ...runeBadge, timestamp: new Date().toISOString() });
             }
 
-            const newPlayer: Player = {
-                uid: user.uid,
-                emailVerified: user.emailVerified,
-                username: playerObject.username!,
-                displayName: playerObject.displayName!,
-                avatar: playerObject.avatar!,
-                email: playerObject.email!,
-                activeTitleId: playerObject.activeTitleId!,
-                isBanned: playerObject.isBanned!,
-                isMuted: playerObject.isMuted!,
-                unlockedTitleIds: playerObject.unlockedTitleIds!,
-                badgeIds: playerObject.badgeIds!,
-                friendUsernames: playerObject.friendUsernames!,
-                friendRequests: playerObject.friendRequests!,
-                isCreator: playerObject.isCreator!,
-                profileBackgroundId: playerObject.profileBackgroundId,
-                chatBackgroundId: playerObject.chatBackgroundId,
-                ...(playerObject.customTitle && { customTitle: playerObject.customTitle }),
-                ...(playerObject.specialBackground && { specialBackground: playerObject.specialBackground }),
-                ...(playerObject.chatSpecialBackground && { chatSpecialBackground: playerObject.chatSpecialBackground }),
-                ...(playerObject.specialInsignia && { specialInsignia: playerObject.specialInsignia }),
-            };
-            
-            const newStats: PlayerStats = {
-                coc1: { attempts: 0, resets: 0 },
-                coc2: { attempts: 0, resets: 0 },
-                coc3: { attempts: 0, resets: 0 },
-                coc4: { attempts: 0, resets: 0 },
-                totalResets: 0,
-            };
-            const newProgress: PlayerProgress = {
-                coc1: { completedSteps: [], scores: {} },
-                coc2: { completedSteps: [], scores: {} },
-                coc3: { completedSteps: [], scores: {} },
-                coc4: { completedSteps: [], scores: {} },
-            };
-
             const newUserAccount: UserAccount = {
-                player: newPlayer,
-                stats: newStats,
-                progress: newProgress,
+                player: playerObject,
+                stats: {
+                    coc1: { attempts: 0, resets: 0 },
+                    coc2: { attempts: 0, resets: 0 },
+                    coc3: { attempts: 0, resets: 0 },
+                    coc4: { attempts: 0, resets: 0 },
+                    totalResets: 0,
+                },
+                progress: {
+                    coc1: { completedSteps: [], scores: {} },
+                    coc2: { completedSteps: [], scores: {} },
+                    coc3: { completedSteps: [], scores: {} },
+                    coc4: { completedSteps: [], scores: {} },
+                },
                 achievements: initialAchievements,
                 files: [],
             };
 
             await setDoc(userDocRef, newUserAccount);
-
-            toast({
-                title: 'Account Created!',
-                description: `Welcome, ${newPlayer.displayName}! Your profile has been created.`,
-            });
         }
 
         await addDoc(collection(firestore, 'loginHistory'), {
@@ -445,29 +389,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
             status: 'Success'
         });
         
-        router.push('/dashboard');
-        return { success: true, message: 'Login successful' };
+        return { success: true, message: 'Neural SSO successful.' };
     } catch (error: any) {
-        console.error("[Neural SSO] Authentication Failure:", error.code, error.message);
+        console.error("Google SSO Failure:", error.code, error.message);
         if (error.code === 'auth/popup-closed-by-user') {
-            return { success: false, message: 'Sign-in cancelled by user.' };
+            return { success: false, message: 'Neural link terminated by agent.' };
         }
-        if (error.code === 'auth/account-exists-with-different-credential') {
-            return { success: false, message: 'An account already exists with the same email. Please use your original login method.' };
-        }
-        if (error.code === 'auth/invalid-api-key' || error.code === 'auth/configuration-not-found') {
-            return { success: false, message: 'System configuration error. Please verify API keys in the environment.' };
-        }
-        return { success: false, message: error.message || 'Failed to sign in with Google.' };
+        return { success: false, message: error.message || 'Neural SSO handshake failed.' };
     }
   };
 
   const loginAsGuest = async (): Promise<{ success: boolean; message: string; }> => {
-    console.log("[Guest Protocol] Initializing Anonymous Handshake...");
     try {
       const result = await signInAnonymously(auth);
       const user = result.user;
-      console.log("[Guest Protocol] Temporary link established:", user.uid);
 
       const userDocRef = doc(firestore, 'users', user.uid);
       const userDocSnap = await getDoc(userDocRef);
@@ -521,11 +456,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
           status: 'Success'
       });
 
-      router.push('/dashboard');
-      return { success: true, message: 'Guest login successful' };
+      return { success: true, message: 'Guest access granted.' };
     } catch (error: any) {
-      console.error("[Guest Protocol] Failure:", error);
-      return { success: false, message: error.message || 'Failed to login as guest.' };
+      console.error("Guest Access Failure:", error);
+      return { success: false, message: error.message || 'Temporary link failed.' };
     }
   };
 

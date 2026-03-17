@@ -1,4 +1,3 @@
-
 'use client';
 
 import { firebaseConfig } from '@/firebase/config';
@@ -8,7 +7,7 @@ import { getFirestore } from 'firebase/firestore'
 
 /**
  * Initializes the Firebase application instance.
- * Prioritizes App Hosting zero-arg init, then falls back to manual config.
+ * Hardened to prevent initialization errors when credentials are missing.
  */
 export function initializeFirebase() {
   // 1. Return existing app if already initialized
@@ -18,21 +17,25 @@ export function initializeFirebase() {
 
   let firebaseApp: FirebaseApp;
 
-  // 2. Attempt App Hosting initialization (Zero-arg)
-  try {
-    firebaseApp = initializeApp();
-    console.log("[Firebase] Initialized via App Hosting environment.");
-  } catch (e: any) {
-    // 3. Manual Fallback
-    // Check if we have valid manual config options
-    if (firebaseConfig && firebaseConfig.apiKey) {
+  // 2. Priority: Manual configuration from config.ts
+  // We check for apiKey presence to avoid 'app/no-options' errors.
+  if (firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey !== "undefined") {
+    try {
       firebaseApp = initializeApp(firebaseConfig);
       console.log("[Firebase] Initialized via Neural Config Object.");
-    } else {
-      // Log critical failure instead of throwing immediately to allow UI to render basic shell
-      console.error("[Firebase] CRITICAL FAILURE: API Key not found in environment. Neural Link offline.");
-      
-      // We still try to call it to let the SDK throw its own specific error if the above check is bypassed
+    } catch (e) {
+      console.error("[Firebase] Initialization via config failed:", e);
+      // Fallback to zero-arg
+      firebaseApp = initializeApp();
+    }
+  } else {
+    // 3. Fallback: App Hosting / Zero-arg initialization
+    try {
+      firebaseApp = initializeApp();
+      console.log("[Firebase] Initialized via Zero-Arg Handshake.");
+    } catch (e: any) {
+      console.error("[Firebase] CRITICAL FAILURE: No API Key found. Handshake aborted.");
+      // We initialize with the empty config to allow hooks to fail gracefully rather than crash the JS thread
       firebaseApp = initializeApp(firebaseConfig);
     }
   }
