@@ -317,17 +317,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithGoogle = async (): Promise<{ success: boolean; message: string; }> => {
+    console.log("[Neural SSO] Initializing Google Link...");
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
+    
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
+        console.log("[Neural SSO] Handshake successful for:", user.uid);
 
         const userDocRef = doc(firestore, 'users', user.uid);
         let userDocSnap = await getDoc(userDocRef);
 
         if (!userDocSnap.exists()) {
-            console.log("[Auth] Creating neural profile for Google user:", user.uid);
+            console.log("[Neural SSO] Provisioning new agent profile...");
             const isCreator = user.email?.toLowerCase() === ADMIN_EMAIL;
             let username = user.email ? user.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') : `agent_${Date.now()}`;
             
@@ -443,13 +446,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
         router.push('/dashboard');
         return { success: true, message: 'Login successful' };
     } catch (error: any) {
+        console.error("[Neural SSO] Authentication Failure:", error.code, error.message);
         if (error.code === 'auth/popup-closed-by-user') {
             return { success: false, message: 'Sign-in cancelled by user.' };
         }
         if (error.code === 'auth/account-exists-with-different-credential') {
-            return { success: false, message: 'An account already exists with the same email but different credentials. Please use your original method.' };
+            return { success: false, message: 'An account already exists with the same email. Please use your original login method.' };
         }
-        console.error("Google Sign-In Error: ", error);
+        if (error.code === 'auth/invalid-api-key' || error.code === 'auth/configuration-not-found') {
+            return { success: false, message: 'System configuration error. Please verify API keys in the environment.' };
+        }
         return { success: false, message: error.message || 'Failed to sign in with Google.' };
     }
   };
