@@ -53,6 +53,7 @@ import {
   updateEmail as updateAuthEmail,
   GoogleAuthProvider,
   signInWithPopup,
+  signInAnonymously,
 } from 'firebase/auth';
 import { updateDocumentNonBlocking, addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -77,6 +78,7 @@ export interface GameContextType {
   register: (username: string, displayName: string, email: string, password: string) => Promise<{ success: boolean; message: string; }>;
   login: (email: string, password: string) => Promise<{ success: boolean, message: string }>;
   signInWithGoogle: () => Promise<{ success: boolean; message: string; }>;
+  loginAsGuest: () => Promise<{ success: boolean; message: string; }>;
   logout: () => void;
   completeQuiz: (cocId: string, stepId: string, score: number) => 'pass' | 'retry' | 'reset';
   addAchievement: (achievementId: string) => void;
@@ -460,6 +462,72 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginAsGuest = async (): Promise<{ success: boolean; message: string; }> => {
+    console.log("[Guest Protocol] Initializing Anonymous Handshake...");
+    try {
+      const result = await signInAnonymously(auth);
+      const user = result.user;
+      console.log("[Guest Protocol] Temporary link established:", user.uid);
+
+      const userDocRef = doc(firestore, 'users', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (!userDocSnap.exists()) {
+        const username = `guest_${user.uid.substring(0, 5)}`;
+        const playerObject: Player = {
+          uid: user.uid,
+          username: username,
+          displayName: `Guest Agent`,
+          avatar: '',
+          email: '',
+          emailVerified: false,
+          friendUsernames: [],
+          friendRequests: [],
+          isCreator: false,
+          isBanned: false,
+          isMuted: false,
+          profileBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+          chatBackgroundId: defaultBackground?.id || 'profile-bg-cyberpunk-red',
+          unlockedTitleIds: [],
+          badgeIds: [],
+          activeTitleId: null,
+        };
+
+        const newUserAccount: UserAccount = {
+          player: playerObject,
+          stats: {
+            coc1: { attempts: 0, resets: 0 },
+            coc2: { attempts: 0, resets: 0 },
+            coc3: { attempts: 0, resets: 0 },
+            coc4: { attempts: 0, resets: 0 },
+            totalResets: 0,
+          },
+          progress: {
+            coc1: { completedSteps: [], scores: {} },
+            coc2: { completedSteps: [], scores: {} },
+            coc3: { completedSteps: [], scores: {} },
+            coc4: { completedSteps: [], scores: {} },
+          },
+          achievements: [],
+          files: [],
+        };
+        await setDoc(userDocRef, newUserAccount);
+      }
+
+      await addDoc(collection(firestore, 'loginHistory'), {
+          userId: user.uid,
+          username: "Anonymous Guest",
+          timestamp: new Date().toISOString(),
+          status: 'Success'
+      });
+
+      router.push('/dashboard');
+      return { success: true, message: 'Guest login successful' };
+    } catch (error: any) {
+      console.error("[Guest Protocol] Failure:", error);
+      return { success: false, message: error.message || 'Failed to login as guest.' };
+    }
+  };
 
   const logout = async () => {
     try {
@@ -1067,7 +1135,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       loginHistory: loginHistory || [],
       activityLogs: activityLogs || [],
       feedbackPosts: feedbackPosts || [],
-      logActivity, register, login, signInWithGoogle, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateChatBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, replyToFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle, sendMessage, clearChatHistory
+      logActivity, register, login, signInWithGoogle, loginAsGuest, logout, completeQuiz, addAchievement, updateAvatar, sendFriendRequest, acceptFriendRequest, rejectFriendRequest, removeFriend, sendVerificationEmail, verifyEmail, updateProfileBackground, updateChatBackground, updateEmail, sendPasswordResetCode, resetPassword, updateDisplayName, uploadFile, deleteFile, shareFile, postFeedback, replyToFeedback, banUser, unbanUser, muteUser, unmuteUser, setCustomTitle, sendMessage, clearChatHistory
     }}>
       {children}
     </GameContext.Provider>
